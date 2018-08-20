@@ -99,6 +99,7 @@ namespace SmartInkLaboratory.ViewModels
                 {
                     var newPath = await UpdateIconAsync(file);
                     await _iconMap.AddTagIconAsync(CurrentTag.Id, newPath);
+                    _state.IconUpdated();
                 }
             },
             ()=> {

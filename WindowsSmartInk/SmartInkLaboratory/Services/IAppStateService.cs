@@ -15,10 +15,13 @@ namespace SmartInkLaboratory.Services
         event EventHandler ProjectChanged;
         event EventHandler TagChanged;
         event EventHandler PackageChanged;
+        event EventHandler IconChanged;
 
         ResourceKeys CurrentKeys{ get; set; }
         Project CurrentProject { get; set; }
         Tag CurrentTag { get; set; }
         SmartInkPackage CurrentPackage { get; set; }
+
+        void IconUpdated();
     }
 }

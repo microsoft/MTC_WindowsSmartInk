@@ -130,7 +130,7 @@ namespace SmartInkLaboratory
         private async Task PlaceIconAsync(string tag, double probability, Rect boundingBox)
         {
             Debug.WriteLine($"tag: {tag} rating: {probability}");
-            if (tag == "other" || probability< 0.70)
+            if (tag == "other" || probability< 0.50)
             {
                 foreach (var stroke in _sessionStrokes)
                     _allStrokes.Add(stroke);
@@ -321,6 +321,7 @@ namespace SmartInkLaboratory
         private void HyperlinkButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             ClearInkSurface();
+            iconCanvas.Children.Clear();
         }
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)

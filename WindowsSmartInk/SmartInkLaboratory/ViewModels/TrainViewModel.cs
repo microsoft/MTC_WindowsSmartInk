@@ -124,6 +124,11 @@ namespace SmartInkLaboratory.ViewModels
                 await LoadIconAsync(iconfile);
              };
 
+            _state.IconChanged += async (s, e) => {
+                var iconfile = await GetIconFileAsync(_state.CurrentTag.Id);
+                await LoadIconAsync(iconfile);
+            };
+
             _state.PackageChanged += async (s, e) => {
               
                 if (_state.CurrentPackage == null)

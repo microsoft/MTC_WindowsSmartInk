@@ -57,6 +57,7 @@ namespace SmartInkLaboratory.Services
         public event EventHandler ProjectChanged;
         public event EventHandler TagChanged;
         public event EventHandler PackageChanged;
+        public event EventHandler IconChanged;
 
         public AppStateService(IClassifierService classifier)
         {
@@ -68,6 +69,11 @@ namespace SmartInkLaboratory.Services
                 classifier.SetCurrentProject(CurrentProject);
                 _classifier = classifier;
             }
+        }
+
+        public void IconUpdated()
+        {
+            IconChanged?.Invoke(this, null);
         }
     }
 }
