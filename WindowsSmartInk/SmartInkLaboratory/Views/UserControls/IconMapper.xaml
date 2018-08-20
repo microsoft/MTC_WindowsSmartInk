@@ -31,7 +31,7 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
-            <VisualStateGroup x:Name="PackageStates">
+            <!--<VisualStateGroup x:Name="PackageStates">
                 <VisualState x:Name="HasPackage">
                     <VisualState.StateTriggers>
                         <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="HasPackage" />
@@ -48,7 +48,7 @@
                         <Setter Target="PackageSelectBanner.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
-            </VisualStateGroup>
+            </VisualStateGroup>-->
         </VisualStateManager.VisualStateGroups>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -85,8 +85,8 @@
             </Button>
            
         </Grid>
-        <Grid x:Name="PackageSelectBanner" Grid.ColumnSpan="3" Background="DarkGray">
+        <!--<Grid x:Name="PackageSelectBanner" Grid.ColumnSpan="3" Background="DarkGray" Visibility="Visible">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Select Package" />
-        </Grid>
+        </Grid>-->
     </Grid>
 </UserControl>

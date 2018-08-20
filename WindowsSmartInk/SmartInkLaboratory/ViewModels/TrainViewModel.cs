@@ -148,7 +148,7 @@ namespace SmartInkLaboratory.ViewModels
                 async () => {
                     await _train.TrainAsync();
                 },
-                ()=> { return true; // _uploadComplete || TotalImageCount == 0; 
+                ()=> { return _uploadComplete || TotalImageCount == 0; 
                 });
 
             _dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;

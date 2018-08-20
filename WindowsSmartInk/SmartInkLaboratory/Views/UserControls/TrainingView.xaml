@@ -30,7 +30,7 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
-            <VisualStateGroup x:Name="PackageStates">
+            <!--<VisualStateGroup x:Name="PackageStates">
                 <VisualState x:Name="HasPackage">
                     <VisualState.StateTriggers>
                         <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="HasPackage" />
@@ -47,7 +47,7 @@
                         <Setter Target="PackageSelectBanner.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
-            </VisualStateGroup>
+            </VisualStateGroup>-->
         </VisualStateManager.VisualStateGroups>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -72,9 +72,9 @@
             <AppBarButton Command="{Binding Upload}" Grid.Column="1" Label="Upload" Icon="Upload" />
             <AppBarButton x:Name="TrainButton" Grid.Column="2" HorizontalAlignment="Right" Command="{Binding Train}" Icon="Account" Label="Train Model"/>       
         </Grid>
-        <Grid x:Name="PackageSelectBanner" Grid.ColumnSpan="3" Grid.RowSpan="3" Background="DarkGray">
+        <!--<Grid x:Name="PackageSelectBanner" Grid.ColumnSpan="3" Grid.RowSpan="3" Background="DarkGray">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Select Package" />
-        </Grid>
+        </Grid>-->
     </Grid>
 
 </UserControl>
