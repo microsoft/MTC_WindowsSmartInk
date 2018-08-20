@@ -56,7 +56,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Model Iteration:"/>
-            <ampControls:SelectionList Grid.Column="1" ItemTemplate="{StaticResource IterationTemplate}" x:Name="IterationList" ItemsSource="{Binding Iterations}"  SelectedItem="{Binding SelectedIteration, Mode=TwoWay}"/>
+            <ampControls:SelectionList Grid.Column="1" Grid.ColumnSpan="3" ItemTemplate="{StaticResource IterationTemplate}" x:Name="IterationList" ItemsSource="{Binding Iterations}"  SelectedItem="{Binding SelectedIteration, Mode=TwoWay}"/>
         </Grid>
         <Grid  Grid.Row="1"  >
             <Grid.ColumnDefinitions>
