@@ -1,0 +1,50 @@
+﻿<ContentDialog
+    x:Class="SmartInkLaboratory.Views.Dialogs.OpenPackageDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SmartInkLaboratory.Views.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Open Package"
+    PrimaryButtonText="Open"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
+    PrimaryButtonCommand="{Binding SelectPackage}"
+    PrimaryButtonCommandParameter="{Binding ElementName=PackageList, Path=SelectedItem}"
+    DataContext="{Binding Source={StaticResource Locator}, Path=OpenPackage}">
+
+    <Grid  >
+      
+  
+        <!--<HyperlinkButton Content="Show All" Command="{Binding ShowAll}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>-->
+        <ListView x:Name="PackageList"  ItemsSource="{Binding Packages}" >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/> 
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                        <TextBlock Grid.Column="2" Text="{Binding Version}"/>
+                        <TextBlock Grid.Row="2"  Grid.ColumnSpan="3" Text="{Binding Description}" FontStyle="Italic"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+      
+    </Grid>
+</ContentDialog>

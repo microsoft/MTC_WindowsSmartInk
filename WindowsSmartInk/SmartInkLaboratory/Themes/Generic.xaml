@@ -1,0 +1,49 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SmartInkLaboratory"
+    xmlns:local2="using:SmartInkLaboratory.Views.Controls">
+
+    <Style TargetType="local2:SelectionList" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local2:SelectionList">
+                    
+                        <Grid x:Name="PART_MainGrid" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <FlyoutBase.AttachedFlyout>
+                                <Flyout x:Name="PART_Menu" Placement="Bottom">
+                                    <ListBox x:Name="PART_CommandList" SelectedItem="{TemplateBinding SelectedItem}" ItemsSource="{TemplateBinding ItemsSource}" ItemTemplate="{TemplateBinding ItemTemplate}" />
+                                </Flyout>
+                            </FlyoutBase.AttachedFlyout>
+                            <TextBlock Text="{TemplateBinding Label}" FontStyle="{TemplateBinding FontStyle}" 
+                                                                  FontFamily="{TemplateBinding FontFamily}"
+                                                                  FontSize="{TemplateBinding FontSize}"
+                                                                  Margin="0,0,10,0"
+                                                                  VerticalAlignment="{TemplateBinding VerticalAlignment}"/>
+                            <FontIcon x:Name="PART_DropDownIcon"  FontSize="{TemplateBinding FontSize}" Grid.Column="2"  Glyph="&#xE019;" VerticalAlignment="{TemplateBinding VerticalAlignment}" />
+                            <!--<TextBlock x:Name="PART_DisplayValue"
+                                   Grid.Column="1"
+                                   Margin="0,0,10,0"
+                                   VerticalAlignment="Bottom"
+                                   Foreground="{ThemeResource ListBoxItemSelectedBackgroundThemeBrush}"
+                                   Text="{TemplateBinding SelectedItem}" />-->
+                        <Border Grid.Column="1" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Padding="4" HorizontalAlignment="Stretch">
+                            <ContentPresenter x:Name="PART_SelectedItem" 
+                                   Margin="0,0,10,0"
+                                   VerticalAlignment="{TemplateBinding VerticalAlignment}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" ContentTemplate="{TemplateBinding ItemTemplate}" Content="{Binding ElementName=PART_CommandList,Path=SelectedItem}">
+
+                            </ContentPresenter>
+                        </Border>
+                    </Grid>
+                    
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

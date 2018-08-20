@@ -1,0 +1,86 @@
+﻿<UserControl
+    x:Class="SmartInkLaboratory.Views.UserControls.TestView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SmartInkLaboratory.Views.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ampControls="using:SmartInkLaboratory.Views.Controls"
+    xmlns:ampViews="using:AMP.Views"
+    xmlns:amp="using:AMP.Views.Triggers"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <UserControl.Resources>
+        <DataTemplate x:Key="IterationTemplate">
+            <Grid>
+                <TextBlock Text="{Binding Name}"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid DataContext="{Binding}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="PackageStates">
+                <VisualState x:Name="HasPackage">
+                    <VisualState.StateTriggers>
+                        <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="HasPackage" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PackageSelectBanner.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="NoPackage">
+                    <VisualState.StateTriggers>
+                        <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="NoPackage" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PackageSelectBanner.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Model Iteration:"/>
+            <ampControls:SelectionList Grid.Column="1" ItemTemplate="{StaticResource IterationTemplate}" x:Name="IterationList" ItemsSource="{Binding Iterations}"  SelectedItem="{Binding SelectedIteration, Mode=TwoWay}"/>
+        </Grid>
+        <Grid  Grid.Row="1"  >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock VerticalAlignment="Center"><Run Text="Target Tag: "/><Run Text="{Binding CurrentTag.Name}"/></TextBlock>
+            <CheckBox x:Name="DisplayIcon" Content="Replace with icon" IsChecked="True" Grid.Column="2"/>
+        </Grid>
+        <TextBlock Grid.Row="2"  ><Run Text="Tag Result: "/><Run x:Name="TagResult" Text="{Binding TagResult}"/></TextBlock>
+        <TextBlock Grid.Row="3" Text="Classifier Details:"  />
+        <Grid Grid.Row="4" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="AIResults" Text="{Binding EvaluationResult}"/>
+            <AppBarButton Command="{Binding UploadCorrection}" Label="Upload Correction" Icon="Accept" Grid.Column="2" VerticalAlignment="Top"/>
+            <AppBarButton Command="{Binding UploadCorrection}" Label="Download Model" Icon="Download" Grid.Column="2" VerticalAlignment="Bottom"/>
+        </Grid>
+        <Grid x:Name="PackageSelectBanner" Grid.RowSpan="5" Background="DarkGray">
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Select Package" />
+        </Grid>
+    </Grid>
+</UserControl>

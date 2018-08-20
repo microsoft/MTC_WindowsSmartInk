@@ -1,0 +1,190 @@
+﻿<ampViews:NavAwarePage 
+    xmlns:UserControls="using:SmartInkLaboratory.Views.UserControls" 
+    x:Class="SmartInkLaboratory.MainPage"
+    xmlns:ampViews="using:AMP.Views"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    xmlns:local="using:SmartInkLaboratory"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:SmartInkLaboratory.Views.Controls"
+    mc:Ignorable="d"
+    xmlns:helpers="using:SmartInkLaboratory.Views.Helpers"
+    RequestedTheme="Light"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <ampViews:NavAwarePage.DataContext>
+        <Binding Mode="OneWay" Path="Main" Source="{StaticResource Locator}"/>
+    </ampViews:NavAwarePage.DataContext>
+    <ampViews:NavAwarePage.Resources>
+        <DataTemplate x:Key="CategoryTemplate">
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Name}"/>
+                <Button Grid.Column="2" Background="Transparent" BorderBrush="Transparent" >
+                    <!-- Command="{Binding ElementName=TagList, Path=DataContext.ImageTags.DeleteTag}" CommandParameter="{Binding}" -->
+                    <SymbolIcon Symbol="Remove" />
+                </Button>
+            </Grid>
+        </DataTemplate>
+    </ampViews:NavAwarePage.Resources>
+
+    <RelativePanel Background="LightGray"  >
+        <Grid x:Name="ProjectPane"  Margin="20,20,20,20" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <AppBarButton Icon="Permissions" Label="Account Keys" AllowFocusOnInteraction="True">
+                    <AppBarButton.Flyout>
+                        <Flyout >
+                            <Grid DataContext="{Binding Source={StaticResource Locator}, Path=ResourceKeys}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="10"/>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="10"/>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Resource Name:" />
+                                <TextBox Grid.Column="2" Text="{Binding Resource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <TextBlock Grid.Row="2" Text="Training Key:"/>
+                                <TextBox   Grid.Row="2" Grid.Column="2" Width="300" Text="{Binding  TrainingKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Grid.Row="4" Text="Prediction Key:" />
+                                <TextBox   Grid.Row="4" Grid.Column="2"  Width="300" Text="{Binding PredictionKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Button    Grid.Row="6"   Content="Save" HorizontalAlignment="Left" Command="{Binding SaveKeys}"/>
+                                <HyperlinkButton Grid.Row="6"  Content="More..." HorizontalAlignment="Right" Command="{Binding More}"/>
+                            </Grid>
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+                <StackPanel Margin="0,8,0,0" >
+                    <TextBlock Text="Current Project:"/>
+                    <controls:SelectionList x:Name="ProjectSelectionList" DataContext="{Binding Source={StaticResource Locator}, Path=Projects}" 
+                                        ItemsSource="{Binding ProjectsList}" 
+                                        SelectedItem="{Binding CurrentProject}" 
+                                        VerticalAlignment="Center" 
+                                        MinWidth="150"
+                                        Command="{Binding SelectProject}"
+                                        CommandParameter="{Binding ElementName=ProjectSelectionList, Path=SelectedItem}"
+                                        >
+                        <controls:SelectionList.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </controls:SelectionList.ItemTemplate>
+                    </controls:SelectionList>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="2">
+                <AppBarButton x:Name="NewPackageButton" Label="New Package" Icon="NewFolder"  IsEnabled="{Binding IsReady}" AllowFocusOnInteraction="True" Command="{Binding NewPackage}">
+                    <!--<AppBarButton.Flyout>
+                        <Flyout Placement="Full" LightDismissOverlayMode="On" helpers:FlyoutHelpers.Parent="{Binding ElementName=NewPackageButton}" helpers:FlyoutHelpers.IsComplete="{Binding Source={StaticResource Locator}, Path=OpenPackage.IsComplete, Mode=TwoWay}">
+                            <Flyout.FlyoutPresenterStyle>
+                                <Style TargetType="FlyoutPresenter">
+                                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"></Setter>
+                                    <Setter Property="MinWidth" Value="800"/>
+                                </Style>
+                            </Flyout.FlyoutPresenterStyle>
+
+                            <UserControls:NewPackageView Width="600"  />
+                        </Flyout>
+                    </AppBarButton.Flyout>-->
+                </AppBarButton>
+                <AppBarButton x:Name="OpenPackageButton" Label="Open Package" Icon="OpenLocal" IsEnabled="{Binding IsReady}" Command="{Binding OpenPackage}">
+                  
+                </AppBarButton>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="4">
+                <AppBarButton Label="Manage Projects" Icon="Document" IsEnabled="{Binding IsReady}"/>
+            </StackPanel>
+        </Grid>
+     
+        <Border x:Name="inkBorder" BorderBrush="DarkGray" BorderThickness="2" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignBottomWithPanel="True" RelativePanel.Below="ProjectPane"  Margin="20,20,40,20">
+            <Grid MinWidth="1000">
+                <Canvas x:Name="iconCanvas"/>
+                <win2d:CanvasControl x:Name="win2dCanvas" CreateResources="Canvas_CreateResources"   Draw="Canvas_Draw" SizeChanged="Canvas_SizeChanged"/>
+
+                <InkCanvas x:Name="inkCanvas"    />
+                <HyperlinkButton Tapped="HyperlinkButton_Tapped" Foreground="Black" Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,20,0"/>
+
+            </Grid>
+        </Border>
+        <Grid x:Name="RightPane" MaxWidth="400" RelativePanel.RightOf="inkBorder"  RelativePanel.AlignTopWith="inkBorder" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignBottomWithPanel="True" Margin="0,0,20,40">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid x:Name="CategoryGrid"  DataContext="{Binding Source={StaticResource Locator}, Path=ImageTags}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                    
+                </Grid.RowDefinitions>
+                <Grid x:Name="CategoriesHeaderGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Categories" Style="{ThemeResource HeaderTextBlockStyle}" Grid.ColumnSpan="2" />
+                    <AppBarButton Grid.Column="2" Icon="Refresh" Label="Refresh" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="11,0,0,0" Foreground="DarkCyan" Command="{Binding  ImageTags.Refresh}"/>
+                </Grid>
+                <Grid x:Name="CategoryEntryGrid" Grid.Row="2"   >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <!--<ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="Auto"/>-->
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="NewCategory" MinWidth="150"  FontSize="16"/>
+                    <AppBarButton x:Name="AddCategoryButton" Grid.Column="1" Icon="Add" Label="Add" Command="{Binding AddTag}" CommandParameter="{Binding ElementName=NewCategory, Path=Text}" VerticalAlignment="Center"  />
+                    <!--<HyperlinkButton  Content="Clear" HorizontalAlignment="Right" Grid.Column="3" Command="{Binding ClearCategories}"  />-->
+                </Grid>
+                <ListView x:Name="TagList" MinHeight="300" Grid.Row="4" ItemsSource="{Binding Tags}" SelectedValue="{Binding CurrentTag, Mode=TwoWay}" ItemTemplate="{StaticResource CategoryTemplate}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+                </Grid>
+                <Pivot x:Name="Pivot" Grid.Row="2" SelectionChanged="Pivot_SelectionChanged" IsEnabled="{Binding HasPackage}">
+                    <PivotItem Header="IconMap">
+                        <UserControls:IconMapper DataContext="{Binding IconMap }"  />
+                    </PivotItem>
+                    <PivotItem Header="Train">
+                        <UserControls:TrainingView x:Name="Train" DataContext="{Binding Train}"/>
+                    </PivotItem>
+                <PivotItem Header="Package">
+                    <UserControls:PackageView DataContext="{Binding Package}"/>
+                </PivotItem>
+                <PivotItem Header="Test">
+                        <UserControls:TestView DataContext="{Binding Test}"/>
+                    </PivotItem>
+                   
+            </Pivot>
+        </Grid>
+    </RelativePanel>
+
+</ampViews:NavAwarePage>
