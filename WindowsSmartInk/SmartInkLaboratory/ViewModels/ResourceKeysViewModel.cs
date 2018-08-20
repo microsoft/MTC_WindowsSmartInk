@@ -158,10 +158,10 @@ namespace SmartInkLaboratory.ViewModels
 
             
             var last = ApplicationData.Current.LocalSettings.Values["LastResource"] as string;
-            if (last == null || _keys.Keys.Count == 0)
+            if ( _keys.Keys.Count == 0)
                 return;
 
-            if (!_keys.ContainsKey(last))
+            if (last == null || !_keys.ContainsKey(last))
                 last = savedKeys[0].Resource;
 
             var keys = SetKeys(last);
@@ -182,10 +182,6 @@ namespace SmartInkLaboratory.ViewModels
             return key;
         }
 
-        //protected override async Task InitializeAsync()
-        //{
-        //    Load();
-
-        //}
+       
     }
 }

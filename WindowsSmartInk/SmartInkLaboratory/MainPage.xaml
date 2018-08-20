@@ -176,9 +176,9 @@
                     <PivotItem Header="Train">
                         <UserControls:TrainingView x:Name="Train" DataContext="{Binding Train}"/>
                     </PivotItem>
-                <PivotItem Header="Package">
+                <!--<PivotItem Header="Package">
                     <UserControls:PackageView DataContext="{Binding Package}"/>
-                </PivotItem>
+                </PivotItem>-->
                 <PivotItem Header="Test">
                         <UserControls:TestView DataContext="{Binding Test}"/>
                     </PivotItem>

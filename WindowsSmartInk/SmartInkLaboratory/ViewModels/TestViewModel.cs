@@ -132,6 +132,8 @@ namespace SmartInkLaboratory.ViewModels
 
                 return _state.CurrentTag.Name != EvaluationResult;
             });
+
+            prediction.Initialize(_state.CurrentKeys.PredicationKey);
         }
 
         public async Task<(string, double)> ProcessInkImageAsync(WriteableBitmap bitmap)
