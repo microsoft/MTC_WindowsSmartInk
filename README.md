@@ -1,4 +1,16 @@
 
+# Windows Smart Ink (Alpha)
+A project that shows how to combine Microsoft's Custom Vision Service with Windows 10 Ink capabilities to create "smart ink".  Analyze ink strokes and classify the shapes to identify what the user is drawing.  Examples would be recoginizing product icons, technical diagrams components, etc.
+
+Trained models can be packaged and shared as Nuget packages (eventually).
+
+The project is currently comprised of two parts:
+## Micorosft.MTC.SmarkInk Library
+This library contains the components for creating, managing, utlizing and packaging smart ink models created using the Custom Vision Service.
+
+## SmartInkLaboratory
+Test harness for interacting with Custom Vision Service to train AI models to recognize ink patterns and to map ink patterns to icons/images.
+
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
