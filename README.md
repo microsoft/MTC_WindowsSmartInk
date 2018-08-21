@@ -5,7 +5,7 @@ A project that shows how to combine Microsoft's Custom Vision Service with Windo
 Trained models can be packaged and shared as Nuget packages (eventually).
 
 The project is currently comprised of two parts:
-## Micorosft.MTC.SmarkInk Library
+## Microsoft.MTC.SmarkInk Library
 This library contains the components for creating, managing, utlizing and packaging smart ink models created using the Custom Vision Service.
 
 ## SmartInkLaboratory
