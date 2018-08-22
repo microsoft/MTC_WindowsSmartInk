@@ -42,7 +42,7 @@
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel x:Name="ResourceProjectPanel" Orientation="Horizontal">
                 <AppBarButton Icon="Permissions" Label="Account Keys" AllowFocusOnInteraction="True">
                     <AppBarButton.Flyout>
                         <Flyout >
@@ -91,8 +91,9 @@
                         </controls:SelectionList.ItemTemplate>
                     </controls:SelectionList>
                 </StackPanel>
+                <HyperlinkButton Content="Manage..." Margin="20,0,0,0"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Column="2" DataContext="{Binding Source={StaticResource Locator},Path=Package}">
+            <StackPanel x:Name="PackagePanel" Orientation="Horizontal" Grid.Column="2" DataContext="{Binding Source={StaticResource Locator},Path=Package}">
                 <AppBarButton x:Name="NewPackageButton" Label="New Package" Icon="NewFolder"   AllowFocusOnInteraction="True" Command="{Binding NewPackage}">
                 
                 </AppBarButton>
@@ -103,9 +104,7 @@
 
                 </AppBarButton>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Column="4">
-                <AppBarButton Label="Manage Projects" Icon="Document" IsEnabled="{Binding IsReady}"/>
-            </StackPanel>
+          
         </Grid>
      
         <Border x:Name="inkBorder" BorderBrush="DarkGray" BorderThickness="2" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignBottomWithPanel="True" RelativePanel.Below="ProjectPane"  Margin="20,20,40,20">
