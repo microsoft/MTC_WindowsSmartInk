@@ -25,7 +25,9 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding Name}"/>
-                <Button Grid.Column="2" Background="Transparent" BorderBrush="Transparent"  >
+                <Button Grid.Column="2" Background="Transparent" BorderBrush="Transparent" 
+                         Command="{Binding ElementName=TagsListView, Path=DataContext.DeleteTag}"
+                                 CommandParameter="{Binding}" >
                     <SymbolIcon Symbol="Remove" />
                 </Button>
             </Grid>
@@ -154,7 +156,7 @@
                     <AppBarButton x:Name="AddCategoryButton" Grid.Column="1" Icon="Add" Label="Add" Command="{Binding AddTag}" CommandParameter="{Binding ElementName=NewCategory, Path=Text}" VerticalAlignment="Center"  />
                     <!--<HyperlinkButton  Content="Clear" HorizontalAlignment="Right" Grid.Column="3" Command="{Binding ClearCategories}"  />-->
                 </Grid>
-                <ListView x:Name="TagList" MinHeight="300" Grid.Row="4" ItemsSource="{Binding Tags}" SelectedValue="{Binding CurrentTag, Mode=TwoWay}" ItemTemplate="{StaticResource CategoryTemplate}">
+                <ListView x:Name="TagsListView" MinHeight="300" Grid.Row="4" ItemsSource="{Binding Tags}" SelectedValue="{Binding CurrentTag, Mode=TwoWay}" ItemTemplate="{StaticResource CategoryTemplate}">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
