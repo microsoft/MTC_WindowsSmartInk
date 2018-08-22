@@ -81,7 +81,8 @@ namespace SmartInkLaboratory.ViewModels
             };
 
             _state.TagChanged += async (s,e)=>{
-                await SetIconLocation(_state.CurrentTag.Id);
+                if (_state.CurrentTag != null)
+                    await SetIconLocation(_state.CurrentTag.Id);
                 OpenFile.RaiseCanExecuteChanged();
             };
 

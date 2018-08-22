@@ -9,11 +9,17 @@ using System.Threading.Tasks;
 
 namespace SmartInkLaboratory.Services
 {
+    public class TagDeletedEventArgs : EventArgs
+    {
+        public Tag DeletedTag { get; set; }
+    }
+
     public interface IAppStateService
     {
         event EventHandler KeysChanged;
         event EventHandler ProjectChanged;
         event EventHandler TagChanged;
+        event EventHandler<TagDeletedEventArgs> TagDeleted;
         event EventHandler PackageChanged;
         event EventHandler IconChanged;
 
@@ -23,5 +29,6 @@ namespace SmartInkLaboratory.Services
         SmartInkPackage CurrentPackage { get; set; }
 
         void IconUpdated();
+        void DeleteTag(Tag tag);
     }
 }

@@ -72,6 +72,7 @@ namespace SmartInkLaboratory.ViewModels
             });
             this.DeleteTag = new RelayCommand<Tag>(async (tag) => {
                 await _tagService.DeleteTagAsync(tag.Id);
+                _state.DeleteTag(tag);
                 Tags.Remove(tag);
 
             });

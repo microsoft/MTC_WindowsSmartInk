@@ -47,6 +47,11 @@ namespace SmartInkLaboratory.ViewModels
                 NewPackage.RaiseCanExecuteChanged();
             };
 
+            _state.TagDeleted += async (s, e) => {
+                if (_state.CurrentPackage != null)
+                    await _state.CurrentPackage.RemoveTagAsync(e.DeletedTag.Name);
+            };
+
             _state.PackageChanged += (s, e) => {
                 RaisePropertyChanged(nameof(CurrentPackage));
                 PublishPackage.RaiseCanExecuteChanged();

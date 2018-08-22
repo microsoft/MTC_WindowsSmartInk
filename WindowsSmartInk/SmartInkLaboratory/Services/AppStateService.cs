@@ -9,6 +9,7 @@ using Microsoft.Cognitive.CustomVision.Training.Models;
 
 namespace SmartInkLaboratory.Services
 {
+   
     public class AppStateService : IAppStateService
     {
         static ResourceKeys _currentKeys;
@@ -16,6 +17,13 @@ namespace SmartInkLaboratory.Services
         static SmartInkPackage _currentPackage;
         static Tag _currentTag;
         static IClassifierService _classifier;
+
+        public event EventHandler KeysChanged;
+        public event EventHandler ProjectChanged;
+        public event EventHandler TagChanged;
+        public event EventHandler<TagDeletedEventArgs> TagDeleted;
+        public event EventHandler PackageChanged;
+        public event EventHandler IconChanged;
 
         public ResourceKeys CurrentKeys {
             get => _currentKeys;
@@ -53,11 +61,7 @@ namespace SmartInkLaboratory.Services
             }
         }
 
-        public event EventHandler KeysChanged;
-        public event EventHandler ProjectChanged;
-        public event EventHandler TagChanged;
-        public event EventHandler PackageChanged;
-        public event EventHandler IconChanged;
+     
 
         public AppStateService(IClassifierService classifier)
         {
@@ -74,6 +78,14 @@ namespace SmartInkLaboratory.Services
         public void IconUpdated()
         {
             IconChanged?.Invoke(this, null);
+        }
+
+        public void DeleteTag(Tag tag)
+        {
+            if ( _currentTag?.Id == tag.Id)
+                CurrentTag = null;
+
+            TagDeleted?.Invoke(this, new TagDeletedEventArgs { DeletedTag = tag });
         }
     }
 }
