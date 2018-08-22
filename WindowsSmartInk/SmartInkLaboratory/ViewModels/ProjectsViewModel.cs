@@ -49,7 +49,8 @@ namespace SmartInkLaboratory.ViewModels
               
                 _state.CurrentProject = value;
                 ProjectChanged?.Invoke(this, new ProjectChangedEventArgs { NewProject = _state.CurrentProject });
-                _projects.OpenProject(_state.CurrentProject);
+                if (_state.CurrentProject != null)
+                    _projects.OpenProject(_state.CurrentProject);
               
                 RaisePropertyChanged(nameof(CurrentProject));
             }
@@ -86,6 +87,8 @@ namespace SmartInkLaboratory.ViewModels
             this.DeleteProject = new RelayCommand<Project>(async (project) => {
                 Debug.WriteLine($"Delete {project.Name}");
                 await _projects.DeleteProjectAsync(project.Id);
+                if (CurrentProject.Id == project.Id)
+                    CurrentProject = null;
                 ProjectsList.Remove(project);
             });
         }
