@@ -28,15 +28,27 @@ namespace SmartInkLaboratory.ViewModels
       
         public TrainViewModel Train { get; set; }
         public TestViewModel Test { get; set; }
- 
-
-      
-    
 
 
-   
 
-   
+        private bool _hasPackage;
+        public bool HasPackage
+        {
+            get { return _hasPackage; }
+            set
+            {
+                if (_hasPackage == value)
+                    return;
+                _hasPackage = value;
+                RaisePropertyChanged(nameof(HasPackage));
+            }
+        }
+
+
+
+
+
+
         public MainViewModel(IconMapViewModel iconMap,
                              TrainViewModel train,
                              TestViewModel test,
@@ -48,6 +60,11 @@ namespace SmartInkLaboratory.ViewModels
             Test = test;
             _state = state;
             _dialog = dialog;
+
+            _state.PackageChanged += (s, e) =>
+            {
+                HasPackage = _state.CurrentPackage != null;
+            };
          
         }
 
