@@ -70,6 +70,7 @@ namespace SmartInkLaboratory.ViewModels
 
                 _state.CurrentProject = project;
                 _state.CurrentPackage = null;
+                ApplicationData.Current.LocalSettings.Values["LastProject"] = _state.CurrentProject.Name;
             });
 
             this.CreateProject = new RelayCommand<string>(async(project) => {
@@ -85,8 +86,12 @@ namespace SmartInkLaboratory.ViewModels
             {
                 ProjectsList.Add(p);
             }
-
-            CurrentProject = (from p in projects select p).FirstOrDefault();
+            var last = ApplicationData.Current.LocalSettings.Values["LastProject"] as string;
+            var found = (last != null) ? (from p in projects where p.Name == last select p).FirstOrDefault() : null;
+            if (found == null)
+                CurrentProject = (from p in projects select p).FirstOrDefault();
+            else
+                CurrentProject = found;
         }
 
        
