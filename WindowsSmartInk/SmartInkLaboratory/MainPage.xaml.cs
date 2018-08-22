@@ -253,7 +253,7 @@ namespace SmartInkLaboratory
 
         private async Task<IStorageFile> GetIconFileAsync(string tagname)
         {
-            var tagVm = ((MainViewModel)this.DataContext).ImageTags;
+            var tagVm = CommonServiceLocator.ServiceLocator.Current.GetInstance<ImageTagsViewModel>();
             var iconVm = ((MainViewModel)this.DataContext).IconMap;
 
             var tag = await tagVm.GetTagByNameAsync(tagname);

@@ -159,7 +159,7 @@ namespace SmartInkLaboratory.ViewModels
 
         private async Task<string> CopyFileToLocalPackageFolder(IStorageFile file)
         {
-            var newfile = await file.CopyAsync(_storageFolder);
+            var newfile = await file.CopyAsync(_storageFolder,file.Name,NameCollisionOption.ReplaceExisting);
             return newfile.Name;
         }
 

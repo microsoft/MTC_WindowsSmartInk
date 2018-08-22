@@ -75,7 +75,7 @@ namespace SmartInkLaboratory.ViewModels
             });
 
             this.PublishPackage = new RelayCommand(async() => {
-                await _manager.PublishPackageAsync(_state.CurrentPackage.Name);
+                //await _manager.PublishPackageAsync(_state.CurrentPackage.Name);
             },
                 ()=> {
                     return _state.CurrentPackage != null; });

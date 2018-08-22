@@ -45,38 +45,8 @@
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <AppBarButton Icon="Permissions" Label="Account Keys" AllowFocusOnInteraction="True">
-                <AppBarButton.Flyout>
-                    <Flyout >
-                        <Grid DataContext="{Binding Source={StaticResource Locator}, Path=ResourceKeys}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition Height="10"/>
-                                <RowDefinition/>
-                                <RowDefinition Height="10"/>
-                                <RowDefinition/>
-                                <RowDefinition Height="20"/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="10"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Resource Name:" />
-                            <TextBox Grid.Column="2" Text="{Binding Resource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-                            <TextBlock Grid.Row="2" Text="Training Key:"/>
-                            <TextBox   Grid.Row="2" Grid.Column="2" Width="300" Text="{Binding  TrainingKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <TextBlock Grid.Row="4" Text="Prediction Key:" />
-                            <TextBox   Grid.Row="4" Grid.Column="2"  Width="300" Text="{Binding PredictionKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <Button    Grid.Row="6"   Content="Save" HorizontalAlignment="Left" Command="{Binding SaveKeys}"/>
-                            <HyperlinkButton Grid.Row="6"  Content="More..." HorizontalAlignment="Right" Command="{Binding More}"/>
-                        </Grid>
-                    </Flyout>
-                </AppBarButton.Flyout>
-            </AppBarButton>
-            <StackPanel x:Name="ResourceProjectPanel" Grid.Column="2" Orientation="Horizontal" DataContext="{Binding Source={StaticResource Locator}, Path=Projects}">
+           
+            <StackPanel x:Name="ProjectPanel" Grid.Column="2" Orientation="Horizontal" DataContext="{Binding Source={StaticResource Locator}, Path=Projects}">
                 
                 <StackPanel Margin="0,8,0,0"  >
                     <TextBlock Text="Current Project:"/>
@@ -108,7 +78,37 @@
 
                 </AppBarButton>
             </StackPanel>
-          
+            <AppBarButton Icon="Permissions" Label="Account Keys" AllowFocusOnInteraction="True">
+                <AppBarButton.Flyout>
+                    <Flyout >
+                        <Grid DataContext="{Binding Source={StaticResource Locator}, Path=ResourceKeys}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Resource Name:" />
+                            <TextBox Grid.Column="2" Text="{Binding Resource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Grid.Row="2" Text="Training Key:"/>
+                            <TextBox   Grid.Row="2" Grid.Column="2" Width="300" Text="{Binding  TrainingKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Grid.Row="4" Text="Prediction Key:" />
+                            <TextBox   Grid.Row="4" Grid.Column="2"  Width="300" Text="{Binding PredictionKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Button    Grid.Row="6"   Content="Save" HorizontalAlignment="Left" Command="{Binding SaveKeys}"/>
+                            <HyperlinkButton Grid.Row="6"  Content="More..." HorizontalAlignment="Right" Command="{Binding More}"/>
+                        </Grid>
+                    </Flyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
         </Grid>
      
         <Border x:Name="inkBorder" BorderBrush="DarkGray" BorderThickness="2" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignBottomWithPanel="True" RelativePanel.Below="ProjectPane"  Margin="20,20,40,20">

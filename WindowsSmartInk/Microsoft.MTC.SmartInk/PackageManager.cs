@@ -1,4 +1,5 @@
 ﻿using Micosoft.MTC.SmartInk.Package.Storage;
+using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -63,9 +64,20 @@ namespace Micosoft.MTC.SmartInk.Package
             return result;
         }
 
-        public async Task PublishPackageAsync(string packagename)
+        public async Task PublishPackageAsync(SmartInkPackage package, IStorageFile destination)
         {
+            if (package == null)
+                throw new ArgumentNullException($"{nameof(package)} cannot be null");
+
+
+            if (destination == null)
+                throw new ArgumentNullException($"{nameof(destination)} cannot be null");
+
+
             Debug.WriteLine($"Publish package");
+            var builder = new PackageBuilder();
+
+
         }
     }
 }

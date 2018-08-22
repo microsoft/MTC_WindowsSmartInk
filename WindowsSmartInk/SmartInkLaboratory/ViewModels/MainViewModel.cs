@@ -23,14 +23,12 @@ namespace SmartInkLaboratory.ViewModels
         private IAppStateService _state;
 
         public InteractionMode Mode { get; set; }
-        public PackageManagerViewModel Manager { get; private set; }
-        public ImageTagsViewModel ImageTags { get; set; }
+    
         public IconMapViewModel IconMap { get; set; }
-        public ProjectsViewModel Projects { get; set; }
-        public ResourceKeysViewModel ResourceKeys { get; set; }
+      
         public TrainViewModel Train { get; set; }
         public TestViewModel Test { get; set; }
-        public PackageViewModel Package { get; set; }
+ 
 
       
     
@@ -39,30 +37,17 @@ namespace SmartInkLaboratory.ViewModels
    
 
    
-        public MainViewModel(ImageTagsViewModel imageTags,
-                             IconMapViewModel iconMap,
-                             ProjectsViewModel projects,
-                             ResourceKeysViewModel resourceKeys,
+        public MainViewModel(IconMapViewModel iconMap,
                              TrainViewModel train,
                              TestViewModel test,
-                             PackageViewModel package,
-                          
                              IAppStateService state,
                              IDialogService dialog)
         {
-            ImageTags = imageTags;
             IconMap = iconMap;
-            Projects = projects;
-            ResourceKeys = resourceKeys;
             Train = train;
             Test = test;
-            Package = package;
             _state = state;
             _dialog = dialog;
-
-        
-         
-
          
         }
 
