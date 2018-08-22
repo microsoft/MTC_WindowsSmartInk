@@ -38,7 +38,7 @@ namespace SmartInkLaboratory.Services
         private async Task LoadTagsAsync()
         {
             var tags = await _trainingApi.GetTagsAsync(_currentProject.Id);
-            _tags = tags.Tags;
+            _tags = (from t in tags.Tags select t).OrderBy(t => t.Name).ToList();
         }
 
         public Task<Tag> GetTagAsync(string id, bool refresh = false)
