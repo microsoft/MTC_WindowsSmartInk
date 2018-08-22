@@ -37,46 +37,49 @@
         <Grid x:Name="ProjectPane"  Margin="20,20,20,20" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="40"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <StackPanel x:Name="ResourceProjectPanel" Orientation="Horizontal">
-                <AppBarButton Icon="Permissions" Label="Account Keys" AllowFocusOnInteraction="True">
-                    <AppBarButton.Flyout>
-                        <Flyout >
-                            <Grid DataContext="{Binding Source={StaticResource Locator}, Path=ResourceKeys}">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition Height="10"/>
-                                    <RowDefinition/>
-                                    <RowDefinition Height="10"/>
-                                    <RowDefinition/>
-                                    <RowDefinition Height="20"/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Resource Name:" />
-                                <TextBox Grid.Column="2" Text="{Binding Resource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <AppBarButton Icon="Permissions" Label="Account Keys" AllowFocusOnInteraction="True">
+                <AppBarButton.Flyout>
+                    <Flyout >
+                        <Grid DataContext="{Binding Source={StaticResource Locator}, Path=ResourceKeys}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Resource Name:" />
+                            <TextBox Grid.Column="2" Text="{Binding Resource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                                <TextBlock Grid.Row="2" Text="Training Key:"/>
-                                <TextBox   Grid.Row="2" Grid.Column="2" Width="300" Text="{Binding  TrainingKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Grid.Row="4" Text="Prediction Key:" />
-                                <TextBox   Grid.Row="4" Grid.Column="2"  Width="300" Text="{Binding PredictionKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <Button    Grid.Row="6"   Content="Save" HorizontalAlignment="Left" Command="{Binding SaveKeys}"/>
-                                <HyperlinkButton Grid.Row="6"  Content="More..." HorizontalAlignment="Right" Command="{Binding More}"/>
-                            </Grid>
-                        </Flyout>
-                    </AppBarButton.Flyout>
-                </AppBarButton>
-                <StackPanel Margin="0,8,0,0" >
+                            <TextBlock Grid.Row="2" Text="Training Key:"/>
+                            <TextBox   Grid.Row="2" Grid.Column="2" Width="300" Text="{Binding  TrainingKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Grid.Row="4" Text="Prediction Key:" />
+                            <TextBox   Grid.Row="4" Grid.Column="2"  Width="300" Text="{Binding PredictionKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Button    Grid.Row="6"   Content="Save" HorizontalAlignment="Left" Command="{Binding SaveKeys}"/>
+                            <HyperlinkButton Grid.Row="6"  Content="More..." HorizontalAlignment="Right" Command="{Binding More}"/>
+                        </Grid>
+                    </Flyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            <StackPanel x:Name="ResourceProjectPanel" Grid.Column="2" Orientation="Horizontal" DataContext="{Binding Source={StaticResource Locator}, Path=Projects}">
+                
+                <StackPanel Margin="0,8,0,0"  >
                     <TextBlock Text="Current Project:"/>
-                    <controls:SelectionList x:Name="ProjectSelectionList" DataContext="{Binding Source={StaticResource Locator}, Path=Projects}" 
+                    <controls:SelectionList x:Name="ProjectSelectionList" 
                                         ItemsSource="{Binding ProjectsList}" 
                                         SelectedItem="{Binding CurrentProject}" 
                                         VerticalAlignment="Center" 
@@ -91,9 +94,9 @@
                         </controls:SelectionList.ItemTemplate>
                     </controls:SelectionList>
                 </StackPanel>
-                <HyperlinkButton Content="Manage..." Margin="20,0,0,0"/>
+                <HyperlinkButton Content="Manage..." Margin="20,0,0,0" Command="{Binding ManageProjects}"/>
             </StackPanel>
-            <StackPanel x:Name="PackagePanel" Orientation="Horizontal" Grid.Column="2" DataContext="{Binding Source={StaticResource Locator},Path=Package}">
+            <StackPanel x:Name="PackagePanel" Orientation="Horizontal" Grid.Column="4" DataContext="{Binding Source={StaticResource Locator},Path=Package}">
                 <AppBarButton x:Name="NewPackageButton" Label="New Package" Icon="NewFolder"   AllowFocusOnInteraction="True" Command="{Binding NewPackage}">
                 
                 </AppBarButton>

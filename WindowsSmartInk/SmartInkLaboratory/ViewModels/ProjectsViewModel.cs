@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using SmartInkLaboratory.Services.UX;
 using SmartInkLaboratory.Services.Platform;
 using GalaSoft.MvvmLight;
+using System.Diagnostics;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -33,9 +34,9 @@ namespace SmartInkLaboratory.ViewModels
         public event EventHandler<ProjectChangedEventArgs> ProjectChanged;
         public event EventHandler<VisualStateEventArgs> VisualStateChanged;
 
-        public RelayCommand<Project> SelectProject { get; set; }
-        public RelayCommand<string> CreateProject { get; set; }
-
+        public RelayCommand<Project> SelectProject { get; private set; }
+        public RelayCommand<string> CreateProject { get; private set; }
+        public RelayCommand ManageProjects { get; private set; }
      
         public Project CurrentProject
         {
@@ -75,6 +76,9 @@ namespace SmartInkLaboratory.ViewModels
 
             this.CreateProject = new RelayCommand<string>(async(project) => {
                 await _projects.CreateProjectAsync(project);
+            });
+            this.ManageProjects = new RelayCommand(() => {
+                Debug.WriteLine($"Manager Projects");
             });
         }
 

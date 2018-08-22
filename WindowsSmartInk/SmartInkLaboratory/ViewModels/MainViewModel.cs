@@ -32,38 +32,13 @@ namespace SmartInkLaboratory.ViewModels
         public TestViewModel Test { get; set; }
         public PackageViewModel Package { get; set; }
 
-        private bool _isReady;
-        public bool IsReady
-        {
-            get { return _isReady; }
-            set
-            {
-                if (_isReady == value)
-                    return;
-                _isReady = value;
-                RaisePropertyChanged(nameof(IsReady));
-            }
-        }
-
-        private bool _hasPackage;
-        public bool HasPackage
-        {
-            get { return _hasPackage; }
-            set
-            {
-                if (_hasPackage == value)
-                    return;
-                _hasPackage = value;
-                RaisePropertyChanged(nameof(HasPackage));
-            }
-        }
+      
+    
 
 
    
 
-        public RelayCommand NewPackage { get; set; }
-        public RelayCommand OpenPackage { get; set; }
-
+   
         public MainViewModel(ImageTagsViewModel imageTags,
                              IconMapViewModel iconMap,
                              ProjectsViewModel projects,
@@ -85,18 +60,7 @@ namespace SmartInkLaboratory.ViewModels
             _state = state;
             _dialog = dialog;
 
-            IsReady = ResourceKeys.CurrentKeys != null;
-
-            _state.KeysChanged += (s, e) => {
-               IsReady = true;
-            };
-
-
-            
-
-            _state.PackageChanged += (s, e) => {
-                HasPackage = _state.CurrentPackage != null;
-            };
+        
          
 
          
