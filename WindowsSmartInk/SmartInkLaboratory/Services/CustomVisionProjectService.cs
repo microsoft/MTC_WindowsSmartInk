@@ -53,6 +53,9 @@ namespace SmartInkLaboratory.Services
             return _projects;
         }
 
-       
+       public  Task DeleteProjectAsync(Guid projectId)
+        {
+            return _trainingApi.DeleteProjectAsync(projectId);
+        }
     }
 }

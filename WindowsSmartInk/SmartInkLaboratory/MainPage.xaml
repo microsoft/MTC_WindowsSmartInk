@@ -25,8 +25,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding Name}"/>
-                <Button Grid.Column="2" Background="Transparent" BorderBrush="Transparent" >
-                    <!-- Command="{Binding ElementName=TagList, Path=DataContext.ImageTags.DeleteTag}" CommandParameter="{Binding}" -->
+                <Button Grid.Column="2" Background="Transparent" BorderBrush="Transparent"  >
                     <SymbolIcon Symbol="Remove" />
                 </Button>
             </Grid>

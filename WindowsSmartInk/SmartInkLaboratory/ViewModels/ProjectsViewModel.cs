@@ -15,6 +15,7 @@ using SmartInkLaboratory.Services.UX;
 using SmartInkLaboratory.Services.Platform;
 using GalaSoft.MvvmLight;
 using System.Diagnostics;
+using SmartInkLaboratory.Views.Dialogs;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -27,6 +28,7 @@ namespace SmartInkLaboratory.ViewModels
     {
         private IProjectService _projects;
         private IAppStateService _state;
+        private IDialogService _dialog;
 
         public ObservableCollection<Project> ProjectsList { get; private set; } = new ObservableCollection<Project>();
 
@@ -37,6 +39,7 @@ namespace SmartInkLaboratory.ViewModels
         public RelayCommand<Project> SelectProject { get; private set; }
         public RelayCommand<string> CreateProject { get; private set; }
         public RelayCommand ManageProjects { get; private set; }
+        public RelayCommand<Project> DeleteProject { get; private set; }
      
         public Project CurrentProject
         {
@@ -53,11 +56,11 @@ namespace SmartInkLaboratory.ViewModels
         }
 
 
-        public ProjectsViewModel(IProjectService projects, IAppStateService state)
+        public ProjectsViewModel(IProjectService projects, IAppStateService state, IDialogService dialog)
         {
             _projects = projects;
             _state = state;
-
+            _dialog = dialog;
 
 
             _state.KeysChanged += async (s,e) =>
@@ -77,8 +80,13 @@ namespace SmartInkLaboratory.ViewModels
             this.CreateProject = new RelayCommand<string>(async(project) => {
                 await _projects.CreateProjectAsync(project);
             });
-            this.ManageProjects = new RelayCommand(() => {
-                Debug.WriteLine($"Manager Projects");
+            this.ManageProjects = new RelayCommand(async () => {
+                await _dialog.OpenAsync(DialogKeys.ManageProjects,this);
+            });
+            this.DeleteProject = new RelayCommand<Project>(async (project) => {
+                Debug.WriteLine($"Delete {project.Name}");
+                await _projects.DeleteProjectAsync(project.Id);
+                ProjectsList.Remove(project);
             });
         }
 

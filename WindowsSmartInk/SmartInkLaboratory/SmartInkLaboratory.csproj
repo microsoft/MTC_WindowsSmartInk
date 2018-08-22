@@ -146,6 +146,9 @@
     <Compile Include="ViewModels\TrainViewModel.cs" />
     <Compile Include="Views\Controls\SelectionList.cs" />
     <Compile Include="Views\Dialogs\DialogKeys.cs" />
+    <Compile Include="Views\Dialogs\ManageProjectsDialog.xaml.cs">
+      <DependentUpon>ManageProjectsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\NewPackageDialog.xaml.cs">
       <DependentUpon>NewPackageDialog.xaml</DependentUpon>
     </Compile>
@@ -202,6 +205,10 @@
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialogs\ManageProjectsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dialogs\NewPackageDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

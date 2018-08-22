@@ -153,6 +153,7 @@ namespace SmartInkLaboratory.ViewModels
             dialogService.Register<ResourceListDialog>(DialogKeys.ResourceList);
             dialogService.Register<NewPackageDialog>(DialogKeys.NewPackage);
             dialogService.Register<OpenPackageDialog>(DialogKeys.OpenPackage);
+            dialogService.Register<ManageProjectsDialog>(DialogKeys.ManageProjects);
 
             return dialogService;
         }
