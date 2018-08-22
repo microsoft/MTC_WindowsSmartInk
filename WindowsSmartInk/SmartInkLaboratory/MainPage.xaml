@@ -92,23 +92,15 @@
                     </controls:SelectionList>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Column="2">
-                <AppBarButton x:Name="NewPackageButton" Label="New Package" Icon="NewFolder"  IsEnabled="{Binding IsReady}" AllowFocusOnInteraction="True" Command="{Binding NewPackage}">
-                    <!--<AppBarButton.Flyout>
-                        <Flyout Placement="Full" LightDismissOverlayMode="On" helpers:FlyoutHelpers.Parent="{Binding ElementName=NewPackageButton}" helpers:FlyoutHelpers.IsComplete="{Binding Source={StaticResource Locator}, Path=OpenPackage.IsComplete, Mode=TwoWay}">
-                            <Flyout.FlyoutPresenterStyle>
-                                <Style TargetType="FlyoutPresenter">
-                                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"></Setter>
-                                    <Setter Property="MinWidth" Value="800"/>
-                                </Style>
-                            </Flyout.FlyoutPresenterStyle>
-
-                            <UserControls:NewPackageView Width="600"  />
-                        </Flyout>
-                    </AppBarButton.Flyout>-->
+            <StackPanel Orientation="Horizontal" Grid.Column="2" DataContext="{Binding Source={StaticResource Locator},Path=Package}">
+                <AppBarButton x:Name="NewPackageButton" Label="New Package" Icon="NewFolder"   AllowFocusOnInteraction="True" Command="{Binding NewPackage}">
+                
                 </AppBarButton>
-                <AppBarButton x:Name="OpenPackageButton" Label="Open Package" Icon="OpenLocal" IsEnabled="{Binding IsReady}" Command="{Binding OpenPackage}">
+                <AppBarButton x:Name="OpenPackageButton" Label="Open Package" Icon="OpenLocal"  Command="{Binding OpenPackage}">
                   
+                </AppBarButton>
+                <AppBarButton x:Name="PublishPackageButton" Label="Publish Package" Icon="Library"  Command="{Binding PublishPackage}">
+
                 </AppBarButton>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Column="4">

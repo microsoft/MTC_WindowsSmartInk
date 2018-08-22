@@ -99,12 +99,7 @@ namespace SmartInkLaboratory.ViewModels
             };
          
 
-            this.NewPackage = new RelayCommand(async() => {
-                await _dialog.OpenAsync(DialogKeys.NewPackage);
-            });
-            this.OpenPackage = new RelayCommand(async() => {
-                await _dialog.OpenAsync(DialogKeys.OpenPackage);
-            });
+         
         }
 
         public async Task<(string tag, double probability)> ProcessInkImageAsync(WriteableBitmap bitmap)

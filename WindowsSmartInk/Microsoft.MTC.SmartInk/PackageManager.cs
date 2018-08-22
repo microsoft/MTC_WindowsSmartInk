@@ -1,6 +1,7 @@
 ﻿using Micosoft.MTC.SmartInk.Package.Storage;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -60,6 +61,11 @@ namespace Micosoft.MTC.SmartInk.Package
             }
 
             return result;
+        }
+
+        public async Task PublishPackageAsync(string packagename)
+        {
+            Debug.WriteLine($"Publish package");
         }
     }
 }
