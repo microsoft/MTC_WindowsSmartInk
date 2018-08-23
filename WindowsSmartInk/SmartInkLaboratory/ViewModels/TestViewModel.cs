@@ -92,6 +92,7 @@ namespace SmartInkLaboratory.ViewModels
         public ObservableCollection<Iteration> Iterations { get; set; } = new ObservableCollection<Iteration>();
 
         public RelayCommand UploadCorrection { get; set; }
+        public RelayCommand DownloadModel { get; private set; }
 
         public string CurrentVisualState => throw new NotImplementedException();
 
@@ -131,6 +132,14 @@ namespace SmartInkLaboratory.ViewModels
                     return false;
 
                 return _state.CurrentTag.Name != EvaluationResult;
+            });
+
+            this.DownloadModel = new RelayCommand(async() => {
+                var downloadUri = await _training.GetModuleDownloadUriAsync(SelectedIteration.Id);
+                if (downloadUri != null)
+                {
+                    await _state.CurrentPackage.DownloadModelAsync(downloadUri);
+                }
             });
 
             //prediction.Initialize(_state.CurrentKeys.PredicationKey);

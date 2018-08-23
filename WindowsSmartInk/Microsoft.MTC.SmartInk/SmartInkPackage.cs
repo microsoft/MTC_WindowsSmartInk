@@ -132,11 +132,12 @@ namespace Micosoft.MTC.SmartInk.Package
             if (modelUri == null)
                 throw new ArgumentNullException($"{nameof(modelUri)} canot be null");
 
-            if (!modelUri.IsFile)
-                throw new ArgumentOutOfRangeException($"{nameof(modelUri)} must be a file.");
+            //if (!modelUri.IsFile)
+            //    throw new ArgumentOutOfRangeException($"{nameof(modelUri)} must be a file.");
 
             var filename =  System.IO.Path.GetFileName(modelUri.LocalPath);
-            var tempFile = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync(filename);
+            
+            var tempFile = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
             BackgroundDownloader downloader = new BackgroundDownloader();
             var download = downloader.CreateDownload(modelUri, tempFile);
 

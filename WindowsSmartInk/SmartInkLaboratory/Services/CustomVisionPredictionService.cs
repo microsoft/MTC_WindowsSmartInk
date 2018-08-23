@@ -20,6 +20,7 @@ namespace SmartInkLaboratory.Services
             if (string.IsNullOrWhiteSpace(predictionKey))
                 throw new ArgumentNullException($"{nameof(predictionKey)} cannot be null or empty");
             _endpoint = new PredictionEndpoint() { ApiKey = predictionKey };
+            
         }
 
         public async Task<IList<(string tag,double probability)>> GetPrediction(Stream stream, Guid projectId, Guid? iterationId = null)

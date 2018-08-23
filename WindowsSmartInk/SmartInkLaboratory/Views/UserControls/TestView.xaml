@@ -77,7 +77,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="AIResults" Text="{Binding EvaluationResult}"/>
             <AppBarButton Command="{Binding UploadCorrection}" Label="Upload Correction" Icon="Accept" Grid.Column="2" VerticalAlignment="Top"/>
-            <AppBarButton Command="{Binding UploadCorrection}" Label="Download Model" Icon="Download" Grid.Column="2" VerticalAlignment="Bottom"/>
+            <AppBarButton Command="{Binding DownloadModel}" Label="Download Model" Icon="Download" Grid.Column="2" VerticalAlignment="Bottom"/>
         </Grid>
         <!--<Grid x:Name="PackageSelectBanner" Grid.RowSpan="5" Background="DarkGray">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Select Package" />

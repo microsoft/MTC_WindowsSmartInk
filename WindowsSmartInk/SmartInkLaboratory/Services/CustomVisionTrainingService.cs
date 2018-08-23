@@ -2,9 +2,12 @@
 using Microsoft.Rest;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Web.Http;
 
 namespace SmartInkLaboratory.Services
 {
@@ -22,6 +25,8 @@ namespace SmartInkLaboratory.Services
 
                 return null;
             }
+
+            
         }
 
         public  Task<Iteration> TrainAsync()
@@ -44,5 +49,31 @@ namespace SmartInkLaboratory.Services
                 }
             });
         }
+
+        public async Task<Uri> GetModuleDownloadUriAsync(Guid iterationId)
+        {
+            Export export;
+            try
+            {
+                var exports = (await _trainingApi.GetExportsWithHttpMessagesAsync(_currentProject.Id, iterationId)).Body;
+                if (exports.Count == 0)
+                    export = (await _trainingApi.ExportIterationWithHttpMessagesAsync(_currentProject.Id, iterationId, "onnx")).Body;
+                else
+                    export = exports[0];
+
+                var uri = new Uri(export.DownloadUri );
+                return uri;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        
+        }
+          
+            
+            
+        
     }
 }
