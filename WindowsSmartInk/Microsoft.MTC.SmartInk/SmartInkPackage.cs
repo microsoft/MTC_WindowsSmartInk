@@ -46,7 +46,7 @@ namespace Micosoft.MTC.SmartInk.Package
             _cts = new CancellationTokenSource();
         }
 
-        internal SmartInkPackage(IPackageStorageProvider provider, SmartInkManifest manifest)
+        internal SmartInkPackage(SmartInkManifest manifest,IPackageStorageProvider provider)
         {
             _provider = provider ?? throw new ArgumentNullException($"{nameof(provider)} cannot be null");
 
