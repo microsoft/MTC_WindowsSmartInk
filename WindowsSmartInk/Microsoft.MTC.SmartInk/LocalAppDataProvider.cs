@@ -76,7 +76,7 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
                 return new SmartInkPackage(packagename, await GetPackageStorageProviderAsync(packagename));
             var manifest = JsonConvert.DeserializeObject<SmartInkManifest>(json);
 
-            return new SmartInkPackage(packagename, await GetPackageStorageProviderAsync(packagename));
+            return new SmartInkPackage(manifest, await GetPackageStorageProviderAsync(packagename));
 
         }
 
