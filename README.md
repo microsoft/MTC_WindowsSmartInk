@@ -2,7 +2,7 @@
 # Windows Smart Ink (Alpha)
 A project that shows how to combine Microsoft's Custom Vision Service with Windows 10 Ink capabilities to create "smart ink".  Analyze ink strokes and classify the shapes to identify what the user is drawing.  Examples would be recoginizing product icons, technical diagrams components, etc.
 
-[![Demo Video](https://img.youtube.com/vi/5ht1CR8gm78/0.jpg)](https://www.youtube.com/watch?v=5ht1CR8gm78) 
+[![Demo Video](/README_Images/Demo_Video.PNG?raw=true)](https://www.youtube.com/watch?v=5ht1CR8gm78) 
 
 Trained models can be packaged and shared as Nuget packages (eventually).
 
