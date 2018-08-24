@@ -31,7 +31,6 @@ namespace SmartInkLaboratory.ViewModels
         IStorageFolder _storageFolder;
   
         private IImageService _images;
-        private IIconMappingService _mapper;
         private ITrainingService _train;
         private IAppStateService _state;
         //private Guid _currentProject;
@@ -112,10 +111,9 @@ namespace SmartInkLaboratory.ViewModels
 
         
 
-        public TrainViewModel(IImageService images, ITrainingService train, IIconMappingService mapper, IAppStateService state)
+        public TrainViewModel(IImageService images, ITrainingService train,  IAppStateService state)
         {
             _images = images;
-            _mapper = mapper;
             _train = train;
             _state = state;
             
@@ -191,18 +189,11 @@ namespace SmartInkLaboratory.ViewModels
 
         private async Task<IStorageFile> GetIconFileAsync(Guid currentTagId)
         {
-            IStorageFile file;
-            var icon = await _mapper.GetTagIconAsync(currentTagId);
-            if (string.IsNullOrWhiteSpace(icon))
-                file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Images/no_icon.png"));
-            else
-            {
-                if (_storageFolder == null)
-                    _storageFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(_state.CurrentPackage.Name, CreationCollisionOption.OpenIfExists);
-                file = await _storageFolder.GetFileAsync(icon);
-                
-            }
-            return file;
+            var icon = await _state.CurrentPackage.GetIconAsync(currentTagId);
+            if (icon == null)
+                icon = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Images/no_icon.png"));
+           
+            return icon;
         }
 
         private async Task LoadIconAsync(IStorageFile file)

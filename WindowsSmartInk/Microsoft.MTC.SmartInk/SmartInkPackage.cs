@@ -112,19 +112,43 @@ namespace Micosoft.MTC.SmartInk.Package
             if (file == null)
                 throw new ArgumentNullException($"{nameof(file)} canot be null.");
 
+            if (_manifest.IconMap.ContainsKey(tag))
+            {
+                await _provider.DeleteIconAsync(tag);
+                _manifest.IconMap[tag] = file.Name;
+            }
+            else
+                _manifest.IconMap.Add(tag, file.Name);
+
             await _provider.SaveIconAsync( file);
-            _manifest.IconMap.Add(tag, file.Name);
             _isDirty = true;
         }
 
-        public Task<IStorageFile> GetIconAsync(string tag)
+        public Task SaveIconAsync(Guid tagId, IStorageFile file)
+        {
+            if (tagId == Guid.Empty)
+                throw new ArgumentNullException($"{nameof(tagId)} cannot be null or empty.");
+            return SaveIconAsync(tagId.ToString(), file);
+        }
+
+        public async Task<IStorageFile> GetIconAsync(string tag)
         {
             if (string.IsNullOrWhiteSpace(tag))
                 throw new ArgumentNullException($"{nameof(tag)} cannot be null or empty.");
             if (!_manifest.IconMap.ContainsKey(tag) || string.IsNullOrWhiteSpace(_manifest.IconMap[tag]))
                 return null;
             
-            return _provider.GetIconAsync(_manifest.IconMap[tag]);
+            return await _provider.GetIconAsync(_manifest.IconMap[tag]);
+        }
+
+        public async Task<IStorageFile> GetIconAsync(Guid tagId)
+        {
+         
+            if (tagId == null || Guid.Empty == tagId)
+                throw new ArgumentNullException($"{nameof(tagId)} cannot be null or empty");
+
+            var icon = await GetIconAsync(tagId.ToString());
+            return icon;
         }
 
         public async Task DownloadModelAsync(Uri modelUri)

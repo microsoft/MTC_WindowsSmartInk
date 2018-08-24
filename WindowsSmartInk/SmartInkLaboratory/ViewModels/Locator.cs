@@ -40,7 +40,7 @@ namespace SmartInkLaboratory.ViewModels
             SimpleIoc.Default.Register<PackageViewModel>();
 
             SimpleIoc.Default.Register<IClassifierService, CustomVisionClassifierBaseService>();
-            SimpleIoc.Default.Register<IIconMappingService, LocalIconMappingService>();
+            //SimpleIoc.Default.Register<IIconMappingService, LocalIconMappingService>();
             SimpleIoc.Default.Register<ITagService, CustomVisionTagService>();
             SimpleIoc.Default.Register<IImageService, CustomVisionImageService>();
             SimpleIoc.Default.Register<ITrainingService, CustomVisionTrainingService>();

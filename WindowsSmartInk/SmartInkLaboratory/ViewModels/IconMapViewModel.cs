@@ -21,10 +21,10 @@ namespace SmartInkLaboratory.ViewModels
 {
     public class IconMapViewModel : ViewModelBase, IVisualState
     {
-        private IIconMappingService _iconMap;
+        //private IIconMappingService _iconMap;
         private IAppStateService _state;
 
-        private StorageFolder _storageFolder;
+        //private StorageFolder _storageFolder;
 
         public Tag CurrentTag
         {
@@ -62,21 +62,18 @@ namespace SmartInkLaboratory.ViewModels
 
         public string CurrentVisualState { get; private set; }
 
-        public IconMapViewModel(IIconMappingService iconMap, IAppStateService state)
+        public IconMapViewModel(IAppStateService state)
         {
-            _iconMap = iconMap;
             _state = state;
 
             _state.PackageChanged += async(s, e) => {
                 if (_state.CurrentPackage == null)
                 {
-                    await _iconMap.ClearIconMapAsync();
-                    _storageFolder = null;
+                    //_storageFolder = null;
                     VisualStateChanged.Invoke(this, new VisualStateEventArgs { NewState = "NoPackage" });
                     return;
                 }
-                await _iconMap.OpenAsync(_state.CurrentPackage.Name);
-                _storageFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(_state.CurrentPackage.Name, CreationCollisionOption.OpenIfExists);
+                //_storageFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(_state.CurrentPackage.Name, CreationCollisionOption.OpenIfExists);
                 VisualStateChanged.Invoke(this, new VisualStateEventArgs { NewState = "HasPackage" });
             };
 
@@ -98,9 +95,8 @@ namespace SmartInkLaboratory.ViewModels
                 var file = await picker.PickSingleFileAsync();
                 if (file != null)
                 {
-                    var newPath = await UpdateIconAsync(file);
-                    await _iconMap.AddTagIconAsync(CurrentTag.Id, newPath);
-                    _state.IconUpdated();
+                    await UpdateIconAsync(file);
+            
                 }
             },
             ()=> {
@@ -111,32 +107,28 @@ namespace SmartInkLaboratory.ViewModels
 
         public async Task<IStorageFile> GetIconFileAsync(Guid currentTagId)
         {
-            IStorageFile file;
-            var icon = await _iconMap.GetTagIconAsync(currentTagId);
-            if (string.IsNullOrWhiteSpace(icon))
-                file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Images/no_icon.png"));
-            else
-                file = await _storageFolder.GetFileAsync(icon);
-            return file;
+            var icon = await _state.CurrentPackage.GetIconAsync(currentTagId);
+            if (icon == null)
+                icon = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Images/no_icon.png"));
+
+            return icon;
         }
 
-        private async Task<string> UpdateIconAsync(IStorageFile file)
+        private async Task UpdateIconAsync(IStorageFile file)
         {
             if (file == null)
                 throw new ArgumentNullException($"{nameof(file)} cannot be null.");
 
             if (CurrentTag == null)
-                return null;
+                return;
 
 
-            if (_iconMap.Contains(CurrentTag.Id))
-            {
-                var oldFile = await _iconMap.GetTagIconAsync(CurrentTag.Id);
-                await DeleteOldIconAsync(oldFile);
-            }
+            
 
             await LoadIconAsync(file);
-            return await CopyFileToLocalPackageFolder(file);
+            _state.IconUpdated();
+            //return await CopyFileToLocalPackageFolder(file);
+            await _state.CurrentPackage.SaveIconAsync(CurrentTag.Id, file);
         }
 
         private async Task LoadIconAsync(IStorageFile file)
@@ -157,15 +149,11 @@ namespace SmartInkLaboratory.ViewModels
             await file.DeleteAsync();
         }
 
-        private async Task<string> CopyFileToLocalPackageFolder(IStorageFile file)
-        {
-            var newfile = await file.CopyAsync(_storageFolder,file.Name,NameCollisionOption.ReplaceExisting);
-            return newfile.Name;
-        }
+     
 
         private async Task SetIconLocation(Guid currentTagId)
         {
-            IStorageFile file = await GetIconFileAsync(currentTagId);
+            var file = await GetIconFileAsync(currentTagId);
 
             await LoadIconAsync(file);
         }
