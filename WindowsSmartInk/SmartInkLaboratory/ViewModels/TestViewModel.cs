@@ -145,7 +145,7 @@ namespace SmartInkLaboratory.ViewModels
             //prediction.Initialize(_state.CurrentKeys.PredicationKey);
         }
 
-        public async Task<(string, double)> ProcessInkImageAsync(WriteableBitmap bitmap)
+        public async Task<IList<(string, double)>> ProcessInkImageAsync(WriteableBitmap bitmap)
         {
             try
             {
@@ -155,13 +155,13 @@ namespace SmartInkLaboratory.ViewModels
                     await bitmap.ToStream(memStream, BitmapEncoder.PngEncoderId);
                     var result = await _prediction.GetPrediction(memStream.AsStreamForRead(), _state.CurrentProject.Id, SelectedIteration.Id);
                     ProcessModelOutput(result);
-                    return (result[0].tag, result[0].probability);
+                    return result;
                 }
             }
             catch (Exception ex)
             {
 
-                return (null, 0);
+                return null;
             }
         }
 

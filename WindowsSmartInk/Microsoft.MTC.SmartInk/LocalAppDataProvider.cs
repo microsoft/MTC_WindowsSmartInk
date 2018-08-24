@@ -189,7 +189,7 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
                 throw new ArgumentNullException($"{nameof(manifest)} cannot be null");
 
             var json = JsonConvert.SerializeObject(manifest);
-            var file = await _root.CreateFileAsync("manifest.json");
+            var file = await _root.CreateFileAsync("manifest.json", CreationCollisionOption.ReplaceExisting);
             await FileIO.WriteTextAsync(file, json);
         }
 

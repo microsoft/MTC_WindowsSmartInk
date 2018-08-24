@@ -96,7 +96,7 @@ namespace SmartInkLaboratory.ViewModels
                 if (file != null)
                 {
                     await UpdateIconAsync(file);
-            
+                    await _state.CurrentPackage.SaveAsync();
                 }
             },
             ()=> {

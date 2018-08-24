@@ -1,7 +1,7 @@
 ﻿
 using SmartInkLaboratory.ViewModels;
 using AMP.Views;
-
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -81,8 +81,18 @@ namespace SmartInkLaboratory
                 var boundingBox = GetBoundingBox(_sessionStrokes);
                 var bitmap = GetInkBitmap(boundingBox);
                 var result = await _dataContextViewModel.ProcessInkImageAsync(bitmap);
-                if (!string.IsNullOrWhiteSpace(result.tag))
-                    await PlaceIconAsync(result.tag, result.probability, boundingBox);
+
+                var top = (from r in result where r.probability <= 0.6 select r).ToArray();
+                if (top?.Count() != 0)
+                {
+                    if (top[0].tag.ToLower() != "other")
+                        await PlaceIconAsync(top[0].tag, top[0].probability, boundingBox);
+                    else
+                        await PlaceIconAsync(top[1].tag, top[0].probability, boundingBox);
+                        
+                }
+                //if (!string.IsNullOrWhiteSpace(result.tag))
+                //    await PlaceIconAsync(result.tag, result.probability, boundingBox);
                
                 _sessionStrokes.Clear();
                 win2dCanvas.Invalidate();
@@ -130,7 +140,7 @@ namespace SmartInkLaboratory
         private async Task PlaceIconAsync(string tag, double probability, Rect boundingBox)
         {
             Debug.WriteLine($"tag: {tag} rating: {probability}");
-            if (tag == "other" || probability< 0.50)
+            if (tag == "other")
             {
                 foreach (var stroke in _sessionStrokes)
                     _allStrokes.Add(stroke);
@@ -227,30 +237,7 @@ namespace SmartInkLaboratory
             return _boundingBox;
         }
 
-        private  async Task<IStorageFile> SaveBitmapAsync(WriteableBitmap cropped)
-        {
-            StorageFolder pictureFolder = await KnownFolders.PicturesLibrary.CreateFolderAsync("SmartInkLaboratory", CreationCollisionOption.OpenIfExists);
-            var projectFolder = await pictureFolder.CreateFolderAsync(_currentProject, CreationCollisionOption.OpenIfExists);
-            var tagFolder = await projectFolder.CreateFolderAsync(_currentTag, CreationCollisionOption.OpenIfExists);
-            var savefile = await tagFolder.CreateFileAsync($"{Guid.NewGuid().ToString()}.jpg", CreationCollisionOption.ReplaceExisting);
-            if (cropped.PixelHeight < 256 || cropped.PixelWidth < 256)
-            {
-                var height = cropped.PixelHeight < 256 ? 256 : cropped.PixelHeight; ;
-                var width = cropped.PixelWidth < 256 ? 256 : cropped.PixelWidth;
-                cropped = cropped.Resize(width, height, WriteableBitmapExtensions.Interpolation.Bilinear);
-            }
-
-            using (IRandomAccessStream stream = await savefile.OpenAsync(FileAccessMode.ReadWrite))
-            {
-                await cropped.ToStreamAsJpeg(stream);
-                await stream.FlushAsync();
-                
-            }
-
-            return savefile;
-           
-        }
-
+       
         private async Task<IStorageFile> GetIconFileAsync(string tagname)
         {
             var tagVm = CommonServiceLocator.ServiceLocator.Current.GetInstance<ImageTagsViewModel>();
@@ -266,58 +253,7 @@ namespace SmartInkLaboratory
             return null;
         }
 
-        private async Task<(string tag,float rating)> EvaluateBitmapAsync(WriteableBitmap inkImage)
-        {
-            SoftwareBitmap evaluate = SoftwareBitmap.CreateCopyFromBuffer(
-                    inkImage.PixelBuffer,
-                    BitmapPixelFormat.Bgra8,
-                    inkImage.PixelWidth,
-                    inkImage.PixelHeight
-                );
 
-            var videoFrame = VideoFrame.CreateWithSoftwareBitmap(evaluate);
-            try
-            {
-                if (videoFrame != null)
-                {
-                    ModelInput inputData = new ModelInput();
-                    inputData.data = videoFrame;
-                    if (_inkModel == null)
-                    {
-                        var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///AI/azureicons.onnx"));
-                        _inkModel = await InkModel.CreateModel(file, new Dictionary<string, float>()
-                                                                                    {
-                                                                                        { "aad", float.NaN },
-                                                                                        { "api_app", float.NaN },
-                                                                                        { "api_mgmt", float.NaN },
-                                                                                        { "asa", float.NaN },
-                                                                                        { "bot_services", float.NaN },
-                                                                                        { "cosmos_db", float.NaN },
-                                                                                        { "event_hub", float.NaN },
-                                                                                        { "function", float.NaN },
-                                                                                        { "iot_hub", float.NaN },
-                                                                                        { "key_vault", float.NaN },
-                                                                                        { "other", float.NaN },
-                                                                                        { "service_fabric", float.NaN },
-                                                                                        { "sql", float.NaN },
-                                                                                        { "web_app", float.NaN },
-                                                                                         //{ "not_icon", float.NaN },
-                        });
-                    }
-                    var evalOutput = await _inkModel.EvaluateAsync(inputData);
-                    
-                    return (evalOutput.classLabel[0], evalOutput.loss[evalOutput.classLabel[0]]);
-                 
-                }
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-                return (null,-1);
-        }
         private void HyperlinkButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             ClearInkSurface();

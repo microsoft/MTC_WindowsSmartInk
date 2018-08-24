@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Micosoft.MTC.SmartInk.Package;
+using System.Collections.Generic;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -68,12 +69,12 @@ namespace SmartInkLaboratory.ViewModels
          
         }
 
-        public async Task<(string tag, double probability)> ProcessInkImageAsync(WriteableBitmap bitmap)
+        public async Task<IList<(string tag, double probability)>> ProcessInkImageAsync(WriteableBitmap bitmap)
         {
             switch (Mode)
             {
                 case InteractionMode.Mapping:
-                    return (null,0);
+                    return null;
                 case InteractionMode.Training:
                     return await Train.ProcessInkImageAsync(bitmap);
                 case InteractionMode.Testing:
@@ -82,7 +83,7 @@ namespace SmartInkLaboratory.ViewModels
                     break;
             }
 
-            return (null, 0);
+            return null;
         }
 
        

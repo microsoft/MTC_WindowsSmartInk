@@ -157,12 +157,12 @@ namespace SmartInkLaboratory.ViewModels
             _dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         }
 
-        public async Task<(string tag,double probability)> ProcessInkImageAsync(WriteableBitmap bitmap)
+        public async Task<IList<(string, double)>> ProcessInkImageAsync(WriteableBitmap bitmap)
         {
            
             InkDrawing = bitmap;
             await  SaveBitmapAsync(bitmap);
-            return (null, 0);
+            return null;
         }
         private  async Task SaveBitmapAsync(WriteableBitmap cropped)
         {
