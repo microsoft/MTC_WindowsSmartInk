@@ -86,6 +86,11 @@ namespace SmartInkLaboratory.ViewModels
             });
             this.DeleteProject = new RelayCommand<Project>(async (project) => {
                 Debug.WriteLine($"Delete {project.Name}");
+                var confirm = await _dialog.ConfirmAsync("Confirm", $"Are you sure you want to delete {project.Name}?", "Yes", "No");
+
+                if (!confirm)
+                    return;
+
                 await _projects.DeleteProjectAsync(project.Id);
                 if (CurrentProject.Id == project.Id)
                     CurrentProject = null;

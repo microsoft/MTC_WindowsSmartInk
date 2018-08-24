@@ -82,23 +82,24 @@ namespace SmartInkLaboratory
                 var bitmap = GetInkBitmap(boundingBox);
                 var result = await _dataContextViewModel.ProcessInkImageAsync(bitmap);
 
-                var top = (from r in result where r.probability <= 0.6 select r).ToArray();
+                var top = (from r in result where r.probability >= 0.6 select r).ToArray();
                 if (top?.Count() != 0)
                 {
                     if (top[0].tag.ToLower() != "other")
                         await PlaceIconAsync(top[0].tag, top[0].probability, boundingBox);
                     else
-                        await PlaceIconAsync(top[1].tag, top[0].probability, boundingBox);
+                    {
+                        if (top.Count() > 1)
+                            await PlaceIconAsync(top[1].tag, top[1].probability, boundingBox);
+                        else
+                            await PlaceIconAsync(top[0].tag, top[0].probability, boundingBox);
+                    }
                         
                 }
-                //if (!string.IsNullOrWhiteSpace(result.tag))
-                //    await PlaceIconAsync(result.tag, result.probability, boundingBox);
                
                 _sessionStrokes.Clear();
                 win2dCanvas.Invalidate();
             };
-
-            
 
             inkCanvas.InkPresenter.StrokeInput.StrokeStarted += (s, e) =>
             {
