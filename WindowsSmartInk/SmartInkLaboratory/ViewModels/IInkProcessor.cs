@@ -9,6 +9,6 @@ namespace SmartInkLaboratory.ViewModels
 {
     public interface IInkProcessor
     {
-        Task<IList<(string tag, double probability)>> ProcessInkImageAsync(WriteableBitmap bitmap);
+        Task<IDictionary<string, float >> ProcessInkImageAsync(WriteableBitmap bitmap);
     }
 }

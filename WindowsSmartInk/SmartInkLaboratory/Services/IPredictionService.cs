@@ -7,7 +7,7 @@ namespace SmartInkLaboratory.Services
 {
     public interface IPredictionService
     {
-        Task<IList<(string tag, double probability)>> GetPrediction(Stream stream, Guid projectId, Guid? iterationId = null);
+        Task<IDictionary<string , float >> GetPrediction(Stream stream, Guid projectId, Guid? iterationId = null);
         void Initialize(string predictionKey);
     }
 }

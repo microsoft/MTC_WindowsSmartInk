@@ -69,7 +69,7 @@ namespace SmartInkLaboratory.ViewModels
          
         }
 
-        public async Task<IList<(string tag, double probability)>> ProcessInkImageAsync(WriteableBitmap bitmap)
+        public async Task<IDictionary<string , float>> ProcessInkImageAsync(WriteableBitmap bitmap)
         {
             switch (Mode)
             {

@@ -145,7 +145,7 @@ namespace SmartInkLaboratory.ViewModels
             //prediction.Initialize(_state.CurrentKeys.PredicationKey);
         }
 
-        public async Task<IList<(string, double)>> ProcessInkImageAsync(WriteableBitmap bitmap)
+        public async Task<IDictionary<string, float>> ProcessInkImageAsync(WriteableBitmap bitmap)
         {
             try
             {
@@ -165,13 +165,13 @@ namespace SmartInkLaboratory.ViewModels
             }
         }
 
-        private void ProcessModelOutput(IList<(string tag, double probability)> output)
+        private void ProcessModelOutput(IDictionary<string , float > output)
         {
-            TagResult = output[0].tag;
+            TagResult = output.Keys.ToList()[0];
             var evalResult = string.Empty;
             foreach (var item in output)
             {
-                evalResult += $"{item.tag} [{item.probability}]{Environment.NewLine}";
+                evalResult += $"{item.Key} [{item.Value}]{Environment.NewLine}";
             }
 
             EvaluationResult = evalResult;

@@ -23,9 +23,9 @@ namespace SmartInkLaboratory.Services
             
         }
 
-        public async Task<IList<(string tag,double probability)>> GetPrediction(Stream stream, Guid projectId, Guid? iterationId = null)
+        public async Task<IDictionary<string,float >> GetPrediction(Stream stream, Guid projectId, Guid? iterationId = null)
         {
-            var predictions = new List<(string, double)>();
+            var predictions = new Dictionary<string, float>();
             try
             {
 
@@ -35,7 +35,8 @@ namespace SmartInkLaboratory.Services
                 
                 foreach (var t in tags)
                 {
-                    predictions.Add((t.Tag, t.Probability));
+                    predictions.Add(t.Tag, (float) t.Probability);
+                        
                 }
                 return predictions;
             }
