@@ -12,6 +12,7 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
         Task<IStorageFile> GetIconAsync(string tag);
         Task DeleteIconAsync(string icon);
         Task SaveModelAsync(IStorageFile model);
+        Task<IStorageFile> GetModelAsync(string filename);
         Task SaveManifestAsync(SmartInkManifest manifest);
         Task<SmartInkManifest> GetManifestAsync();
     }

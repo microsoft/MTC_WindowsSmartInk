@@ -21,6 +21,33 @@
 
     <Grid DataContext="{Binding}">
         <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="DownloadStates">
+                <VisualState x:Name="DownloadStarted">
+                    <VisualState.StateTriggers>
+                        <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="DownloadStarted" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DownloadProgressBar.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="DownloadCompleted">
+                    <VisualState.StateTriggers>
+                        <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="DownloadCompleted" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DownloadProgressBar.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="DownloadError">
+                    <VisualState.StateTriggers>
+                        <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="DownloadError" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DownloadProgressBar.Foreground" Value="Red"/>
+                        <Setter Target="DownloadProgressBar.Value" Value="100"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
             <!--<VisualStateGroup x:Name="PackageStates">
                 <VisualState x:Name="HasPackage">
                     <VisualState.StateTriggers>
@@ -46,7 +73,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
-
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -82,5 +109,6 @@
         <!--<Grid x:Name="PackageSelectBanner" Grid.RowSpan="5" Background="DarkGray">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Select Package" />
         </Grid>-->
+        <ProgressBar x:Name="DownloadProgressBar" Grid.Row="4" Value="{Binding DownloadProgress}" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="#FF2EFF00"/>
     </Grid>
 </UserControl>

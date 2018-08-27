@@ -183,6 +183,21 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
             await model.CopyAsync(folder, model.Name, NameCollisionOption.ReplaceExisting);
         }
 
+        public async Task<IStorageFile> GetModelAsync(string filename)
+        {
+            try
+            {
+                var folder = await _root.GetFolderAsync("Model");
+                return await folder.GetFileAsync(filename);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            
+
+        }
+
         public async Task SaveManifestAsync(SmartInkManifest manifest)
         {
             if (manifest == null)
