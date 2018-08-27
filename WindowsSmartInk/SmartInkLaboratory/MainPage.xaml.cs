@@ -53,16 +53,9 @@ namespace SmartInkLaboratory
     /// </summary>
     public sealed partial class MainPage : NavAwarePage
     {
-        private string _currentProject;
-        private string _currentTag;
-
         DispatcherTimer _timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(750) };
         List<InkStroke> _sessionStrokes = new List<InkStroke>();
         List<InkStroke> _allStrokes = new List<InkStroke>();
-        private InteractionMode _interactionMode;
-        private InkModel _inkModel;
-
-     
 
         private InkSynchronizer _inkSync;
         IReadOnlyList<InkStroke> _pendingDry;
@@ -75,7 +68,6 @@ namespace SmartInkLaboratory
             this.InitializeComponent();
 
             _timer.Tick += async (s, e) => {
-                //_inkSync.EndDry();
                 _timer.Stop();
                 Debug.WriteLine($"finished");
                 var boundingBox = GetBoundingBox(_sessionStrokes);
