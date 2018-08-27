@@ -158,7 +158,7 @@ namespace SmartInkLaboratory.ViewModels
             _dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         }
 
-        public async Task<IList<(string, double)>> ProcessInkImageAsync(SoftwareBitmap bitmap)
+        public async Task<IDictionary<string, float>> ProcessInkImageAsync(SoftwareBitmap bitmap)
         {
             if (_state.CurrentTag == null)
                 return null;

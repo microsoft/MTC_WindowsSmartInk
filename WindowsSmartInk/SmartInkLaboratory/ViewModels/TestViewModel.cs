@@ -143,7 +143,7 @@ namespace SmartInkLaboratory.ViewModels
 
         }
 
-        public async Task<IList<(string, double)>> ProcessInkImageAsync(SoftwareBitmap bitmap)
+        public async Task<IDictionary<string, float>> ProcessInkImageAsync(SoftwareBitmap bitmap)
         {
             try
             {
@@ -168,13 +168,13 @@ namespace SmartInkLaboratory.ViewModels
             }
         }
 
-        private void ProcessModelOutput(IList<(string tag, double probability)> output)
+        private void ProcessModelOutput(IDictionary<string,float> output)
         {
-            TagResult = output[0].tag;
+            TagResult = output.Keys.ToList()[0];
             var evalResult = string.Empty;
             foreach (var item in output)
             {
-                evalResult += $"{item.tag} [{item.probability}]{Environment.NewLine}";
+                evalResult += $"{item.Key} [{item.Value}]{Environment.NewLine}";
             }
 
             EvaluationResult = evalResult;

@@ -76,17 +76,17 @@ namespace SmartInkLaboratory
 
                 if (result != null)
                 {
-                    var top = (from r in result where r.probability >= 0.6 select r).ToArray();
+                    var top = (from r in result where r.Value >= 0.6 select r).ToArray();
                     if (top?.Count() != 0)
                     {
-                        if (top[0].tag.ToLower() != "other")
-                            await PlaceIconAsync(top[0].tag, top[0].probability, boundingBox);
+                        if (top[0].Key.ToLower() != "other")
+                            await PlaceIconAsync(top[0].Key, top[0].Value, boundingBox);
                         else
                         {
                             if (top.Count() > 1)
-                                await PlaceIconAsync(top[1].tag, top[1].probability, boundingBox);
+                                await PlaceIconAsync(top[1].Key, top[1].Value, boundingBox);
                             else
-                                await PlaceIconAsync(top[0].tag, top[0].probability, boundingBox);
+                                await PlaceIconAsync(top[0].Key, top[0].Value, boundingBox);
                         }
 
                     }
