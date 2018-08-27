@@ -143,14 +143,19 @@ namespace SmartInkLaboratory.ViewModels
 
         }
 
-        public async Task<IList<(string, double)>> ProcessInkImageAsync(WriteableBitmap bitmap)
+        public async Task<IList<(string, double)>> ProcessInkImageAsync(SoftwareBitmap bitmap)
         {
             try
             {
                 using (var memStream = new InMemoryRandomAccessStream())
                 {
 
-                    await bitmap.ToStream(memStream, BitmapEncoder.PngEncoderId);
+                    BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, memStream);
+
+                    // Set the software bitmap
+                    encoder.SetSoftwareBitmap(bitmap);
+
+                    await encoder.FlushAsync();
                     var result = await _prediction.GetPrediction(memStream.AsStreamForRead(), _state.CurrentProject.Id, SelectedIteration.Id);
                     ProcessModelOutput(result);
                     return result;

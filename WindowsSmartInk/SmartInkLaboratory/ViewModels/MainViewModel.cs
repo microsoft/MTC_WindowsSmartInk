@@ -15,6 +15,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using Micosoft.MTC.SmartInk.Package;
 using System.Collections.Generic;
+using Windows.Graphics.Imaging;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -69,7 +70,7 @@ namespace SmartInkLaboratory.ViewModels
          
         }
 
-        public async Task<IList<(string tag, double probability)>> ProcessInkImageAsync(WriteableBitmap bitmap)
+        public async Task<IList<(string tag, double probability)>> ProcessInkImageAsync(SoftwareBitmap bitmap)
         {
             switch (Mode)
             {

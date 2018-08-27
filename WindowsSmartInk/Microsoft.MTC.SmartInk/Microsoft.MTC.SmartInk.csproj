@@ -107,7 +107,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="InkModel.cs" />
-    <Compile Include="IPackageStorageFolder.cs" />
     <Compile Include="IPackageStorageProvider.cs" />
     <Compile Include="LocalAppDataProvider.cs" />
     <Compile Include="PackageManager.cs" />
