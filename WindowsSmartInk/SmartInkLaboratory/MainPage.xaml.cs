@@ -74,19 +74,22 @@ namespace SmartInkLaboratory
                 var bitmap = GetInkBitmap(boundingBox);
                 var result = await _dataContextViewModel.ProcessInkImageAsync(bitmap);
 
-                var top = (from r in result where r.probability >= 0.6 select r).ToArray();
-                if (top?.Count() != 0)
+                if (result != null)
                 {
-                    if (top[0].tag.ToLower() != "other")
-                        await PlaceIconAsync(top[0].tag, top[0].probability, boundingBox);
-                    else
+                    var top = (from r in result where r.probability >= 0.6 select r).ToArray();
+                    if (top?.Count() != 0)
                     {
-                        if (top.Count() > 1)
-                            await PlaceIconAsync(top[1].tag, top[1].probability, boundingBox);
-                        else
+                        if (top[0].tag.ToLower() != "other")
                             await PlaceIconAsync(top[0].tag, top[0].probability, boundingBox);
+                        else
+                        {
+                            if (top.Count() > 1)
+                                await PlaceIconAsync(top[1].tag, top[1].probability, boundingBox);
+                            else
+                                await PlaceIconAsync(top[0].tag, top[0].probability, boundingBox);
+                        }
+
                     }
-                        
                 }
                
                 _sessionStrokes.Clear();
@@ -194,7 +197,7 @@ namespace SmartInkLaboratory
             win2dCanvas.Invalidate();
         }
 
-        private  WriteableBitmap GetInkBitmap(Rect boundingBox)
+        private  SoftwareBitmap GetInkBitmap(Rect boundingBox)
         {
             WriteableBitmap bitmap = null;
             CanvasDevice device = CanvasDevice.GetSharedDevice();
@@ -213,7 +216,15 @@ namespace SmartInkLaboratory
                 bitmap = writeableBitmap.Crop(boundingBox);
             }
 
-            return bitmap;
+            SoftwareBitmap outputBitmap = SoftwareBitmap.CreateCopyFromBuffer(
+                 bitmap.PixelBuffer,
+                 BitmapPixelFormat.Bgra8,
+                 bitmap.PixelWidth,
+                 bitmap.PixelHeight,
+                 BitmapAlphaMode.Ignore
+              
+             );
+            return outputBitmap;
         }
 
        
