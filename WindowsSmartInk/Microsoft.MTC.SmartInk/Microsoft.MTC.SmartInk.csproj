@@ -106,7 +106,6 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="InkModel.cs" />
     <Compile Include="IPackageStorageProvider.cs" />
     <Compile Include="LocalAppDataProvider.cs" />
     <Compile Include="PackageManager.cs" />
