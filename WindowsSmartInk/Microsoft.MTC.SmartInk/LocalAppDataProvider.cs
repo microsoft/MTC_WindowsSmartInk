@@ -174,6 +174,22 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
             await file.DeleteAsync();
         }
 
+        public async Task<IStorageFile> GetModelAsync(string filename)
+        {
+            try
+            {
+                var folder = await _root.GetFolderAsync("Model");
+                var file = await folder.GetFileAsync(filename);
+                return file;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+        }
+           
+
         public async Task SaveModelAsync(IStorageFile model)
         {
             if (model == null)

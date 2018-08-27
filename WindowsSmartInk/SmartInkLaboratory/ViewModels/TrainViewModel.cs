@@ -18,6 +18,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.Graphics.Imaging;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -157,19 +158,67 @@ namespace SmartInkLaboratory.ViewModels
             _dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         }
 
-        public async Task<IDictionary<string, float>> ProcessInkImageAsync(WriteableBitmap bitmap)
+        public async Task<IList<(string, double)>> ProcessInkImageAsync(SoftwareBitmap bitmap)
         {
-           
-            InkDrawing = bitmap;
-            await  SaveBitmapAsync(bitmap);
+            if (_state.CurrentTag == null)
+                return null;
+
+            var source = new SoftwareBitmapSource();
+            await source.SetBitmapAsync(bitmap);
+            InkDrawing = source;
+            var saveFile = await GetBitmapSaveFile();
+            SaveSoftwareBitmapToFile(bitmap, saveFile);
+            //await  SaveBitmapAsync(bitmap);
             return null;
+        }
+
+        private async void SaveSoftwareBitmapToFile(SoftwareBitmap softwareBitmap, StorageFile outputFile)
+        {
+            using (IRandomAccessStream stream = await outputFile.OpenAsync(FileAccessMode.ReadWrite))
+            {
+                // Create an encoder with the desired format
+                BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, stream);
+
+                // Set the software bitmap
+                encoder.SetSoftwareBitmap(softwareBitmap);
+
+                // Set additional encoding parameters, if needed
+                encoder.BitmapTransform.ScaledWidth = 320;
+                encoder.BitmapTransform.ScaledHeight = 240;
+                encoder.BitmapTransform.Rotation = Windows.Graphics.Imaging.BitmapRotation.Clockwise90Degrees;
+                encoder.BitmapTransform.InterpolationMode = BitmapInterpolationMode.Fant;
+                encoder.IsThumbnailGenerated = true;
+
+                try
+                {
+                    await encoder.FlushAsync();
+                }
+                catch (Exception err)
+                {
+                    const int WINCODEC_ERR_UNSUPPORTEDOPERATION = unchecked((int)0x88982F81);
+                    switch (err.HResult)
+                    {
+                        case WINCODEC_ERR_UNSUPPORTEDOPERATION:
+                            // If the encoder does not support writing a thumbnail, then try again
+                            // but disable thumbnail generation.
+                            encoder.IsThumbnailGenerated = false;
+                            break;
+                        default:
+                            throw;
+                    }
+                }
+
+                if (encoder.IsThumbnailGenerated == false)
+                {
+                    await encoder.FlushAsync();
+                }
+
+
+            }
         }
         private  async Task SaveBitmapAsync(WriteableBitmap cropped)
         {
-            StorageFolder pictureFolder = await KnownFolders.PicturesLibrary.CreateFolderAsync("SmartInk", CreationCollisionOption.OpenIfExists);
-            var projectFolder = await pictureFolder.CreateFolderAsync(_state.CurrentPackage.Name, CreationCollisionOption.OpenIfExists);
-            var tagFolder = await projectFolder.CreateFolderAsync(_state.CurrentTag.Id.ToString(), CreationCollisionOption.OpenIfExists);
-            var savefile = await tagFolder.CreateFileAsync($"{Guid.NewGuid().ToString()}.jpg", CreationCollisionOption.ReplaceExisting);
+            StorageFile savefile = await GetBitmapSaveFile();
             if (cropped.PixelHeight < 256 || cropped.PixelWidth < 256)
             {
                 var height = cropped.PixelHeight < 256 ? 256 : cropped.PixelHeight; ;
@@ -185,6 +234,15 @@ namespace SmartInkLaboratory.ViewModels
             }
 
             TotalImageCount++; _uploadComplete = false; Train.RaiseCanExecuteChanged();
+        }
+
+        private async Task<StorageFile> GetBitmapSaveFile()
+        {
+            StorageFolder pictureFolder = await KnownFolders.PicturesLibrary.CreateFolderAsync("SmartInk", CreationCollisionOption.OpenIfExists);
+            var projectFolder = await pictureFolder.CreateFolderAsync(_state.CurrentPackage.Name, CreationCollisionOption.OpenIfExists);
+            var tagFolder = await projectFolder.CreateFolderAsync(_state.CurrentTag.Id.ToString(), CreationCollisionOption.OpenIfExists);
+            var savefile = await tagFolder.CreateFileAsync($"{Guid.NewGuid().ToString()}.jpg", CreationCollisionOption.ReplaceExisting);
+            return savefile;
         }
 
         private async Task<IStorageFile> GetIconFileAsync(Guid currentTagId)

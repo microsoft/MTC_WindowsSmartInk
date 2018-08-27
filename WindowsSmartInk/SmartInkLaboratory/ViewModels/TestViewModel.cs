@@ -1,5 +1,4 @@
-﻿using SmartInkLaboratory.AI;
-using SmartInkLaboratory.Services;
+﻿using SmartInkLaboratory.Services;
 using SmartInkLaboratory.Services.Platform;
 using AMP.ViewModels;
 using GalaSoft.MvvmLight;
@@ -144,14 +143,19 @@ namespace SmartInkLaboratory.ViewModels
 
         }
 
-        public async Task<IDictionary<string, float>> ProcessInkImageAsync(WriteableBitmap bitmap)
+        public async Task<IList<(string, double)>> ProcessInkImageAsync(SoftwareBitmap bitmap)
         {
             try
             {
                 using (var memStream = new InMemoryRandomAccessStream())
                 {
 
-                    await bitmap.ToStream(memStream, BitmapEncoder.PngEncoderId);
+                    BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, memStream);
+
+                    // Set the software bitmap
+                    encoder.SetSoftwareBitmap(bitmap);
+
+                    await encoder.FlushAsync();
                     var result = await _prediction.GetPrediction(memStream.AsStreamForRead(), _state.CurrentProject.Id, SelectedIteration.Id);
                     ProcessModelOutput(result);
                     return result;
@@ -164,13 +168,13 @@ namespace SmartInkLaboratory.ViewModels
             }
         }
 
-        private void ProcessModelOutput(IDictionary<string , float > output)
+        private void ProcessModelOutput(IList<(string tag, double probability)> output)
         {
-            TagResult = output.Keys.ToList()[0];
+            TagResult = output[0].tag;
             var evalResult = string.Empty;
             foreach (var item in output)
             {
-                evalResult += $"{item.Key} [{item.Value}]{Environment.NewLine}";
+                evalResult += $"{item.tag} [{item.probability}]{Environment.NewLine}";
             }
 
             EvaluationResult = evalResult;

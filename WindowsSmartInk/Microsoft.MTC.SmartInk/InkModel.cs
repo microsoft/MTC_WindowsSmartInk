@@ -22,6 +22,17 @@ namespace Microsoft.MTC.SmartInk
         {
             this.classLabel = new List<string>();
             this.loss = tags;
+            //new Dictionary<string, float>()
+            //{
+            //    { "aad", float.NaN },
+            //    { "api_app", float.NaN },
+            //    { "api_mgmt", float.NaN },
+            //    { "asa", float.NaN },
+            //    { "bot_services", float.NaN },
+            //    { "function", float.NaN },
+            //    { "key_vault", float.NaN },
+            //    { "service_fabric", float.NaN },
+            //};
         }
     }
 
@@ -39,16 +50,10 @@ namespace Microsoft.MTC.SmartInk
 
  
 
-        public static async Task<InkModel> CreateModelAsync(IStorageFile file, IList<string> tags)
+        public static async Task<InkModel> CreateModel(StorageFile file, Dictionary<string, float> tags)
         {
-            var tagValues = new Dictionary<string, float>();
-            foreach (var t in tags)
-            {
-                tagValues.Add(t, float.NaN);
-            }
-
             LearningModelPreview learningModel = await LearningModelPreview.LoadModelFromStorageFileAsync(file);
-            InkModel model = new InkModel(tagValues);
+            InkModel model = new InkModel(tags);
             model.learningModel = learningModel;
             return model;
         }

@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
 using SmartInkLaboratory.Extensions;
 using Microsoft.Graphics.Canvas;
-using SmartInkLaboratory.AI;
+using Microsoft.MTC.SmartInk;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -53,16 +53,9 @@ namespace SmartInkLaboratory
     /// </summary>
     public sealed partial class MainPage : NavAwarePage
     {
-        private string _currentProject;
-        private string _currentTag;
-
         DispatcherTimer _timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(750) };
         List<InkStroke> _sessionStrokes = new List<InkStroke>();
         List<InkStroke> _allStrokes = new List<InkStroke>();
-        private InteractionMode _interactionMode;
-        private InkModel _inkModel;
-
-     
 
         private InkSynchronizer _inkSync;
         IReadOnlyList<InkStroke> _pendingDry;
@@ -75,26 +68,28 @@ namespace SmartInkLaboratory
             this.InitializeComponent();
 
             _timer.Tick += async (s, e) => {
-                //_inkSync.EndDry();
                 _timer.Stop();
                 Debug.WriteLine($"finished");
                 var boundingBox = GetBoundingBox(_sessionStrokes);
                 var bitmap = GetInkBitmap(boundingBox);
                 var result = await _dataContextViewModel.ProcessInkImageAsync(bitmap);
 
-                var top = (from r in result where r.Value >= 0.6 select r).ToArray();
-                if (top?.Count() != 0)
+                if (result != null)
                 {
-                    if (top[0].Key.ToLower() != "other")
-                        await PlaceIconAsync(top[0].Key, top[0].Value, boundingBox);
-                    else
+                    var top = (from r in result where r.probability >= 0.6 select r).ToArray();
+                    if (top?.Count() != 0)
                     {
-                        if (top.Count() > 1)
-                            await PlaceIconAsync(top[1].Key, top[1].Value, boundingBox);
+                        if (top[0].tag.ToLower() != "other")
+                            await PlaceIconAsync(top[0].tag, top[0].probability, boundingBox);
                         else
-                            await PlaceIconAsync(top[0].Key, top[0].Value, boundingBox);
+                        {
+                            if (top.Count() > 1)
+                                await PlaceIconAsync(top[1].tag, top[1].probability, boundingBox);
+                            else
+                                await PlaceIconAsync(top[0].tag, top[0].probability, boundingBox);
+                        }
+
                     }
-                        
                 }
                
                 _sessionStrokes.Clear();
@@ -202,7 +197,7 @@ namespace SmartInkLaboratory
             win2dCanvas.Invalidate();
         }
 
-        private  WriteableBitmap GetInkBitmap(Rect boundingBox)
+        private  SoftwareBitmap GetInkBitmap(Rect boundingBox)
         {
             WriteableBitmap bitmap = null;
             CanvasDevice device = CanvasDevice.GetSharedDevice();
@@ -221,7 +216,15 @@ namespace SmartInkLaboratory
                 bitmap = writeableBitmap.Crop(boundingBox);
             }
 
-            return bitmap;
+            SoftwareBitmap outputBitmap = SoftwareBitmap.CreateCopyFromBuffer(
+                 bitmap.PixelBuffer,
+                 BitmapPixelFormat.Bgra8,
+                 bitmap.PixelWidth,
+                 bitmap.PixelHeight,
+                 BitmapAlphaMode.Ignore
+              
+             );
+            return outputBitmap;
         }
 
        

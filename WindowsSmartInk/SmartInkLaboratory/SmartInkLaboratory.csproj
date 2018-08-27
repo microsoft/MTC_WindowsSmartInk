@@ -115,9 +115,7 @@
     <Compile Include="Services\IIconMappingService.cs" />
     <Compile Include="Services\IImageService.cs" />
     <Compile Include="Services\IInkManifestManager.cs" />
-    <Compile Include="Services\IInkModelManager.cs" />
     <Compile Include="Services\InkManifestManager.cs" />
-    <Compile Include="Services\InkModelManager.cs" />
     <Compile Include="Services\IPredictionService.cs" />
     <Compile Include="Services\IProjectPackageMapper.cs" />
     <Compile Include="Services\IProjectService.cs" />
