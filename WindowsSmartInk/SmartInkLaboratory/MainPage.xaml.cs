@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
 using SmartInkLaboratory.Extensions;
 using Microsoft.Graphics.Canvas;
-using SmartInkLaboratory.AI;
+using Microsoft.MTC.SmartInk;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 

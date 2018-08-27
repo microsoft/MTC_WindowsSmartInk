@@ -7,7 +7,7 @@ using Windows.AI.MachineLearning.Preview;
 
 // 4b7e8535-9fcf-4162-aae1-af3f171e249b_1115394e-f1eb-4398-a55f-14ade85ae44e
 
-namespace SmartInkLaboratory.AI
+namespace Microsoft.MTC.SmartInk
 {
     public sealed class ModelInput
     {

@@ -93,7 +93,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AI\azureicons.cs" />
-    <Compile Include="AI\InkModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>

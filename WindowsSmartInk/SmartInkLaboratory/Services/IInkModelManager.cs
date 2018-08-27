@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SmartInkLaboratory.AI;
+using Microsoft.MTC.SmartInk;
 
 namespace SmartInkLaboratory.Services
 {

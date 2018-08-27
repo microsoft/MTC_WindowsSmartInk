@@ -1,5 +1,4 @@
-﻿using SmartInkLaboratory.AI;
-using SmartInkLaboratory.Services;
+﻿using SmartInkLaboratory.Services;
 using SmartInkLaboratory.Services.Platform;
 using AMP.ViewModels;
 using GalaSoft.MvvmLight;

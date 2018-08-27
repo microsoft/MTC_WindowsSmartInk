@@ -1,4 +1,4 @@
-﻿using SmartInkLaboratory.AI;
+﻿using Microsoft.MTC.SmartInk;
 using System;
 using System.Collections.Generic;
 using System.Linq;
