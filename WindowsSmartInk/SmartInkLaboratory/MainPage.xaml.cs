@@ -221,7 +221,7 @@ namespace SmartInkLaboratory
                  BitmapPixelFormat.Bgra8,
                  bitmap.PixelWidth,
                  bitmap.PixelHeight,
-                 BitmapAlphaMode.Ignore
+                 BitmapAlphaMode.Premultiplied
               
              );
             return outputBitmap;

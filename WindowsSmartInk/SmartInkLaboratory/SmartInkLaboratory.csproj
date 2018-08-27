@@ -92,11 +92,11 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AI\azureicons.cs" />
     <Compile Include="AI\InkModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="azureicons.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -177,7 +177,9 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="AI\azureicons.onnx" />
+    <Content Include="AI\azureicons.onnx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="SmartInkLaboratory_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

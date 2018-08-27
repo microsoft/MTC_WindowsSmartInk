@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.Storage;
+using Microsoft.MTC.SmartInk;
+using Windows.Media;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -145,27 +148,37 @@ namespace SmartInkLaboratory.ViewModels
 
         public async Task<IDictionary<string, float>> ProcessInkImageAsync(SoftwareBitmap bitmap)
         {
-            try
-            {
-                using (var memStream = new InMemoryRandomAccessStream())
-                {
 
-                    BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, memStream);
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///AI/azureicons.onnx"));
+            var model = await Model.CreateModel(file, _state.CurrentPackage.GetTags());
+            var input = new ModelInput();
+            var videoFrame = VideoFrame.CreateWithSoftwareBitmap(bitmap);
 
-                    // Set the software bitmap
-                    encoder.SetSoftwareBitmap(bitmap);
+            input.data = videoFrame;
+            var result = await model.EvaluateAsync(input);
+            //try
+            //{
+            //    using (var memStream = new InMemoryRandomAccessStream())
+            //    {
 
-                    await encoder.FlushAsync();
-                    var result = await _prediction.GetPrediction(memStream.AsStreamForRead(), _state.CurrentProject.Id, SelectedIteration.Id);
-                    ProcessModelOutput(result);
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
+            //        BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, memStream);
 
-                return null;
-            }
+            //        // Set the software bitmap
+            //        encoder.SetSoftwareBitmap(bitmap);
+
+            //        await encoder.FlushAsync();
+            //        var result = await _prediction.GetPrediction(memStream.AsStreamForRead(), _state.CurrentProject.Id, SelectedIteration.Id);
+            //        ProcessModelOutput(result);
+            //        return result;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+
+            //    return null;
+            //}
+
+            return result.loss;
         }
 
         private void ProcessModelOutput(IDictionary<string,float> output)

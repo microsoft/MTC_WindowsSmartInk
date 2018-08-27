@@ -1,6 +1,7 @@
 ﻿using Micosoft.MTC.SmartInk.Package.Storage;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -68,13 +69,32 @@ namespace Micosoft.MTC.SmartInk.Package
 
         public IList<string> GetTags()
         {
-            List<string> tags = new List<string>();
-            foreach (var t in _manifest.IconMap.Keys)
+            var dict = new Dictionary<string, float>()
             {
-                tags.Add(t);
-            }
+                { "aad", float.NaN },
+                { "api_app", float.NaN },
+                { "api_mgmt", float.NaN },
+                { "asa", float.NaN },
+                { "bot_services", float.NaN },
+                { "cosmos_db", float.NaN },
+                { "event_hub", float.NaN },
+                { "function", float.NaN },
+                { "iot_hub", float.NaN },
+                { "key_vault", float.NaN },
+                { "other", float.NaN },
+                { "service_fabric", float.NaN },
+                { "sql", float.NaN },
+                { "web_app", float.NaN },
+            };
 
-            return tags;
+            return dict.Keys.ToList(); ;
+            //List<string> tags = new List<string>();
+            //foreach (var t in _manifest.IconMap.Keys)
+            //{
+            //    tags.Add(t);
+            //}
+
+            //return tags;
         }
 
         public void AddTag(string tag)
