@@ -69,7 +69,7 @@ namespace Micosoft.MTC.SmartInk.Package
         public IList<string> GetTags()
         {
             List<string> tags = new List<string>();
-            foreach (var t in tags)
+            foreach (var t in _manifest.IconMap.Keys)
             {
                 tags.Add(t);
             }
