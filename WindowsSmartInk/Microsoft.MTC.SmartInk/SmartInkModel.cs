@@ -4,17 +4,18 @@ using System.Threading.Tasks;
 using Windows.Media;
 using Windows.Storage;
 using Windows.AI.MachineLearning.Preview;
+using System.Linq;
 
 // 4b7e8535-9fcf-4162-aae1-af3f171e249b_1115394e-f1eb-4398-a55f-14ade85ae44e
 
-namespace SmartInkLaboratory.AI
+namespace Micosoft.MTC.SmartInk
 {
-    public sealed class ModelInput
+    internal sealed class ModelInput
     {
         public VideoFrame data { get; set; }
     }
 
-    public sealed class ModelOutput
+    internal sealed class ModelOutput
     {
         public IList<string> classLabel { get; set; }
         public IDictionary<string, float> loss { get; set; }
@@ -22,27 +23,35 @@ namespace SmartInkLaboratory.AI
         {
             this.classLabel = new List<string>();
             this.loss = tags;
+           
         }
     }
 
-    public sealed class InkModel
+    internal sealed class SmartInkModel
     {
         private LearningModelPreview learningModel;
         private Dictionary<string, float> _tags;
 
-        public InkModel(Dictionary<string,float> tags)
+        private SmartInkModel(Dictionary<string, float> tags)
         {
             if (tags == null || tags.Keys.Count == 0)
                 throw new InvalidOperationException($"{nameof(tags)} cannot be null or empty.");
             _tags = tags;
         }
 
- 
 
-        public static async Task<InkModel> CreateModel(StorageFile file, Dictionary<string, float> tags)
+
+        public static async Task<SmartInkModel> CreateModel(IStorageFile file, IEnumerable<string> tags)
         {
+            if (tags == null || tags.Count() == 0)
+                throw new InvalidOperationException($"{nameof(tags)} cannot be null or empty.");
+
             LearningModelPreview learningModel = await LearningModelPreview.LoadModelFromStorageFileAsync(file);
-            InkModel model = new InkModel(tags);
+            var tagDictionary = new Dictionary<string, float>();
+            foreach (var tag in tags)
+                tagDictionary.Add(tag, float.NaN);
+
+            SmartInkModel model = new SmartInkModel(tagDictionary);
             model.learningModel = learningModel;
             return model;
         }
