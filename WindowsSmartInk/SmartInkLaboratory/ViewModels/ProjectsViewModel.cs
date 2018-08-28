@@ -70,7 +70,7 @@ namespace SmartInkLaboratory.ViewModels
             };
 
             this.SelectProject = new RelayCommand<Project>((project) => {
-                if (project == null)
+                if (project == null || _state.CurrentProject.Id == project.Id)
                     return;
 
                 _state.CurrentProject = project;
