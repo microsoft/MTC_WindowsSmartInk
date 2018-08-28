@@ -75,6 +75,26 @@ namespace Micosoft.MTC.SmartInk.Package
             return tags;
         }
 
+        public async Task UpdateTagsAsync(Dictionary<Guid, string> tags)
+        {
+            if (tags == null || tags.Count == 0)
+                return;
+
+            bool isDirty = false;
+            foreach (var tag in tags)
+            {
+                if (_manifest.TagList.ContainsKey(tag.Key) && _manifest.TagList[tag.Key] != tag.Value)
+                {
+                    _manifest.TagList[tag.Key] = tag.Value;
+                    isDirty = true;
+                }
+
+            }
+
+            if (isDirty)
+                await SaveAsync();
+        }
+
         public async Task AddTagsAsync(Dictionary<Guid,string> tags)
         {
             if (tags == null || tags.Count == 0)

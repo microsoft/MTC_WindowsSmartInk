@@ -18,6 +18,7 @@ namespace SmartInkLaboratory.ViewModels
     {
         PackageManager _manager = new PackageManager();
         private IProjectPackageMapper _mapper;
+        private ITagService _tags;
         private IAppStateService _state;
 
         private List<SmartInkPackage> _installed = new List<SmartInkPackage>();
@@ -25,9 +26,10 @@ namespace SmartInkLaboratory.ViewModels
           
         public RelayCommand<SmartInkPackage> SelectPackage { get; set; }
 
-        public OpenPackageViewModel(IProjectPackageMapper mapper, IAppStateService state)
+        public OpenPackageViewModel(IProjectPackageMapper mapper, ITagService tags, IAppStateService state)
         {
             _mapper = mapper;
+            _tags = tags;
             _state = state;
 
             _state.ProjectChanged += async (s,e) =>
@@ -37,8 +39,13 @@ namespace SmartInkLaboratory.ViewModels
 
             this.SelectPackage = new RelayCommand<SmartInkPackage>(async(package) => {
                 if (_state.CurrentPackage?.Name == package.Name)
-                    return; 
+                    return;
+                var tagList = await _tags.GetTagsAsync();
+                var updateTags = new Dictionary<Guid, string>();
+                foreach (var tag in tagList)
+                    updateTags.Add(tag.Id, tag.Name);
 
+                await package.UpdateTagsAsync(updateTags);
                 _state.CurrentPackage = package;
 
 
