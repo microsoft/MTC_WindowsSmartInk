@@ -19,6 +19,7 @@ namespace SmartInkLaboratory.ViewModels
     public class NewPackageViewModel : ViewModelBase
     {
         private IProjectPackageMapper _mapper;
+        private ITagService _tags;
         private IAppStateService _state;
         private INavigationService _nav;
         private Project _currentProject;
@@ -71,24 +72,42 @@ namespace SmartInkLaboratory.ViewModels
         public RelayCommand Save { get; set; }
      
 
-        public NewPackageViewModel(IProjectPackageMapper mapper, IAppStateService state,INavigationService nav)
+        public NewPackageViewModel(IProjectPackageMapper mapper, ITagService tags, IAppStateService state,INavigationService nav)
         {
             _mapper = mapper;
+            _tags = tags;
             _state = state;
             _nav = nav;
             _packageManager = new PackageManager();
             
-            this.Save = new RelayCommand(async () => {
+            this.Save = new RelayCommand(async () =>
+            {
 
                 var package = await _packageManager.CreatePackageAsync(Name);
+                var taglist = await _tags.GetTagsAsync();
+                var newTags = new Dictionary<Guid, string>();
+                foreach (var tag in taglist)
+                {
+                    newTags.Add(tag.Id, tag.Name);
+                }
+
+                await package.AddTagsAsync(newTags);
+
                 await _mapper.AddAsync(package.Name, _state.CurrentProject.Id.ToString());
-                Name = Description = Author = Version = string.Empty;
+
                 _state.CurrentPackage = package;
+
+                Reset();
             },
             ()=> {
                 return !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Version);
             });
          
+        }
+
+        private void Reset()
+        {
+            Name = Description = Author = Version = string.Empty;
         }
 
         //protected override async Task InitializeAsync()

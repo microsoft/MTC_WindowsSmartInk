@@ -153,9 +153,8 @@ namespace SmartInkLaboratory.ViewModels
 
         private async Task SetIconLocation(Guid currentTagId)
         {
-            var file = await GetIconFileAsync(currentTagId);
-
-            await LoadIconAsync(file);
+                var file = await GetIconFileAsync(currentTagId);
+                await LoadIconAsync(file);
         }
 
       

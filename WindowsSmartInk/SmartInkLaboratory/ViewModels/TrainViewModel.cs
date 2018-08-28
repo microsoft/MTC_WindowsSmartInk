@@ -118,14 +118,17 @@ namespace SmartInkLaboratory.ViewModels
             _train = train;
             _state = state;
             
-            _state.TagChanged += async (s,e) => { 
+            _state.TagChanged += async (s,e) => {
                 var iconfile = await GetIconFileAsync(_state.CurrentTag.Id);
-                await LoadIconAsync(iconfile);
+                if (iconfile != null)
+                    await LoadIconAsync(iconfile);
+              
              };
 
             _state.IconChanged += async (s, e) => {
                 var iconfile = await GetIconFileAsync(_state.CurrentTag.Id);
-                await LoadIconAsync(iconfile);
+                if (iconfile != null)
+                    await LoadIconAsync(iconfile);
             };
 
             _state.PackageChanged += async (s, e) => {
@@ -256,6 +259,9 @@ namespace SmartInkLaboratory.ViewModels
 
         private async Task LoadIconAsync(IStorageFile file)
         {
+            if (file == null)
+                throw new ArgumentNullException($"{nameof(file)} cannot be null");
+
             using (IRandomAccessStream fileStream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read))
             {
                 BitmapImage bitmapImage = new BitmapImage();

@@ -154,23 +154,23 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
             await file.CopyAsync(folder, file.Name, NameCollisionOption.ReplaceExisting);
         }
 
-        public async Task<IStorageFile> GetIconAsync(string icon)
+        public async Task<IStorageFile> GetIconAsync(string filename)
         {
-            if (string.IsNullOrWhiteSpace(icon))
-                throw new ArgumentNullException($"{nameof(icon)} cannot be null or empty.");
+            if (string.IsNullOrWhiteSpace(filename))
+                throw new ArgumentNullException($"{nameof(filename)} cannot be null or empty.");
 
             var folder = await _root.CreateFolderAsync("Icons",CreationCollisionOption.OpenIfExists);
-            var file = await folder.GetFileAsync(icon);
+            var file = await folder.GetFileAsync(filename);
             return file;
         }
 
-        public async Task DeleteIconAsync(string icon)
+        public async Task DeleteIconAsync(string filename)
         {
-            if (string.IsNullOrWhiteSpace(icon))
-                throw new ArgumentNullException($"{nameof(icon)} cannot be null or empty.");
+            if (string.IsNullOrWhiteSpace(filename))
+                throw new ArgumentNullException($"{nameof(filename)} cannot be null or empty.");
 
             var folder = await _root.CreateFolderAsync("Icons", CreationCollisionOption.OpenIfExists);
-            var file = await folder.GetFileAsync(icon);
+            var file = await folder.GetFileAsync(filename);
             await file.DeleteAsync();
         }
 

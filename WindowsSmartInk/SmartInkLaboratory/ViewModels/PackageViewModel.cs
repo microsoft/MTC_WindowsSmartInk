@@ -49,7 +49,7 @@ namespace SmartInkLaboratory.ViewModels
 
             _state.TagDeleted += async (s, e) => {
                 if (_state.CurrentPackage != null)
-                    await _state.CurrentPackage.RemoveTagAsync(e.DeletedTag.Name);
+                    await _state.CurrentPackage.RemoveTagAsync(e.DeletedTag.Id);
             };
 
             _state.PackageChanged += (s, e) => {

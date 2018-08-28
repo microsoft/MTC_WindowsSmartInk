@@ -20,7 +20,6 @@ namespace Micosoft.MTC.SmartInk.Package
 
     public class SmartInkPackage
     {
-        bool _isDirty = true;
         CancellationTokenSource _cts;
 
         private SmartInkManifest _manifest;
@@ -32,10 +31,10 @@ namespace Micosoft.MTC.SmartInk.Package
         public event EventHandler<DownloadProgressEventArgs> ModelDownloadProgress;
 
         public string Name { get { return _manifest.Name; } }
-        public string Description { get { return _manifest.Description; } set { _manifest.Description = value; _isDirty = true; } }
-        public string Version { get { return _manifest.Version; } set { _manifest.Version = value; _isDirty = true; } }
-        public string Author { get { return _manifest.Author; } set { _manifest.Author = value; _isDirty = true; } }
-        public DateTimeOffset DatePublished { get { return _manifest.DatePublished; } private set { _manifest.DatePublished = value; _isDirty = true; } }
+        public string Description { get; set; }
+        public string Version { get; set; }
+        public string Author { get; set; }
+        public DateTimeOffset DatePublished { get; set; }
 
         internal SmartInkPackage(string name,  IPackageStorageProvider provider)
         {
@@ -69,106 +68,119 @@ namespace Micosoft.MTC.SmartInk.Package
 
         public IList<string> GetTags()
         {
-            var dict = new Dictionary<string, float>()
+            List<string> tags = new List<string>();
+            foreach (var t in _manifest.TagList.Values)
+                tags.Add(t);
+
+            return tags;
+        }
+
+        public async Task AddTagsAsync(Dictionary<Guid,string> tags)
+        {
+            if (tags == null || tags.Count == 0)
+                return;
+
+            foreach (var tag in tags)
             {
-                { "aad", float.NaN },
-                { "api_app", float.NaN },
-                { "api_mgmt", float.NaN },
-                { "asa", float.NaN },
-                { "bot_services", float.NaN },
-                { "cosmos_db", float.NaN },
-                { "event_hub", float.NaN },
-                { "function", float.NaN },
-                { "iot_hub", float.NaN },
-                { "key_vault", float.NaN },
-                { "other", float.NaN },
-                { "service_fabric", float.NaN },
-                { "sql", float.NaN },
-                { "web_app", float.NaN },
-            };
+                if (!_manifest.TagList.ContainsKey(tag.Key))
+                    _manifest.TagList.Add(tag.Key, tag.Value);
+                else
+                    _manifest.TagList[tag.Key] = tag.Value;
+            }
 
-            return dict.Keys.ToList(); ;
-            //List<string> tags = new List<string>();
-            //foreach (var t in _manifest.IconMap.Keys)
-            //{
-            //    tags.Add(t);
-            //}
-
-            //return tags;
+            await SaveAsync();
         }
 
-        public void AddTag(string tag)
+        public async Task AddTagAsync(Guid tagId, string tagName)
         {
-            if (string.IsNullOrWhiteSpace(tag))
-                return;
+            if (tagId == null || tagId == Guid.Empty)
+                throw new ArgumentException($"{nameof(tagId)} cannot be null or empty");
 
-            if (_manifest.IconMap.ContainsKey(tag))
-                return;
+            if (string.IsNullOrWhiteSpace(tagName))
+                throw new ArgumentNullException($"{nameof(tagName)} cannot be null");
 
-            _manifest.IconMap.Add(tag, null);
-            _isDirty = true;
+            if (!_manifest.IconMap.ContainsKey(tagId))
+                _manifest.TagList.Add(tagId, tagName);
+             else   
+                _manifest.TagList[tagId] = tagName;
+
+            await SaveAsync();
         }
 
-        public async Task RemoveTagAsync(string tag)
+        public async Task RemoveTagAsync(Guid tagId)
         {
-            if (string.IsNullOrWhiteSpace(tag))
+            if (tagId == null || tagId == Guid.Empty)
                 return;
 
-            if (!_manifest.IconMap.ContainsKey(tag))
+            if (!_manifest.TagList.ContainsKey(tagId))
                 return;
 
-            var icon = _manifest.IconMap[tag];
-            _manifest.IconMap.Remove(tag);
-            if (icon != null)
-                await _provider.DeleteIconAsync(icon);
-            _isDirty = true;
+            _manifest.TagList.Remove(tagId);
+
+            if (_manifest.IconMap.ContainsKey(tagId))
+            {
+                var icon = _manifest.IconMap[tagId];
+                _manifest.IconMap.Remove(tagId);
+                if (icon != null)
+                    await _provider.DeleteIconAsync(icon);
+            }
         }
 
-        public async Task SaveIconAsync(string tag, IStorageFile file)
+        public async Task SaveIconAsync(Guid tagId, IStorageFile file)
         {
-            if (string.IsNullOrWhiteSpace(tag))
-                throw new ArgumentNullException($"{nameof(tag)} cannot be null or empty.");
+            if (tagId == null || tagId == Guid.Empty)
+                throw new ArgumentNullException($"{nameof(tagId)} cannot be null or empty.");
 
             if (file == null)
                 throw new ArgumentNullException($"{nameof(file)} canot be null.");
 
-            if (_manifest.IconMap.ContainsKey(tag))
+            if (!_manifest.TagList.ContainsKey(tagId))
+                throw new InvalidOperationException($"Tag:{nameof(tagId)} does not exist");
+
+            if (_manifest.IconMap.ContainsKey(tagId))
             {
-                await _provider.DeleteIconAsync(tag);
-                _manifest.IconMap[tag] = file.Name;
+                await _provider.DeleteIconAsync(_manifest.IconMap[tagId]);
+                _manifest.IconMap[tagId] = file.Name;
             }
             else
-                _manifest.IconMap.Add(tag, file.Name);
+                _manifest.IconMap.Add(tagId, file.Name);
 
             await _provider.SaveIconAsync( file);
-            _isDirty = true;
         }
 
-        public Task SaveIconAsync(Guid tagId, IStorageFile file)
+        public async Task SaveIconAsync(string tagName, IStorageFile file)
         {
-            if (tagId == Guid.Empty)
-                throw new ArgumentNullException($"{nameof(tagId)} cannot be null or empty.");
-            return SaveIconAsync(tagId.ToString(), file);
+            if (string.IsNullOrWhiteSpace(tagName))
+                throw new ArgumentNullException($"{nameof(tagName)} cannot be null or empty.");
+
+            var tag = (from v in _manifest.TagList where v.Value == tagName select v.Key).FirstOrDefault();
+            if (tag != null)
+                await SaveIconAsync(tag, file);
+            else
+                throw new InvalidOperationException($"Tag:{tagName} does not exist");
         }
 
-        public async Task<IStorageFile> GetIconAsync(string tag)
+        public Task<IStorageFile> GetIconAsync(string tag)
         {
             if (string.IsNullOrWhiteSpace(tag))
                 throw new ArgumentNullException($"{nameof(tag)} cannot be null or empty.");
-            if (!_manifest.IconMap.ContainsKey(tag) || string.IsNullOrWhiteSpace(_manifest.IconMap[tag]))
-                return null;
-            
-            return await _provider.GetIconAsync(_manifest.IconMap[tag]);
+
+            Guid tagId;
+            if (Guid.TryParse(tag, out tagId))
+                return GetIconAsync(tagId);
+
+            throw new ArgumentException($"{nameof(tag)}:{tag} is not a valid guid");
         }
 
         public async Task<IStorageFile> GetIconAsync(Guid tagId)
         {
-         
             if (tagId == null || Guid.Empty == tagId)
                 throw new ArgumentNullException($"{nameof(tagId)} cannot be null or empty");
 
-            var icon = await GetIconAsync(tagId.ToString());
-            return icon;
+            if (!_manifest.IconMap.ContainsKey(tagId))
+                return null;
+
+            return await _provider.GetIconAsync(_manifest.IconMap[tagId]);
         }
 
         public async Task DownloadModelAsync(Uri modelUri)
@@ -194,10 +206,7 @@ namespace Micosoft.MTC.SmartInk.Package
 
         public async Task SaveAsync()
         {
-            if (!_isDirty)
-                return;
             await _provider.SaveManifestAsync(_manifest);
-            _isDirty = false;
         }
 
         private async Task HandleDownloadAsync(DownloadOperation download, bool start)

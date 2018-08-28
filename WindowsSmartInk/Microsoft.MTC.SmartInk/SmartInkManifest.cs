@@ -10,12 +10,15 @@ namespace Micosoft.MTC.SmartInk.Package
         public string Author { get; set; }
         public string Version { get; set; }
         public DateTimeOffset DatePublished{ get; set; }
-        public Dictionary<string,string> IconMap { get; private set; } = new Dictionary<string, string>();
+        public Dictionary<Guid,string> IconMap { get; private set; } = new Dictionary<Guid, string>();
+        public Dictionary<Guid, string> TagList { get; private set; } = new Dictionary<Guid, string>();
         public string Model { get; set; }
 
         internal SmartInkManifest()
         {
 
         }
+
+      
     }
 }
