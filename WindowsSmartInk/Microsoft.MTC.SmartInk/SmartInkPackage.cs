@@ -1,10 +1,12 @@
 ﻿using Micosoft.MTC.SmartInk.Package.Storage;
+using Microsoft.MTC.SmartInk;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Graphics.Imaging;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
 using Windows.UI.Xaml;
@@ -24,6 +26,7 @@ namespace Micosoft.MTC.SmartInk.Package
 
         private SmartInkManifest _manifest;
         private IPackageStorageProvider _provider;
+        private Model _model;
 
         public event EventHandler ModelDownloadStarted;
         public event EventHandler ModelDownloadCompleted;
@@ -221,7 +224,24 @@ namespace Micosoft.MTC.SmartInk.Package
             ModelDownloadCompleted?.Invoke(this, null);
 
             await _provider.SaveModelAsync(tempFile);
+            _manifest.Model = tempFile.Name;
+            await SaveAsync();
             
+        }
+
+        public async Task<IDictionary<string, float>> EvaluateAsync(SoftwareBitmap bitmap)
+        {
+            if (string.IsNullOrWhiteSpace(_manifest.Model))
+                throw new InvalidOperationException("Model file not available");
+
+            var modelfile = await _provider.GetModelAsync(_manifest.Model);
+
+            if (modelfile == null)
+                throw new InvalidOperationException("Model file not found");
+
+            _model = await Model.CreateModelAsync(modelfile, _manifest.TagList.Values.ToList());
+            var result = await _model.EvaluateAsync(bitmap);
+            return result.loss;
         }
 
         public async Task SaveAsync()
