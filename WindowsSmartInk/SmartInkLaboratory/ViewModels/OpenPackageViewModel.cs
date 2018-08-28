@@ -36,7 +36,11 @@ namespace SmartInkLaboratory.ViewModels
             };
 
             this.SelectPackage = new RelayCommand<SmartInkPackage>(async(package) => {
-               _state.CurrentPackage = package;
+                if (_state.CurrentPackage.Name == package.Name)
+                    return; 
+
+                _state.CurrentPackage = package;
+
             });
         }
 
