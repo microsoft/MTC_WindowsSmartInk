@@ -14,17 +14,18 @@ using Windows.UI.Xaml;
 namespace Micosoft.MTC.SmartInk.Package
 {
    
-
+    /// <summary>
+    /// Manages metadata, model and icons of the Smart Ink Package.  
+    /// New packages are created using <see cref="PackageManager.CreatePackageAsync(string, bool)"/>
+    /// </summary>
     public class SmartInkPackage
     {
   
-
         private SmartInkManifest _manifest;
         private IPackageStorageProvider _provider;
         private Model _model;
 
-   
-
+        // These properties map to the properties set on the Nuget Package
         public string Name { get { return _manifest.Name; } }
         public string Description { get; set; } = "Windows 10 SmartInk Package";
         public string Version { get; set; } = "1.0.0.0";
@@ -49,18 +50,10 @@ namespace Micosoft.MTC.SmartInk.Package
            
         }
 
-     
-
-        //public Task RenameAsync(string newName)
-        //{
-        //    if (string.IsNullOrEmpty(newName))
-        //        throw new ArgumentNullException($"{nameof(newName)} cannot be null or empty.");
-
-        //    _manifest.Name = Name;
-        //    _isDirty = true;
-        //    return _provider.RenameAsync(newName);
-        //}
-
+        /// <summary>
+        /// Get all tags in the package
+        /// </summary>
+        /// <returns>List of tag names</returns>
         public IList<string> GetTags()
         {
             List<string> tags = new List<string>();
@@ -70,6 +63,11 @@ namespace Micosoft.MTC.SmartInk.Package
             return tags;
         }
 
+        /// <summary>
+        /// Updates package tag list for all matching tags.  Tags not present in package are ignored.
+        /// </summary>
+        /// <param name="tags">Dictionary of tag Id (key) and tag name (value)</param>
+        /// <returns></returns>
         public async Task UpdateTagsAsync(Dictionary<Guid, string> tags)
         {
             if (tags == null || tags.Count == 0)
@@ -90,6 +88,11 @@ namespace Micosoft.MTC.SmartInk.Package
                 await SaveAsync();
         }
 
+        /// <summary>
+        /// Add new tags to the package
+        /// </summary>
+        /// <param name="tags"><see cref="Dictionary{TKey, TValue}"/> of tag Id (key) and tag name (value)</param>
+        /// <returns></returns>
         public async Task AddTagsAsync(Dictionary<Guid,string> tags)
         {
             if (tags == null || tags.Count == 0)
@@ -106,6 +109,12 @@ namespace Micosoft.MTC.SmartInk.Package
             await SaveAsync();
         }
 
+        /// <summary>
+        /// Adds a new tag to the package
+        /// </summary>
+        /// <param name="tagId"><see cref="Guid"/>Tag Id</param>
+        /// <param name="tagName">Name of tag</param>
+        /// <returns></returns>
         public async Task AddTagAsync(Guid tagId, string tagName)
         {
             if (tagId == null || tagId == Guid.Empty)
@@ -122,6 +131,11 @@ namespace Micosoft.MTC.SmartInk.Package
             await SaveAsync();
         }
 
+        /// <summary>
+        /// Removes tag from package and associated icon
+        /// </summary>
+        /// <param name="tagId"></param>
+        /// <returns></returns>
         public async Task RemoveTagAsync(Guid tagId)
         {
             if (tagId == null || tagId == Guid.Empty)
@@ -141,6 +155,12 @@ namespace Micosoft.MTC.SmartInk.Package
             }
         }
 
+        /// <summary>
+        /// Associate icon with tag and store in package
+        /// </summary>
+        /// <param name="tagId"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public async Task SaveIconAsync(Guid tagId, IStorageFile file)
         {
             if (tagId == null || tagId == Guid.Empty)
@@ -163,6 +183,13 @@ namespace Micosoft.MTC.SmartInk.Package
             await _provider.SaveIconAsync( file);
         }
 
+
+        /// <summary>
+        /// /// Associate icon with tag and store in package. <seealso cref="SaveIconAsync(Guid, IStorageFile)"/>
+        /// </summary>
+        /// <param name="tagName"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public async Task SaveIconAsync(string tagName, IStorageFile file)
         {
             if (string.IsNullOrWhiteSpace(tagName))
@@ -175,6 +202,11 @@ namespace Micosoft.MTC.SmartInk.Package
                 throw new InvalidOperationException($"Tag:{tagName} does not exist");
         }
 
+        /// <summary>
+        /// Retrieves an icon for a given tag <seealso cref="GetIconAsync(Guid)"/>
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns><see cref="IStorageFile" />handle to icon file</returns>
         public Task<IStorageFile> GetIconAsync(string tag)
         {
             if (string.IsNullOrWhiteSpace(tag))
@@ -187,6 +219,11 @@ namespace Micosoft.MTC.SmartInk.Package
             throw new ArgumentException($"{nameof(tag)}:{tag} is not a valid guid");
         }
 
+        /// <summary>
+        /// Retrieves an icon for a given tag
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns><see cref="IStorageFile" />handle to icon file</returns>
         public async Task<IStorageFile> GetIconAsync(Guid tagId)
         {
             if (tagId == null || Guid.Empty == tagId)
@@ -199,7 +236,11 @@ namespace Micosoft.MTC.SmartInk.Package
         }
 
       
-
+        /// <summary>
+        /// Evaluates image using package ONNX model
+        /// </summary>
+        /// <param name="bitmap">Image to be evaluated</param>
+        /// <returns><see cref="IDictionary{TKey, TValue}"/> containing scoring for submitted image (tag/probability)</returns>
         public async Task<IDictionary<string, float>> EvaluateAsync(SoftwareBitmap bitmap)
         {
             if (string.IsNullOrWhiteSpace(_manifest.Model))
@@ -215,13 +256,23 @@ namespace Micosoft.MTC.SmartInk.Package
             return result.loss;
         }
 
+        /// <summary>
+        /// Save the current package state
+        /// </summary>
+        /// <returns></returns>
         public async Task SaveAsync()
         {
             await _provider.SaveManifestAsync(_manifest);
         }
 
+        /// <summary>
+        /// Save the model file to the package
+        /// </summary>
+        /// <param name="modelFile"><see cref="IStorageFile"/> handle to Onnx file</param>
+        /// <returns></returns>
         public async Task SaveModelAsync(IStorageFile modelFile)
         {
+           
             await _provider.SaveModelAsync(modelFile);
             _manifest.Model = modelFile.Name;
             await SaveAsync();
