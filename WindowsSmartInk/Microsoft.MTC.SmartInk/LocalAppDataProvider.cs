@@ -13,6 +13,7 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
         private readonly string ROOT_PATH;
         private IStorageFolder _root;
 
+        public string RootFolderPath => ROOT_PATH;
 
         public LocalAppDataPackageManagerStorageProvider()
         {

@@ -3,6 +3,7 @@ using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking.BackgroundTransfer;
@@ -22,6 +23,8 @@ namespace Micosoft.MTC.SmartInk.Package
     {
         CancellationTokenSource _cts = new CancellationTokenSource();
         private IPackageManagerStorageProvider _provider;
+
+ 
 
         public event EventHandler ModelDownloadStarted;
         public event EventHandler ModelDownloadCompleted;
@@ -91,7 +94,64 @@ namespace Micosoft.MTC.SmartInk.Package
 
 
             Debug.WriteLine($"Publish package");
-            var builder = new PackageBuilder();
+            ManifestMetadata metadata = new ManifestMetadata()
+            {
+                Title=$"{package.Name}",
+                Owners = new string[] {"jabj"},
+                Authors  =new string[] { "mauvo" },
+                Version = new NuGet.Versioning.NuGetVersion(new Version(package.Version)),
+                Id = $"SmartInk.{package.Name}",
+                Description = $"{package.Description}",
+                MinClientVersionString= "3.3.0"
+            };
+
+            NuGet.Frameworks.NuGetFramework targetFramework = new NuGet.Frameworks.NuGetFramework(new NuGet.Frameworks.NuGetFramework(".NETStandard2.0"));
+            IEnumerable <NuGet.Packaging.Core.PackageDependency> packages = new NuGet.Packaging.Core.PackageDependency[] { new NuGet.Packaging.Core.PackageDependency("NETStandard.Library", new NuGet.Versioning.VersionRange(new NuGet.Versioning.NuGetVersion(2, 0, 0))) };
+            var dependencyGroup = new PackageDependencyGroup(targetFramework, packages);
+            metadata.DependencyGroups = new PackageDependencyGroup[] { dependencyGroup };
+            PackageBuilder builder = new PackageBuilder();
+         
+            builder.Populate(metadata);
+
+            //var builder = new PackageBuilder();
+            //builder.Version = new NuGet.Versioning.NuGetVersion(new Version(package.Version));
+            builder.ContentFiles.Add(new ManifestContentFiles() { Include = $"**/SmartInkPackages/*", CopyToOutput = "true", Flatten = "false", BuildAction="None" });
+            builder.ContentFiles.Add(new ManifestContentFiles() { Include = $"**/SmartInkPackages/{package.Name}/*", CopyToOutput = "true", Flatten = "false", BuildAction = "None" });
+            builder.ContentFiles.Add(new ManifestContentFiles() { Include = $"**/SmartInkPackages/{package.Name}/Model/*", CopyToOutput = "true", Flatten = "false" , BuildAction="None"});
+            builder.ContentFiles.Add(new ManifestContentFiles() { Include = $"**/SmartInkPackages/{package.Name}/Icons/*", CopyToOutput = "true", Flatten = "false", BuildAction = "None" });
+            //builder.Title = $"SmartInk.{package.Name}";
+            //builder.Authors.Add("jab");
+            //builder.Owners.Add("jab");
+            //builder.Id = builder.Title;
+
+            var root = $"{_provider.RootFolderPath}\\{package.Name}\\";
+
+            List<ManifestFile> manifestFiles = new List<ManifestFile>();
+
+            var rootFolder = await StorageFolder.GetFolderFromPathAsync(root);
+          
+            
+            var files = await rootFolder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.OrderByName);
+            foreach (var file in files)
+            {
+                
+                ManifestFile manifestFile = new ManifestFile();
+                manifestFile.Source = file.Path;
+                manifestFile.Target = $"contentFiles\\cs\\uap10.0\\SmartInkPackages{file.Path.Replace(_provider.RootFolderPath, "")}";
+                manifestFiles.Add(manifestFile);
+
+            }
+
+            builder.PopulateFiles(root, manifestFiles);
+
+
+            using (var fileaccess = await destination.OpenAsync(FileAccessMode.ReadWrite))
+            {
+                Debug.WriteLine($"Publish package: {builder.ToString()}");
+                var stream = fileaccess.AsStreamForWrite();
+                builder.Save(stream);
+                await stream.FlushAsync();
+            }
             
 
         }

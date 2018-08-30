@@ -26,8 +26,8 @@ namespace Micosoft.MTC.SmartInk.Package
    
 
         public string Name { get { return _manifest.Name; } }
-        public string Description { get; set; }
-        public string Version { get; set; }
+        public string Description { get; set; } = "Windows 10 SmartInk Package";
+        public string Version { get; set; } = "1.0.0.0";
         public string Author { get; set; }
         public DateTimeOffset DatePublished { get; set; }
 

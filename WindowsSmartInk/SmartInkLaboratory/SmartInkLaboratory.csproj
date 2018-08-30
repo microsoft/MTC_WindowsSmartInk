@@ -136,7 +136,6 @@
     <Compile Include="ViewModels\NewPackageViewModel.cs" />
     <Compile Include="ViewModels\OpenPackageViewModel.cs" />
     <Compile Include="ViewModels\PackageManagerViewModel.cs" />
-    <Compile Include="ViewModels\PackageViewModel.cs" />
     <Compile Include="ViewModels\ProjectsViewModel.cs" />
     <Compile Include="ViewModels\ResourceKeysViewModel.cs" />
     <Compile Include="ViewModels\TestViewModel.cs" />

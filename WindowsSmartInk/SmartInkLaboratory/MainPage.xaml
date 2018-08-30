@@ -67,7 +67,7 @@
                 </StackPanel>
                 <HyperlinkButton Content="Manage..." Margin="20,0,0,0" Command="{Binding ManageProjects}"/>
             </StackPanel>
-            <StackPanel x:Name="PackagePanel" Orientation="Horizontal" Grid.Column="4" DataContext="{Binding Source={StaticResource Locator},Path=Package}">
+            <StackPanel x:Name="PackagePanel" Orientation="Horizontal" Grid.Column="4" DataContext="{Binding Source={StaticResource Locator},Path=PackageManager}">
                 <AppBarButton x:Name="NewPackageButton" Label="New Package" Icon="NewFolder"   AllowFocusOnInteraction="True" Command="{Binding NewPackage}">
                 
                 </AppBarButton>

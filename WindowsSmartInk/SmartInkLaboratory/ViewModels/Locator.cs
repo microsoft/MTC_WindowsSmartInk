@@ -34,10 +34,9 @@ namespace SmartInkLaboratory.ViewModels
             SimpleIoc.Default.Register<TrainViewModel>();
             SimpleIoc.Default.Register<TestViewModel>();
             SimpleIoc.Default.Register<NewPackageViewModel>();
-            //SimpleIoc.Default.Register<PackageManagerViewModel>();
             SimpleIoc.Default.Register<ManageViewModel>();
             SimpleIoc.Default.Register<OpenPackageViewModel>();
-            SimpleIoc.Default.Register<PackageViewModel>();
+            SimpleIoc.Default.Register<PackageManagerViewModel>();
 
             SimpleIoc.Default.Register<IClassifierService, CustomVisionClassifierBaseService>();
             SimpleIoc.Default.Register<ITagService, CustomVisionTagService>();
@@ -118,11 +117,11 @@ namespace SmartInkLaboratory.ViewModels
             }
         }
 
-        public PackageViewModel Package
+        public PackageManagerViewModel PackageManager
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<PackageViewModel>();
+                return ServiceLocator.Current.GetInstance<PackageManagerViewModel>();
             }
         }
 
