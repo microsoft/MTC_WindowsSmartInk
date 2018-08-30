@@ -272,6 +272,8 @@ namespace Micosoft.MTC.SmartInk.Package
         /// <returns></returns>
         public async Task SaveModelAsync(IStorageFile modelFile)
         {
+            if (modelFile.FileType != ".onnx")
+                throw new InvalidOperationException($"{modelFile} must have a file type of .onnx");
            
             await _provider.SaveModelAsync(modelFile);
             _manifest.Model = modelFile.Name;
