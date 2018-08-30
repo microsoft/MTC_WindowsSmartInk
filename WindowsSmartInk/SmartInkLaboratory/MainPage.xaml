@@ -74,7 +74,7 @@
                 <AppBarButton x:Name="OpenPackageButton" Label="Open Package" Icon="OpenLocal"  Command="{Binding OpenPackage}">
                   
                 </AppBarButton>
-                <AppBarButton x:Name="PublishPackageButton" Label="Publish Package" Icon="Library"  Command="{Binding PublishPackage}">
+                <AppBarButton x:Name="PublishPackageButton" Label="Create Nuget" Icon="Library"  Command="{Binding PublishPackage}">
 
                 </AppBarButton>
             </StackPanel>
