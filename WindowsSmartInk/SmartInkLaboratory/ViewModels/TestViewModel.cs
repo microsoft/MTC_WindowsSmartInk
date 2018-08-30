@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage;
 using Microsoft.MTC.SmartInk;
 using Windows.Media;
+using Micosoft.MTC.SmartInk.Package;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -91,6 +92,20 @@ namespace SmartInkLaboratory.ViewModels
             }
         }
 
+        private double _downloadProgress;
+        public double DownloadProgress
+        {
+            get { return _downloadProgress; }
+            set
+            {
+                if (_downloadProgress == value)
+                    return;
+                _downloadProgress = value;
+                RaisePropertyChanged(nameof(DownloadProgress));
+            }
+        }
+
+
         public ObservableCollection<Iteration> Iterations { get; set; } = new ObservableCollection<Iteration>();
 
         public RelayCommand UploadCorrection { get; set; }
@@ -140,7 +155,21 @@ namespace SmartInkLaboratory.ViewModels
                 var downloadUri = await _training.GetModuleDownloadUriAsync(SelectedIteration.Id);
                 if (downloadUri != null)
                 {
-                    await _state.CurrentPackage.DownloadModelAsync(downloadUri);
+                    var manager = new PackageManager();
+                    manager.ModelDownloadStarted += (s, e) => {
+                        VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "DownloadStarted" });
+                    };
+                    manager.ModelDownloadCompleted += (s, e) => {
+                        VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "DownloadCompleted" });
+                    };
+                    manager.ModelDownloadError += (s, e) => {
+                        VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "DownloadError" });
+                    };
+                    manager.ModelDownloadProgress += (s, e) => {
+                        DownloadProgress = e.Percentage;
+                    };
+                    var model = await manager.DownloadModelAsync(downloadUri);
+                    await _state.CurrentPackage.SaveModelAsync(model);
                 }
             });
 

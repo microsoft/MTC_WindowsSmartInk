@@ -13,25 +13,17 @@ using Windows.UI.Xaml;
 
 namespace Micosoft.MTC.SmartInk.Package
 {
-    public class DownloadProgressEventArgs: EventArgs
-    {
-        public double Percentage { get; set; }
-        public double BytesDownloaded { get; set; }
-        public double TotalBytes { get; set; }
-    }
+   
 
     public class SmartInkPackage
     {
-        CancellationTokenSource _cts;
+  
 
         private SmartInkManifest _manifest;
         private IPackageStorageProvider _provider;
         private Model _model;
 
-        public event EventHandler ModelDownloadStarted;
-        public event EventHandler ModelDownloadCompleted;
-        public event EventHandler ModelDownloadError;
-        public event EventHandler<DownloadProgressEventArgs> ModelDownloadProgress;
+   
 
         public string Name { get { return _manifest.Name; } }
         public string Description { get; set; }
@@ -46,7 +38,7 @@ namespace Micosoft.MTC.SmartInk.Package
             _provider = provider ?? throw new ArgumentNullException($"{nameof(provider)} cannot be null");
 
             _manifest =  new SmartInkManifest() { Name = name };
-            _cts = new CancellationTokenSource();
+           
         }
 
         internal SmartInkPackage(SmartInkManifest manifest,IPackageStorageProvider provider)
@@ -54,7 +46,7 @@ namespace Micosoft.MTC.SmartInk.Package
             _provider = provider ?? throw new ArgumentNullException($"{nameof(provider)} cannot be null");
 
             _manifest = manifest ?? throw new ArgumentNullException($"{nameof(manifest)} cannot be null");
-            _cts = new CancellationTokenSource();
+           
         }
 
      
@@ -206,28 +198,7 @@ namespace Micosoft.MTC.SmartInk.Package
             return await _provider.GetIconAsync(_manifest.IconMap[tagId]);
         }
 
-        public async Task DownloadModelAsync(Uri modelUri)
-        {
-            if (modelUri == null)
-                throw new ArgumentNullException($"{nameof(modelUri)} canot be null");
-
-            //if (!modelUri.IsFile)
-            //    throw new ArgumentOutOfRangeException($"{nameof(modelUri)} must be a file.");
-
-            var filename =  System.IO.Path.GetFileName(modelUri.LocalPath);
-            
-            var tempFile = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
-            BackgroundDownloader downloader = new BackgroundDownloader();
-            var download = downloader.CreateDownload(modelUri, tempFile);
-
-            await HandleDownloadAsync(download, true);
-            ModelDownloadCompleted?.Invoke(this, null);
-
-            await _provider.SaveModelAsync(tempFile);
-            _manifest.Model = tempFile.Name;
-            await SaveAsync();
-            
-        }
+      
 
         public async Task<IDictionary<string, float>> EvaluateAsync(SoftwareBitmap bitmap)
         {
@@ -249,47 +220,13 @@ namespace Micosoft.MTC.SmartInk.Package
             await _provider.SaveManifestAsync(_manifest);
         }
 
-        private async Task HandleDownloadAsync(DownloadOperation download, bool start)
+        public async Task SaveModelAsync(IStorageFile modelFile)
         {
-            
-            try
-            {
-                Progress<DownloadOperation> progressCallback = new Progress<DownloadOperation>(DownloadProgress);
-                if (start)
-                {
-                    ModelDownloadStarted?.Invoke(this, null);
-                    await download.StartAsync().AsTask(_cts.Token,progressCallback);
-                }
-                else {
-                    await download.AttachAsync().AsTask(_cts.Token, progressCallback);
-                }
-
-                var response = download.GetResponseInformation();
-
-            }
-            catch (TaskCanceledException ex)
-            {
-            }
-            catch (Exception ex) {
-                ModelDownloadError?.Invoke(this, null);
-            }
-    
+            await _provider.SaveModelAsync(modelFile);
+            _manifest.Model = modelFile.Name;
+            await SaveAsync();
         }
 
-        private void DownloadProgress(DownloadOperation operation)
-        {
-            var currentProgress = operation.Progress;
-            if (currentProgress.TotalBytesToReceive > 0)
-            {
-                if (ModelDownloadProgress != null)
-                {
-                    var progressEvent = new DownloadProgressEventArgs();
-                    progressEvent.Percentage = currentProgress.BytesReceived * 100 / currentProgress.TotalBytesToReceive;
-                    progressEvent.TotalBytes = currentProgress.TotalBytesToReceive;
-                    progressEvent.BytesDownloaded = currentProgress.BytesReceived;
-                    ModelDownloadProgress.Invoke(this, progressEvent);
-                }
-            }
-        }
+        
     }
 }
