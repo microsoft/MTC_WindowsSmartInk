@@ -19,6 +19,7 @@ using Windows.Storage;
 using Microsoft.MTC.SmartInk;
 using Windows.Media;
 using Micosoft.MTC.SmartInk.Package;
+using Windows.UI.Input.Inking;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -178,6 +179,14 @@ namespace SmartInkLaboratory.ViewModels
         public async Task<IDictionary<string, float>> ProcessInkImageAsync(SoftwareBitmap bitmap)
         {
             var result = await _state.CurrentPackage.EvaluateAsync(bitmap);
+            ProcessModelOutput(result);
+            return result;
+        }
+
+        public async Task<IDictionary<string, float>> ProcessInkImageAsync(IList<InkStroke> strokes)
+        {
+            var result = await _state.CurrentPackage.EvaluateAsync(strokes);
+            ProcessModelOutput(result);
             return result;
         }
 

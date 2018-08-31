@@ -71,8 +71,9 @@ namespace SmartInkLaboratory
                 _timer.Stop();
                 Debug.WriteLine($"finished");
                 var boundingBox = GetBoundingBox(_sessionStrokes);
-                var bitmap = GetInkBitmap(boundingBox);
-                var result = await _dataContextViewModel.ProcessInkImageAsync(bitmap);
+                //var bitmap = GetInkBitmap(boundingBox);
+                //var result = await _dataContextViewModel.ProcessInkImageAsync(bitmap);
+                var result = await _dataContextViewModel.ProcessInkImageAsync(_sessionStrokes);
 
                 if (result != null)
                 {

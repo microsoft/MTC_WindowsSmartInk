@@ -19,6 +19,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Graphics.Imaging;
+using Windows.UI.Input.Inking;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -166,16 +167,29 @@ namespace SmartInkLaboratory.ViewModels
             if (_state.CurrentTag == null)
                 return null;
 
+            await SetImageSourceAsync(bitmap);
+            //await  SaveBitmapAsync(bitmap);
+            return null;
+        }
+
+        private async Task SetImageSourceAsync(SoftwareBitmap bitmap)
+        {
             var source = new SoftwareBitmapSource();
             await source.SetBitmapAsync(bitmap);
             InkDrawing = source;
             var saveFile = await GetBitmapSaveFile();
             SaveSoftwareBitmapToFile(bitmap, saveFile);
-            //await  SaveBitmapAsync(bitmap);
+        }
+
+        public async Task<IDictionary<string, float>> ProcessInkImageAsync(IList<InkStroke> strokes)
+        {
+            await _state.CurrentPackage.EvaluateAsync(strokes);
+            var bitmap = _state.CurrentPackage.LastEvaluatedBitmap;
+            await SetImageSourceAsync(bitmap);
             return null;
         }
 
-        private async void SaveSoftwareBitmapToFile(SoftwareBitmap softwareBitmap, StorageFile outputFile)
+            private async void SaveSoftwareBitmapToFile(SoftwareBitmap softwareBitmap, StorageFile outputFile)
         {
             using (IRandomAccessStream stream = await outputFile.OpenAsync(FileAccessMode.ReadWrite))
             {
@@ -186,9 +200,9 @@ namespace SmartInkLaboratory.ViewModels
                 encoder.SetSoftwareBitmap(softwareBitmap);
 
                 // Set additional encoding parameters, if needed
-                encoder.BitmapTransform.ScaledWidth = 320;
-                encoder.BitmapTransform.ScaledHeight = 240;
-                encoder.BitmapTransform.Rotation = Windows.Graphics.Imaging.BitmapRotation.Clockwise90Degrees;
+                //encoder.BitmapTransform.ScaledWidth = 320;
+                //encoder.BitmapTransform.ScaledHeight = 240;
+                //encoder.BitmapTransform.Rotation = Windows.Graphics.Imaging.BitmapRotation.Clockwise90Degrees;
                 encoder.BitmapTransform.InterpolationMode = BitmapInterpolationMode.Fant;
                 encoder.IsThumbnailGenerated = true;
 

@@ -1,15 +1,23 @@
 ﻿using Micosoft.MTC.SmartInk.Package.Storage;
+using Microsoft.Graphics.Canvas;
 using Microsoft.MTC.SmartInk;
+using Microsoft.MTC.SmartInk.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Graphics.Imaging;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
+using Windows.UI;
+using Windows.UI.Input.Inking;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Micosoft.MTC.SmartInk.Package
 {
@@ -20,6 +28,7 @@ namespace Micosoft.MTC.SmartInk.Package
     /// </summary>
     public class SmartInkPackage
     {
+        private const int INK_IMAGE_SIZE = 256;
   
         private SmartInkManifest _manifest;
         private IPackageStorageProvider _provider;
@@ -31,6 +40,8 @@ namespace Micosoft.MTC.SmartInk.Package
         public string Version { get; set; } = "1.0.0.0";
         public string Author { get; set; }
         public DateTimeOffset DatePublished { get; set; }
+
+        public SoftwareBitmap LastEvaluatedBitmap { get; set; }
 
         internal SmartInkPackage(string name,  IPackageStorageProvider provider)
         {
@@ -243,6 +254,9 @@ namespace Micosoft.MTC.SmartInk.Package
         /// <returns><see cref="IDictionary{TKey, TValue}"/> containing scoring for submitted image (tag/probability)</returns>
         public async Task<IDictionary<string, float>> EvaluateAsync(SoftwareBitmap bitmap)
         {
+            if (bitmap == null)
+                throw new ArgumentNullException($"{nameof(bitmap)} cannot be null");
+
             if (string.IsNullOrWhiteSpace(_manifest.Model))
                 throw new InvalidOperationException("Model file not available");
 
@@ -253,7 +267,107 @@ namespace Micosoft.MTC.SmartInk.Package
 
             _model = await Model.CreateModelAsync(modelfile, _manifest.TagList.Values.ToList());
             var result = await _model.EvaluateAsync(bitmap);
+            LastEvaluatedBitmap = bitmap;
             return result.loss;
+        }
+
+        public async Task<IDictionary<string, float>> EvaluateAsync(IList<InkStroke> strokes)
+        {
+            if (strokes == null)
+                throw new ArgumentNullException($"{nameof(strokes)} cannot be null");
+
+            if (strokes.Count == 0)
+                return new Dictionary<string, float>();
+
+            var boundingBox = strokes.GetBoundingBox();
+            var scale = CalculateScale(boundingBox);
+            var offset = CalculateOffset(boundingBox, strokes);
+
+            var scaledStrokes = GetTransformedStrokes(strokes, offset,  scale);
+
+            var newBounding = scaledStrokes.GetBoundingBox();
+            var bitmap = DrawInk(scaledStrokes);
+
+            return await EvaluateAsync(bitmap);
+        }
+
+        //public  SoftwareBitmap GetBitmapUsedForEvaluation(IList<InkStroke> strokes)
+        //{
+        //    if (strokes == null)
+        //        throw new ArgumentNullException($"{nameof(strokes)} cannot be null");
+
+        //    if (strokes.Count == 0)
+        //        return null;
+
+        //    var boundingBox = strokes.GetBoundingBox();
+        //    var scale = CalculateScale(boundingBox);
+        //    var offset = CalculateOffset(boundingBox, strokes);
+
+        //    var scaledStrokes = GetTransformedStrokes(strokes, offset, scale);
+
+        //    var newBounding = scaledStrokes.GetBoundingBox();
+        //    return DrawInk(scaledStrokes);
+        //}
+
+        private SoftwareBitmap DrawInk(IEnumerable<InkStroke> strokes)
+        {
+            WriteableBitmap writeableBitmap = null;
+            CanvasDevice device = CanvasDevice.GetSharedDevice();
+            using (CanvasRenderTarget offscreen = new CanvasRenderTarget(device, INK_IMAGE_SIZE, INK_IMAGE_SIZE, 96))
+            {
+                using (CanvasDrawingSession ds = offscreen.CreateDrawingSession())
+                {
+
+                    ds.Units = CanvasUnits.Pixels;
+                    ds.Clear(Colors.White);
+                    ds.DrawInk(strokes);
+                }
+
+                writeableBitmap = new WriteableBitmap((int)offscreen.SizeInPixels.Width, (int)offscreen.SizeInPixels.Height);
+                offscreen.GetPixelBytes().CopyTo(writeableBitmap.PixelBuffer);
+               
+            }
+
+            SoftwareBitmap inkBitmap = SoftwareBitmap.CreateCopyFromBuffer(
+                 writeableBitmap.PixelBuffer,
+                 BitmapPixelFormat.Bgra8,
+                 writeableBitmap.PixelWidth,
+                 writeableBitmap.PixelHeight,
+                 BitmapAlphaMode.Premultiplied
+
+             );
+
+            return inkBitmap;
+        }
+
+        private float CalculateScale(Rect boundingBox)
+        {
+            var wScale = (float)(INK_IMAGE_SIZE / boundingBox.Width);
+            var hScale = (float)(INK_IMAGE_SIZE / boundingBox.Height);
+            //if (wScale > 1 && hScale > 1)
+            //    return 1;
+
+            return (wScale <= hScale) ? wScale : hScale; 
+        }
+
+        private Vector2 CalculateOffset(Rect boundingBox, IList<InkStroke> strokes)
+        {
+            double inkSize = 0;
+            foreach (var stroke in strokes)
+            {
+                var drawingAttributes = stroke.DrawingAttributes;
+                var strokeSize = drawingAttributes.Size;
+                if (strokeSize.Height > inkSize)
+                    inkSize = strokeSize.Height;
+                if (strokeSize.Width > inkSize)
+                    inkSize = strokeSize.Width;
+                         
+            }
+
+            var point = new Vector2();
+            point.X = (float)(-boundingBox.Left + inkSize);
+            point.Y = (float)(-boundingBox.Top + inkSize);
+            return point;
         }
 
         /// <summary>
@@ -279,7 +393,36 @@ namespace Micosoft.MTC.SmartInk.Package
             _manifest.Model = modelFile.Name;
             await SaveAsync();
         }
+    
 
-        
+        private static IList<InkStroke> GetTransformedStrokes(IList<InkStroke> strokeList, Vector2 offset, float scale)
+
+        {
+            var point = strokeList[0].PointTransform;
+            var translation = Matrix3x2.CreateTranslation(offset);
+            var scaleMatrix = Matrix3x2.CreateScale(scale);
+          
+
+            var builder = new InkStrokeBuilder();
+
+
+            var newStrokes = new List<InkStroke>();
+            foreach (var stroke in strokeList)
+            {
+                var scaledStroke = builder.CreateStrokeFromInkPoints(stroke.GetInkPoints(), scaleMatrix);
+                var translatedStroke = builder.CreateStrokeFromInkPoints(scaledStroke.GetInkPoints(), translation);
+                //var drawAttributes = stroke.DrawingAttributes;
+                //var strokeSize = drawAttributes.Size;
+                //strokeSize.Width = strokeSize.Width * scale;
+                //strokeSize.Height = strokeSize.Height * scale;
+                //drawAttributes.Size = strokeSize;
+
+                //newStroke.DrawingAttributes = drawAttributes;
+                newStrokes.Add(translatedStroke);
+            }
+
+            return newStrokes;
+        }
+
     }
 }

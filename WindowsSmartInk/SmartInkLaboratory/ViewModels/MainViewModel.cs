@@ -16,6 +16,7 @@ using Windows.Storage.Streams;
 using Micosoft.MTC.SmartInk.Package;
 using System.Collections.Generic;
 using Windows.Graphics.Imaging;
+using Windows.UI.Input.Inking;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -86,8 +87,25 @@ namespace SmartInkLaboratory.ViewModels
 
             return null;
         }
+        public async Task<IDictionary<string, float>> ProcessInkImageAsync(IList<InkStroke> strokes)
+        {
+            switch (Mode)
+            {
+                case InteractionMode.Mapping:
+                    return null;
+                case InteractionMode.Training:
+                    return await Train.ProcessInkImageAsync(strokes);
+                case InteractionMode.Testing:
+                    return await Test.ProcessInkImageAsync(strokes);
+                case InteractionMode.Packaging:
+                    break;
+            }
 
-       
+            return null;
+        }
+
+
+
 
         //protected override async Task InitializeAsync()
         //{
