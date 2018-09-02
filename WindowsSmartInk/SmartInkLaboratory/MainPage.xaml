@@ -70,7 +70,7 @@
                         <Flyout>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Project Name:" Margin="0,0,10,0"/>
-                                <TextBox x:Name="NewProjectName" MinWidth="150" />
+                                <TextBox x:Name="NewProjectName" MinWidth="150" Margin="0,0,20,0" />
                                 <Button Content="Create" Command="{Binding CreateProject}" CommandParameter="{Binding ElementName=NewProjectName,Path=Text}" Margin="0,0,20,0"/>
                             </StackPanel>
                         </Flyout>
