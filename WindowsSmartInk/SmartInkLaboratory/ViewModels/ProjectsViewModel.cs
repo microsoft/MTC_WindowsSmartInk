@@ -46,7 +46,9 @@ namespace SmartInkLaboratory.ViewModels
             get { return _state.CurrentProject; }
             set
             {
-              
+                if (_state.CurrentProject?.Id == value.Id)
+                    return;
+
                 _state.CurrentProject = value;
                 ProjectChanged?.Invoke(this, new ProjectChangedEventArgs { NewProject = _state.CurrentProject });
                 if (_state.CurrentProject != null)
@@ -79,7 +81,9 @@ namespace SmartInkLaboratory.ViewModels
             });
 
             this.CreateProject = new RelayCommand<string>(async(project) => {
-                await _projects.CreateProjectAsync(project);
+                var newProject = await _projects.CreateProjectAsync(project);
+                ProjectsList.Add(newProject);
+                CurrentProject = newProject;
             });
             this.ManageProjects = new RelayCommand(async () => {
                 await _dialog.OpenAsync(DialogKeys.ManageProjects,this);
