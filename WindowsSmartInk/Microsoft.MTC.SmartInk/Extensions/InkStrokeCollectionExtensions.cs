@@ -25,8 +25,8 @@ namespace Microsoft.MTC.SmartInk.Extensions
             var strokeSize = drawAttributes.Size;
 
             //add border buffer for stroke width
-            _boundingBox.Height += strokeSize.Height * 2;
-            _boundingBox.Width += strokeSize.Width * 2;
+            //_boundingBox.Height += strokeSize.Height * 2;
+            //_boundingBox.Width += strokeSize.Width * 2;
 
             return _boundingBox;
         }

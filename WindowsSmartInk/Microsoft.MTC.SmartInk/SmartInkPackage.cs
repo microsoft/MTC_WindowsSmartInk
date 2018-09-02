@@ -17,6 +17,7 @@ using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Input.Inking;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Micosoft.MTC.SmartInk.Package
@@ -281,9 +282,9 @@ namespace Micosoft.MTC.SmartInk.Package
 
             var boundingBox = strokes.GetBoundingBox();
             var scale = CalculateScale(boundingBox);
-            var offset = CalculateOffset(boundingBox, strokes);
+            var offset = CalculateOffset( strokes);
 
-            var scaledStrokes = GetTransformedStrokes(strokes, offset,  scale);
+            var scaledStrokes = GetScaledAndTransformedStrokes(strokes,   scale);
 
             var newBounding = scaledStrokes.GetBoundingBox();
             var bitmap = DrawInk(scaledStrokes);
@@ -350,9 +351,10 @@ namespace Micosoft.MTC.SmartInk.Package
             return (wScale <= hScale) ? wScale : hScale; 
         }
 
-        private Vector2 CalculateOffset(Rect boundingBox, IList<InkStroke> strokes)
+        private Vector2 CalculateOffset(IList<InkStroke> strokes)
         {
             double inkSize = 0;
+            var boundingBox = strokes.GetBoundingBox();
             foreach (var stroke in strokes)
             {
                 var drawingAttributes = stroke.DrawingAttributes;
@@ -393,35 +395,38 @@ namespace Micosoft.MTC.SmartInk.Package
             _manifest.Model = modelFile.Name;
             await SaveAsync();
         }
-    
 
-        private static IList<InkStroke> GetTransformedStrokes(IList<InkStroke> strokeList, Vector2 offset, float scale)
 
+        private static IList<InkStroke> GetScaledAndTransformedStrokes(IList<InkStroke> strokeList, float scale)
         {
-            var point = strokeList[0].PointTransform;
-            var translation = Matrix3x2.CreateTranslation(offset);
-            var scaleMatrix = Matrix3x2.CreateScale(scale);
-          
-
             var builder = new InkStrokeBuilder();
+            var newStrokeList = new List<InkStroke>();
+            var boundingBox = strokeList.GetBoundingBox();
 
-
-            var newStrokes = new List<InkStroke>();
-            foreach (var stroke in strokeList)
+            foreach (var singleStroke in strokeList)
             {
-                var scaledStroke = builder.CreateStrokeFromInkPoints(stroke.GetInkPoints(), scaleMatrix);
-                var translatedStroke = builder.CreateStrokeFromInkPoints(scaledStroke.GetInkPoints(), translation);
-                //var drawAttributes = stroke.DrawingAttributes;
-                //var strokeSize = drawAttributes.Size;
-                //strokeSize.Width = strokeSize.Width * scale;
-                //strokeSize.Height = strokeSize.Height * scale;
-                //drawAttributes.Size = strokeSize;
+             
 
-                //newStroke.DrawingAttributes = drawAttributes;
-                newStrokes.Add(translatedStroke);
+                var translateMatrix = new Matrix(1, 0, 0, 1, -boundingBox.X, -boundingBox.Y);
+
+                var newInkPoints = new List<InkPoint>();
+                var originalInkPoints = singleStroke.GetInkPoints();
+                foreach (var point in originalInkPoints)
+                {
+                    var newPosition = translateMatrix.Transform(point.Position);
+                    var newInkPoint = new InkPoint(newPosition, point.Pressure, point.TiltX, point.TiltY, point.Timestamp);
+                    newInkPoints.Add(newInkPoint);
+                }
+
+
+                var newStroke = builder.CreateStrokeFromInkPoints(newInkPoints, new Matrix3x2(scale, 0, 0, scale, 0, 0));
+
+
+                newStrokeList.Add(newStroke);
+
             }
 
-            return newStrokes;
+            return newStrokeList;
         }
 
     }
