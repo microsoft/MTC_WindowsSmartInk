@@ -285,21 +285,23 @@ namespace Micosoft.MTC.SmartInk.Package
             if (strokes.Count == 0)
                 return new Dictionary<string, float>();
 
-            var boundingBox = strokes.GetBoundingBox();
-            var scale = CalculateScale(boundingBox);
-            var offset = CalculateOffset( strokes);
-
-            var scaledStrokes = GetScaledAndTransformedStrokes(strokes,   scale);
-
-            var newBounding = scaledStrokes.GetBoundingBox();
-            var bitmap = DrawInk(scaledStrokes);
+            var bitmap = DrawInk(strokes);
 
             return await EvaluateAsync(bitmap);
         }
 
      
-        public SoftwareBitmap DrawInk(IEnumerable<InkStroke> strokes)
+        public SoftwareBitmap DrawInk(IList<InkStroke> strokes)
         {
+            if (strokes == null)
+                throw new ArgumentNullException($"{nameof(strokes)} cannot be null");
+
+            var boundingBox = strokes.GetBoundingBox();
+            var scale = CalculateScale(boundingBox);
+
+            var scaledStrokes = ScaleAndTransformStrokes(strokes, scale);
+
+
             WriteableBitmap writeableBitmap = null;
             CanvasDevice device = CanvasDevice.GetSharedDevice();
             using (CanvasRenderTarget offscreen = new CanvasRenderTarget(device, INK_IMAGE_SIZE, INK_IMAGE_SIZE, 96))
@@ -309,7 +311,7 @@ namespace Micosoft.MTC.SmartInk.Package
 
                     ds.Units = CanvasUnits.Pixels;
                     ds.Clear(Colors.White);
-                    ds.DrawInk(strokes);
+                    ds.DrawInk(scaledStrokes);
                 }
 
                 writeableBitmap = new WriteableBitmap((int)offscreen.SizeInPixels.Width, (int)offscreen.SizeInPixels.Height);
@@ -381,7 +383,7 @@ namespace Micosoft.MTC.SmartInk.Package
         }
 
 
-        private static IList<InkStroke> GetScaledAndTransformedStrokes(IList<InkStroke> strokeList, float scale)
+        private static IList<InkStroke> ScaleAndTransformStrokes(IList<InkStroke> strokeList, float scale)
         {
             var builder = new InkStrokeBuilder();
             var newStrokeList = new List<InkStroke>();
