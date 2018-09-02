@@ -46,7 +46,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
            
-            <StackPanel x:Name="ProjectPanel" Grid.Column="2" Orientation="Horizontal" DataContext="{Binding Source={StaticResource Locator}, Path=Projects}">
+            <StackPanel x:Name="ProjectPanel" Grid.Column="2" Orientation="Horizontal" DataContext="{Binding Source={StaticResource Locator}, Path=Projects}" Margin="-4,0,0,0">
                 
                 <StackPanel Margin="0,8,0,0"  >
                     <TextBlock Text="Current Project:"/>
@@ -65,6 +65,17 @@
                         </controls:SelectionList.ItemTemplate>
                     </controls:SelectionList>
                 </StackPanel>
+                <AppBarButton Label="New Project" Icon="Add" Margin="20,0,0,0" AllowFocusOnInteraction="True" >
+                    <AppBarButton.Flyout>
+                        <Flyout>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Project Name:" Margin="0,0,10,0"/>
+                                <TextBox x:Name="NewProjectName" MinWidth="150" />
+                                <Button Content="Create" Command="{Binding CreateProject}" CommandParameter="{Binding ElementName=NewProjectName,Path=Text}" Margin="0,0,20,0"/>
+                            </StackPanel>
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
                 <HyperlinkButton Content="Manage..." Margin="20,0,0,0" Command="{Binding ManageProjects}"/>
             </StackPanel>
             <StackPanel x:Name="PackagePanel" Orientation="Horizontal" Grid.Column="4" DataContext="{Binding Source={StaticResource Locator},Path=PackageManager}">
