@@ -285,78 +285,15 @@ namespace Micosoft.MTC.SmartInk.Package
             if (strokes.Count == 0)
                 return new Dictionary<string, float>();
 
-            var bitmap = DrawInk(strokes);
+            var bitmap = strokes.DrawInk(INK_IMAGE_SIZE, INK_IMAGE_SIZE);
 
             return await EvaluateAsync(bitmap);
         }
 
      
-        public SoftwareBitmap DrawInk(IList<InkStroke> strokes)
-        {
-            if (strokes == null)
-                throw new ArgumentNullException($"{nameof(strokes)} cannot be null");
+        
 
-            var boundingBox = strokes.GetBoundingBox();
-            var scale = CalculateScale(boundingBox);
-
-            var scaledStrokes = ScaleAndTransformStrokes(strokes, scale);
-
-
-            WriteableBitmap writeableBitmap = null;
-            CanvasDevice device = CanvasDevice.GetSharedDevice();
-            using (CanvasRenderTarget offscreen = new CanvasRenderTarget(device, INK_IMAGE_SIZE, INK_IMAGE_SIZE, 96))
-            {
-                using (CanvasDrawingSession ds = offscreen.CreateDrawingSession())
-                {
-
-                    ds.Units = CanvasUnits.Pixels;
-                    ds.Clear(Colors.White);
-                    ds.DrawInk(scaledStrokes);
-                }
-
-                writeableBitmap = new WriteableBitmap((int)offscreen.SizeInPixels.Width, (int)offscreen.SizeInPixels.Height);
-                offscreen.GetPixelBytes().CopyTo(writeableBitmap.PixelBuffer);
-            }
-
-            SoftwareBitmap inkBitmap = SoftwareBitmap.CreateCopyFromBuffer(
-                 writeableBitmap.PixelBuffer,
-                 BitmapPixelFormat.Bgra8,
-                 writeableBitmap.PixelWidth,
-                 writeableBitmap.PixelHeight,
-                 BitmapAlphaMode.Premultiplied
-             );
-
-            return inkBitmap;
-        }
-
-        private float CalculateScale(Rect boundingBox)
-        {
-            var wScale = (float)(INK_IMAGE_SIZE / boundingBox.Width);
-            var hScale = (float)(INK_IMAGE_SIZE / boundingBox.Height);
-
-            return (wScale <= hScale) ? wScale : hScale; 
-        }
-
-        private Vector2 CalculateOffset(IList<InkStroke> strokes)
-        {
-            double inkSize = 0;
-            var boundingBox = strokes.GetBoundingBox();
-            foreach (var stroke in strokes)
-            {
-                var drawingAttributes = stroke.DrawingAttributes;
-                var strokeSize = drawingAttributes.Size;
-                if (strokeSize.Height > inkSize)
-                    inkSize = strokeSize.Height;
-                if (strokeSize.Width > inkSize)
-                    inkSize = strokeSize.Width;
-                         
-            }
-
-            var point = new Vector2();
-            point.X = (float)(-boundingBox.Left + inkSize);
-            point.Y = (float)(-boundingBox.Top + inkSize);
-            return point;
-        }
+    
 
         /// <summary>
         /// Save the current package state
@@ -383,32 +320,6 @@ namespace Micosoft.MTC.SmartInk.Package
         }
 
 
-        private static IList<InkStroke> ScaleAndTransformStrokes(IList<InkStroke> strokeList, float scale)
-        {
-            var builder = new InkStrokeBuilder();
-            var newStrokeList = new List<InkStroke>();
-            var boundingBox = strokeList.GetBoundingBox();
-
-            foreach (var singleStroke in strokeList)
-            {
-                var translateMatrix = new Matrix(1, 0, 0, 1, -boundingBox.X, -boundingBox.Y);
-
-                var newInkPoints = new List<InkPoint>();
-                var originalInkPoints = singleStroke.GetInkPoints();
-                foreach (var point in originalInkPoints)
-                {
-                    var newPosition = translateMatrix.Transform(point.Position);
-                    var newInkPoint = new InkPoint(newPosition, point.Pressure, point.TiltX, point.TiltY, point.Timestamp);
-                    newInkPoints.Add(newInkPoint);
-                }
-
-                var newStroke = builder.CreateStrokeFromInkPoints(newInkPoints, new Matrix3x2(scale, 0, 0, scale, 0, 0));
-
-                newStrokeList.Add(newStroke);
-            }
-
-            return newStrokeList;
-        }
-
+      
     }
 }

@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Graphics.Imaging;
 using Windows.UI.Input.Inking;
+using Microsoft.MTC.SmartInk.Extensions;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -183,7 +184,7 @@ namespace SmartInkLaboratory.ViewModels
 
         public async Task<IDictionary<string, float>> ProcessInkImageAsync(IList<InkStroke> strokes)
         {
-            var inkBitmap = _state.CurrentPackage.DrawInk(strokes);
+            var inkBitmap = strokes.DrawInk();
             await SetImageSourceAsync(inkBitmap);
             return null;
         }
