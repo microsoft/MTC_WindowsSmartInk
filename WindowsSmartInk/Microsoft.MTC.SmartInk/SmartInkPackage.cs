@@ -298,7 +298,7 @@ namespace Micosoft.MTC.SmartInk.Package
         }
 
      
-        private SoftwareBitmap DrawInk(IEnumerable<InkStroke> strokes)
+        public SoftwareBitmap DrawInk(IEnumerable<InkStroke> strokes)
         {
             WriteableBitmap writeableBitmap = null;
             CanvasDevice device = CanvasDevice.GetSharedDevice();
