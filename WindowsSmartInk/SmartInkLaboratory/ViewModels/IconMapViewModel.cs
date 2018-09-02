@@ -78,6 +78,9 @@ namespace SmartInkLaboratory.ViewModels
             };
 
             _state.TagChanged += async (s,e)=>{
+                if (_state.CurrentPackage == null)
+                    return;
+
                 if (_state.CurrentTag != null)
                     await SetIconLocation(_state.CurrentTag.Id);
                 OpenFile.RaiseCanExecuteChanged();
@@ -107,6 +110,7 @@ namespace SmartInkLaboratory.ViewModels
 
         public async Task<IStorageFile> GetIconFileAsync(Guid currentTagId)
         {
+        
             var icon = await _state.CurrentPackage.GetIconAsync(currentTagId);
             if (icon == null)
                 icon = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Images/no_icon.png"));
