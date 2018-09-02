@@ -292,24 +292,7 @@ namespace Micosoft.MTC.SmartInk.Package
             return await EvaluateAsync(bitmap);
         }
 
-        //public  SoftwareBitmap GetBitmapUsedForEvaluation(IList<InkStroke> strokes)
-        //{
-        //    if (strokes == null)
-        //        throw new ArgumentNullException($"{nameof(strokes)} cannot be null");
-
-        //    if (strokes.Count == 0)
-        //        return null;
-
-        //    var boundingBox = strokes.GetBoundingBox();
-        //    var scale = CalculateScale(boundingBox);
-        //    var offset = CalculateOffset(boundingBox, strokes);
-
-        //    var scaledStrokes = GetTransformedStrokes(strokes, offset, scale);
-
-        //    var newBounding = scaledStrokes.GetBoundingBox();
-        //    return DrawInk(scaledStrokes);
-        //}
-
+     
         private SoftwareBitmap DrawInk(IEnumerable<InkStroke> strokes)
         {
             WriteableBitmap writeableBitmap = null;
