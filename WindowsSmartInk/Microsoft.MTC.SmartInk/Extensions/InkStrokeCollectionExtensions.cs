@@ -17,6 +17,7 @@ namespace Microsoft.MTC.SmartInk.Extensions
 {
     public static class InkStrokeCollectionExtensions
     {
+
         public static Rect GetBoundingBox(this IList<InkStroke> strokes)
         {
             Rect _boundingBox = Rect.Empty;
@@ -38,7 +39,7 @@ namespace Microsoft.MTC.SmartInk.Extensions
             return _boundingBox;
         }
 
-        public static SoftwareBitmap DrawInk(this IList<InkStroke> strokes, double width = 0, double height = 0)
+        public static SoftwareBitmap DrawInk(this IList<InkStroke> strokes, double width = 0, double height = 0, Color? backgroundColor = null  )
         {
             if (strokes == null)
                 throw new ArgumentNullException($"{nameof(strokes)} cannot be null");
@@ -50,6 +51,9 @@ namespace Microsoft.MTC.SmartInk.Extensions
 
             if (height == 0)
                 height = boundingBox.Height;
+
+            if (backgroundColor == null)
+                backgroundColor = Colors.White;
 
             var scale = CalculateScale(boundingBox, width, height);
 
@@ -64,7 +68,7 @@ namespace Microsoft.MTC.SmartInk.Extensions
                 {
 
                     ds.Units = CanvasUnits.Pixels;
-                    ds.Clear(Colors.White);
+                    ds.Clear(backgroundColor.Value);
                     ds.DrawInk(scaledStrokes);
                 }
 
