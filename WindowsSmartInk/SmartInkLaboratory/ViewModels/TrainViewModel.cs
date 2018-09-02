@@ -183,9 +183,8 @@ namespace SmartInkLaboratory.ViewModels
 
         public async Task<IDictionary<string, float>> ProcessInkImageAsync(IList<InkStroke> strokes)
         {
-            await _state.CurrentPackage.EvaluateAsync(strokes);
-            var bitmap = _state.CurrentPackage.LastEvaluatedBitmap;
-            await SetImageSourceAsync(bitmap);
+            var inkBitmap = _state.CurrentPackage.DrawInk(strokes);
+            await SetImageSourceAsync(inkBitmap);
             return null;
         }
 
