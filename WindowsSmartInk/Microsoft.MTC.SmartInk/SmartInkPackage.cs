@@ -272,6 +272,11 @@ namespace Micosoft.MTC.SmartInk.Package
             return result.loss;
         }
 
+        /// <summary>
+        /// Evaluates ink strokes using package ONNX model
+        /// </summary>
+        /// <param name="strokes">List of strokes to be evaluated against model as single image</param>
+        /// <returns><see cref="IDictionary{TKey, TValue}"/> containing scoring for submitted image (tag/probability)</returns>
         public async Task<IDictionary<string, float>> EvaluateAsync(IList<InkStroke> strokes)
         {
             if (strokes == null)
@@ -309,7 +314,6 @@ namespace Micosoft.MTC.SmartInk.Package
 
                 writeableBitmap = new WriteableBitmap((int)offscreen.SizeInPixels.Width, (int)offscreen.SizeInPixels.Height);
                 offscreen.GetPixelBytes().CopyTo(writeableBitmap.PixelBuffer);
-               
             }
 
             SoftwareBitmap inkBitmap = SoftwareBitmap.CreateCopyFromBuffer(
@@ -318,7 +322,6 @@ namespace Micosoft.MTC.SmartInk.Package
                  writeableBitmap.PixelWidth,
                  writeableBitmap.PixelHeight,
                  BitmapAlphaMode.Premultiplied
-
              );
 
             return inkBitmap;
@@ -328,8 +331,6 @@ namespace Micosoft.MTC.SmartInk.Package
         {
             var wScale = (float)(INK_IMAGE_SIZE / boundingBox.Width);
             var hScale = (float)(INK_IMAGE_SIZE / boundingBox.Height);
-            //if (wScale > 1 && hScale > 1)
-            //    return 1;
 
             return (wScale <= hScale) ? wScale : hScale; 
         }
@@ -388,8 +389,6 @@ namespace Micosoft.MTC.SmartInk.Package
 
             foreach (var singleStroke in strokeList)
             {
-             
-
                 var translateMatrix = new Matrix(1, 0, 0, 1, -boundingBox.X, -boundingBox.Y);
 
                 var newInkPoints = new List<InkPoint>();
@@ -401,12 +400,9 @@ namespace Micosoft.MTC.SmartInk.Package
                     newInkPoints.Add(newInkPoint);
                 }
 
-
                 var newStroke = builder.CreateStrokeFromInkPoints(newInkPoints, new Matrix3x2(scale, 0, 0, scale, 0, 0));
 
-
                 newStrokeList.Add(newStroke);
-
             }
 
             return newStrokeList;
