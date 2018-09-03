@@ -11,7 +11,6 @@ namespace SmartInkLaboratory.ViewModels
 {
     public interface IInkProcessor
     {
-        Task<IDictionary<string , float >> ProcessInkImageAsync(SoftwareBitmap bitmap);
-        Task<IDictionary<string, float>> ProcessInkImageAsync(IList<InkStroke> strokes);
+        Task<IDictionary<string, float>> ProcessInkAsync(IList<InkStroke> strokes);
     }
 }

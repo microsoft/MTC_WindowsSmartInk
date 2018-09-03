@@ -71,32 +71,34 @@ namespace SmartInkLaboratory.ViewModels
          
         }
 
-        public async Task<IDictionary<string , float >> ProcessInkImageAsync(SoftwareBitmap bitmap)
-        {
-            switch (Mode)
-            {
-                case InteractionMode.Mapping:
-                    return null;
-                case InteractionMode.Training:
-                    return await Train.ProcessInkImageAsync(bitmap);
-                case InteractionMode.Testing:
-                    return  await Test.ProcessInkImageAsync(bitmap);
-                case InteractionMode.Packaging:
-                    break;
-            }
+        //public async Task<IDictionary<string , float >> ProcessInkImageAsync(SoftwareBitmap bitmap)
+        //{
+        //    switch (Mode)
+        //    {
+        //        case InteractionMode.Mapping:
+        //            return null;
+        //        case InteractionMode.Training:
+        //            return await Train.ProcessInkImageAsync(bitmap);
+        //        case InteractionMode.Testing:
+        //            return  await Test.ProcessInkImageAsync(bitmap);
+        //        case InteractionMode.Packaging:
+        //            break;
+        //    }
 
-            return null;
-        }
-        public async Task<IDictionary<string, float>> ProcessInkImageAsync(IList<InkStroke> strokes)
+        //    return null;
+        //}
+
+
+        public async Task<IDictionary<string, float>> ProcessInkAsync(IList<InkStroke> strokes)
         {
             switch (Mode)
             {
                 case InteractionMode.Mapping:
                     return null;
                 case InteractionMode.Training:
-                    return await Train.ProcessInkImageAsync(strokes);
+                    return await Train.ProcessInkAsync(strokes);
                 case InteractionMode.Testing:
-                    return await Test.ProcessInkImageAsync(strokes);
+                    return await Test.ProcessInkAsync(strokes);
                 case InteractionMode.Packaging:
                     break;
             }

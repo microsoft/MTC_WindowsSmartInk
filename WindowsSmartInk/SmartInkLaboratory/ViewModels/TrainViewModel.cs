@@ -163,16 +163,6 @@ namespace SmartInkLaboratory.ViewModels
             _dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         }
 
-        public async Task<IDictionary<string, float>> ProcessInkImageAsync(SoftwareBitmap bitmap)
-        {
-            if (_state.CurrentTag == null)
-                return null;
-
-            await SetImageSourceAsync(bitmap);
-            //await  SaveBitmapAsync(bitmap);
-            return null;
-        }
-
         private async Task SetImageSourceAsync(SoftwareBitmap bitmap)
         {
             var source = new SoftwareBitmapSource();
@@ -182,7 +172,7 @@ namespace SmartInkLaboratory.ViewModels
             SaveSoftwareBitmapToFile(bitmap, saveFile);
         }
 
-        public async Task<IDictionary<string, float>> ProcessInkImageAsync(IList<InkStroke> strokes)
+        public async Task<IDictionary<string, float>> ProcessInkAsync(IList<InkStroke> strokes)
         {
             var inkBitmap = strokes.DrawInk();
             await SetImageSourceAsync(inkBitmap);
@@ -193,18 +183,9 @@ namespace SmartInkLaboratory.ViewModels
         {
             using (IRandomAccessStream stream = await outputFile.OpenAsync(FileAccessMode.ReadWrite))
             {
-                // Create an encoder with the desired format
                 BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, stream);
-
-                // Set the software bitmap
                 encoder.SetSoftwareBitmap(softwareBitmap);
-
-                // Set additional encoding parameters, if needed
-                //encoder.BitmapTransform.ScaledWidth = 320;
-                //encoder.BitmapTransform.ScaledHeight = 240;
-                //encoder.BitmapTransform.Rotation = Windows.Graphics.Imaging.BitmapRotation.Clockwise90Degrees;
                 encoder.BitmapTransform.InterpolationMode = BitmapInterpolationMode.Fant;
-                encoder.IsThumbnailGenerated = true;
 
                 try
                 {
@@ -212,25 +193,11 @@ namespace SmartInkLaboratory.ViewModels
                 }
                 catch (Exception err)
                 {
-                    const int WINCODEC_ERR_UNSUPPORTEDOPERATION = unchecked((int)0x88982F81);
-                    switch (err.HResult)
-                    {
-                        case WINCODEC_ERR_UNSUPPORTEDOPERATION:
-                            // If the encoder does not support writing a thumbnail, then try again
-                            // but disable thumbnail generation.
-                            encoder.IsThumbnailGenerated = false;
-                            break;
-                        default:
-                            throw;
-                    }
+                    throw;
                 }
 
-                if (encoder.IsThumbnailGenerated == false)
-                {
-                    await encoder.FlushAsync();
-                }
-
-
+            
+               
             }
         }
         private  async Task SaveBitmapAsync(WriteableBitmap cropped)
