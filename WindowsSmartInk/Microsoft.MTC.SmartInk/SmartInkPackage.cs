@@ -36,11 +36,61 @@ namespace Micosoft.MTC.SmartInk.Package
         private Model _model;
 
         // These properties map to the properties set on the Nuget Package
-        public string Name { get { return _manifest.Name; } }
-        public string Description { get; set; } = "Windows 10 SmartInk Package";
-        public string Version { get; set; } = "1.0.0.0";
-        public string Author { get; set; }
-        public DateTimeOffset DatePublished { get; set; }
+        public string Name
+        {
+            get { return _manifest.Name; }
+            set
+            {
+                if (_manifest.Name == value)
+                    return;
+                _manifest.Name = value;
+            }
+        }
+
+        public string Description
+        {
+            get { return _manifest.Description; }
+            set
+            {
+                if (_manifest.Description == value)
+                    return;
+                _manifest.Description = value;
+            }
+        }
+
+        public string Version
+        {
+            get { return _manifest.Version; }
+            set
+            {
+                if (_manifest.Version == value)
+                    return;
+                _manifest.Version = value;
+            }
+        }
+
+        public string Author
+        {
+            get { return _manifest.Author; }
+            set
+            {
+                if (_manifest.Author == value)
+                    return;
+                _manifest.Author = value;
+            }
+        }
+
+        public DateTimeOffset DatePublished
+        {
+            get { return _manifest.DatePublished; }
+            set
+            {
+                if (_manifest.DatePublished == value)
+                    return;
+                _manifest.DatePublished = value;
+            }
+        }
+
 
         public SoftwareBitmap LastEvaluatedBitmap { get; set; }
         public bool IsLocalModelAvailable => !string.IsNullOrWhiteSpace(_manifest.Model);
