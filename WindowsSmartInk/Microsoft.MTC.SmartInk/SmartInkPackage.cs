@@ -43,6 +43,7 @@ namespace Micosoft.MTC.SmartInk.Package
         public DateTimeOffset DatePublished { get; set; }
 
         public SoftwareBitmap LastEvaluatedBitmap { get; set; }
+        public bool IsLocalModelAvailable => !string.IsNullOrWhiteSpace(_manifest.Model);
 
         internal SmartInkPackage(string name,  IPackageStorageProvider provider)
         {

@@ -77,12 +77,12 @@
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
+                <ColumnDefinition MinWidth="0" Width="Auto"/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Model Iteration:"/>
+            <TextBlock Text="Model Iteration:" Margin="0,0,10,0"/>
             <ampControls:SelectionList Grid.Column="1" Grid.ColumnSpan="3" ItemTemplate="{StaticResource IterationTemplate}" x:Name="IterationList" ItemsSource="{Binding Iterations}"  SelectedItem="{Binding SelectedIteration, Mode=TwoWay}"/>
         </Grid>
         <Grid  Grid.Row="1"  >
@@ -92,7 +92,10 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock VerticalAlignment="Center"><Run Text="Target Tag: "/><Run Text="{Binding CurrentTag.Name}"/></TextBlock>
-            <CheckBox x:Name="DisplayIcon" Content="Replace with icon" IsChecked="True" Grid.Column="2"/>
+            <StackPanel Grid.Column="2">
+                <CheckBox x:Name="DisplayIcon" Content="Replace with icon" IsChecked="True" />
+                <CheckBox x:Name="RemoteIcon" Content="Use Remote Service" IsChecked="{Binding UseRemoteService}" IsEnabled="{Binding IsLocalModelAvailable, Mode=TwoWay}" />
+            </StackPanel>
         </Grid>
         <TextBlock Grid.Row="2"  ><Run Text="Tag Result: "/><Run x:Name="TagResult" Text="{Binding TagResult}"/></TextBlock>
         <TextBlock Grid.Row="3" Text="Classifier Details:"  />
