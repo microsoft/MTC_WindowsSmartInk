@@ -30,12 +30,27 @@ namespace SmartInkLaboratory.ViewModels
         private IAppStateService _state;
         private IDialogService _dialog;
 
-        public ObservableCollection<Project> ProjectsList { get; private set; } = new ObservableCollection<Project>();
-
+  
       
         public event EventHandler<ProjectChangedEventArgs> ProjectChanged;
         public event EventHandler<VisualStateEventArgs> VisualStateChanged;
 
+        public ObservableCollection<Project> ProjectsList { get; private set; } = new ObservableCollection<Project>();
+
+        private bool _isCreating;
+        public bool IsCreating
+        {
+            get { return _isCreating; }
+            set
+            {
+                if (_isCreating == value)
+                    return;
+                _isCreating = value;
+                RaisePropertyChanged(nameof(IsCreating));
+            }
+        }
+
+        public RelayCommand ShowCreate { get; set; }
         public RelayCommand<Project> SelectProject { get; private set; }
         public RelayCommand<string> CreateProject { get; private set; }
         public RelayCommand ManageProjects { get; private set; }
@@ -71,6 +86,8 @@ namespace SmartInkLaboratory.ViewModels
                 await LoadAsync();
             };
 
+            this.ShowCreate = new RelayCommand(() => { IsCreating = true; });
+
             this.SelectProject = new RelayCommand<Project>((project) => {
                 if (project == null || _state.CurrentProject.Id == project.Id)
                     return;
@@ -81,9 +98,13 @@ namespace SmartInkLaboratory.ViewModels
             });
 
             this.CreateProject = new RelayCommand<string>(async(project) => {
+                if (string.IsNullOrWhiteSpace(project))
+                    return;
+
                 var newProject = await _projects.CreateProjectAsync(project);
                 ProjectsList.Add(newProject);
                 CurrentProject = newProject;
+                IsCreating = false;
             });
             this.ManageProjects = new RelayCommand(async () => {
                 await _dialog.OpenAsync(DialogKeys.ManageProjects,this);
