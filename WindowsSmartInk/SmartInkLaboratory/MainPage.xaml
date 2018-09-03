@@ -89,10 +89,10 @@
 
                 </AppBarButton>
             </StackPanel>
-            <AppBarButton Icon="Permissions" Label="Account Keys" AllowFocusOnInteraction="True">
+            <AppBarButton Icon="Permissions" Label="Account Keys" AllowFocusOnInteraction="True" DataContext="{Binding Source={StaticResource Locator}, Path=ResourceKeys}" Command="{Binding ShowKeys}">
                 <AppBarButton.Flyout>
-                    <Flyout >
-                        <Grid DataContext="{Binding Source={StaticResource Locator}, Path=ResourceKeys}">
+                    <Flyout helpers:FlyoutHelpers.Parent="{Binding ElementName=SaveKeysButton}" helpers:FlyoutHelpers.IsOpen="{Binding  IsOpen, Mode=TwoWay}">
+                        <Grid >
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
                                 <RowDefinition Height="10"/>
@@ -114,7 +114,7 @@
                             <TextBox   Grid.Row="2" Grid.Column="2" Width="300" Text="{Binding  TrainingKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBlock Grid.Row="4" Text="Prediction Key:" />
                             <TextBox   Grid.Row="4" Grid.Column="2"  Width="300" Text="{Binding PredictionKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <Button    Grid.Row="6"   Content="Save" HorizontalAlignment="Left" Command="{Binding SaveKeys}"/>
+                            <Button x:Name="SaveKeysButton"   Grid.Row="6"   Content="Save" HorizontalAlignment="Left" Command="{Binding SaveKeys}"/>
                             <HyperlinkButton Grid.Row="6"  Content="More..." HorizontalAlignment="Right" Command="{Binding More}"/>
                         </Grid>
                     </Flyout>

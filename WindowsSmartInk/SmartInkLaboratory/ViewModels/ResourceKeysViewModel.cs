@@ -90,7 +90,23 @@ namespace SmartInkLaboratory.ViewModels
             }
         }
 
+        private bool _isOpen;
+        public bool IsOpen
+        {
+            get { return _isOpen; }
+            set
+            {
+                if (_isOpen == value)
+                    return;
+      
+                _isOpen = value;
+                Debug.WriteLine($"IsOpen Property Changed {_isOpen}");
+                RaisePropertyChanged(nameof(IsOpen));
+            }
+        }
 
+
+        public RelayCommand ShowKeys { get; set; }
         public RelayCommand<string> SelectKey { get; private set; }
         public RelayCommand SaveKeys { get; private set; }
         public RelayCommand More { get; private set; }
@@ -108,6 +124,8 @@ namespace SmartInkLaboratory.ViewModels
             _state = state;
             _nav = nav;
 
+            this.ShowKeys = new RelayCommand(() => { IsOpen = true; });
+
             this.SelectKey = new RelayCommand<string>((resource) => {
 
                 if (string.IsNullOrWhiteSpace(resource))
@@ -124,6 +142,7 @@ namespace SmartInkLaboratory.ViewModels
                 _keyService.SaveKeys(Resource, TrainingKey, PredictionKey);
                 ApplicationData.Current.LocalSettings.Values["LastResource"] = Resource;
                 _state.CurrentKeys = (new ResourceKeys { Resource = Resource, TrainingKey = TrainingKey, PredicationKey = PredictionKey });
+                IsOpen = false;
             },
             () => {
                 return !string.IsNullOrWhiteSpace(Resource) &&

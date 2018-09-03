@@ -35,13 +35,13 @@ namespace SmartInkLaboratory.Views.Helpers
                 flyout.Opening += (s, args) =>
                 {
                     Debug.WriteLine($"Flyout openning");
-                    flyout.SetValue(IsCompleteProperty, false);
+                    flyout.SetValue(IsOpenProperty, true);
                 };
 
                 flyout.Closed += (s, args) =>
                 {
                     Debug.WriteLine($"flyout closed");
-                    flyout.SetValue(IsCompleteProperty, true);
+                    flyout.SetValue(IsOpenProperty, false);
                 };
             }
         }
@@ -50,27 +50,27 @@ namespace SmartInkLaboratory.Views.Helpers
  
 
 
-        public static readonly DependencyProperty IsCompleteProperty =
-            DependencyProperty.RegisterAttached("IsComplete", typeof(bool),
-            typeof(FlyoutHelpers), new PropertyMetadata(false, OnIsCompletePropertyChanged));
+        public static readonly DependencyProperty IsOpenProperty =
+            DependencyProperty.RegisterAttached("IsOpen", typeof(bool),
+            typeof(FlyoutHelpers), new PropertyMetadata(false, OnIsOpenChanged));
 
       
 
-        public static void SetIsComplete(DependencyObject d, bool value)
+        public static void SetIsOpen(DependencyObject d, bool value)
         {
             Debug.WriteLine($"Setting: {value}");
-            d.SetValue(IsCompleteProperty, value);
+            d.SetValue(IsOpenProperty, value);
         }
 
-        public static bool GetIsComplete(DependencyObject d)
+        public static bool GetIsOpen(DependencyObject d)
         {
             Debug.WriteLine($"Getting: ");
-            return (bool)d.GetValue(IsCompleteProperty);
+            return (bool)d.GetValue(IsOpenProperty);
         }
 
-        private static void OnIsCompletePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnIsOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            Debug.WriteLine($"IsCompleteChanged: {e.NewValue}");
+            Debug.WriteLine($"IsOpenChanged: {e.NewValue}");
             var flyout = d as Flyout;
             var parent = (Button)d.GetValue(ParentProperty);
 
@@ -79,11 +79,10 @@ namespace SmartInkLaboratory.Views.Helpers
                 Debug.WriteLine($"here");
                 var newValue = (bool)e.NewValue;
 
-                if (newValue)
+                if (!newValue)
                 {
                     Debug.WriteLine($"hide");
                     flyout.Hide();
-                    
                 }
             }
         }
