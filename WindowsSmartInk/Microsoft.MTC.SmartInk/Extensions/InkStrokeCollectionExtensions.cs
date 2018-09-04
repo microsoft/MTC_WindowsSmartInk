@@ -39,37 +39,37 @@ namespace Microsoft.MTC.SmartInk.Extensions
             return _boundingBox;
         }
 
-        public static SoftwareBitmap DrawInk(this IList<InkStroke> strokes, double width = 0, double height = 0, Color? backgroundColor = null  )
+        public static SoftwareBitmap DrawInk(this IList<InkStroke> strokes, double targetWidth = 0, double targetHeight = 0, Color? backgroundColor = null  )
         {
             if (strokes == null)
                 throw new ArgumentNullException($"{nameof(strokes)} cannot be null");
 
             var boundingBox = strokes.GetBoundingBox();
 
-            if (width == 0)
-                width = boundingBox.Width;
+            if (targetWidth == 0)
+                targetWidth = boundingBox.Width;
 
-            if (height == 0)
-                height = boundingBox.Height;
+            if (targetHeight == 0)
+                targetHeight = boundingBox.Height;
 
             if (backgroundColor == null)
                 backgroundColor = Colors.White;
 
-            var scale = CalculateScale(boundingBox, width, height);
+            var scale = CalculateScale(boundingBox, targetWidth, targetHeight);
 
             var scaledStrokes = ScaleAndTransformStrokes(strokes, scale);
 
 
             WriteableBitmap writeableBitmap = null;
             CanvasDevice device = CanvasDevice.GetSharedDevice();
-            using (CanvasRenderTarget offscreen = new CanvasRenderTarget(device, (float) width, (float)height, 96))
+            using (CanvasRenderTarget offscreen = new CanvasRenderTarget(device, (float) targetWidth, (float)targetHeight, 96))
             {
                 using (CanvasDrawingSession ds = offscreen.CreateDrawingSession())
                 {
 
                     ds.Units = CanvasUnits.Pixels;
                     ds.Clear(backgroundColor.Value);
-                    ds.DrawInk(scaledStrokes);
+                    ds.DrawInk(scaledStrokes,);
                 }
 
                 writeableBitmap = new WriteableBitmap((int)offscreen.SizeInPixels.Width, (int)offscreen.SizeInPixels.Height);
