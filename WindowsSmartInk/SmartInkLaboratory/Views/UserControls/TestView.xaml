@@ -48,13 +48,13 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
-            <!--<VisualStateGroup x:Name="PackageStates">
+            <VisualStateGroup x:Name="PackageStates">
                 <VisualState x:Name="HasPackage">
                     <VisualState.StateTriggers>
                         <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="HasPackage" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="PackageSelectBanner.Visibility" Value="Collapsed"/>
+                        <Setter Target="PackageSelectBanner.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="NoPackage">
@@ -62,10 +62,10 @@
                         <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="NoPackage" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="PackageSelectBanner.Visibility" Value="Visible"/>
+                        <Setter Target="PackageSelectBanner.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
-            </VisualStateGroup>-->
+            </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -109,9 +109,9 @@
             <AppBarButton Command="{Binding UploadCorrection}" Label="Upload Correction" Icon="Accept" Grid.Column="2" VerticalAlignment="Top"/>
             <AppBarButton Command="{Binding DownloadModel}" Label="Download Model" Icon="Download" Grid.Column="2" VerticalAlignment="Bottom"/>
         </Grid>
-        <!--<Grid x:Name="PackageSelectBanner" Grid.RowSpan="5" Background="DarkGray">
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Select Package" />
-        </Grid>-->
+        <Grid x:Name="PackageSelectBanner" Grid.RowSpan="5" Background="DarkGray" >
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Package Not Testable.  No remote iteration or local model avaialble." TextAlignment="Center" Margin="40,0,40,0" />
+        </Grid>
         <ProgressBar x:Name="DownloadProgressBar" Grid.Row="4" Value="{Binding DownloadProgress}" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="#FF2EFF00"/>
     </Grid>
 </UserControl>

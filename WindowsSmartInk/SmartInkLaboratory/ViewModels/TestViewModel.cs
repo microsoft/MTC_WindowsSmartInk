@@ -132,6 +132,14 @@ namespace SmartInkLaboratory.ViewModels
             }
         }
 
+        private bool _isReadyToTest;
+        public bool IsReadyToTest
+        {
+            get { return IsLocalModelAvailable || Iterations.Count > 0; }
+           
+        }
+
+
 
         public ObservableCollection<Iteration> Iterations { get; set; } = new ObservableCollection<Iteration>();
 
@@ -153,13 +161,15 @@ namespace SmartInkLaboratory.ViewModels
             _state.PackageChanged += async  (s, e) => {
                 var iterations = await _training.GetIterationsAysnc();
                 foreach (var i in iterations)
-                {
                     Iterations.Add(i);
-                }
-                SelectedIteration = Iterations[0];
+
+                
+                SelectedIteration = (Iterations.Count > 0) ?Iterations[0] : null;
                 IsLocalModelAvailable = _state.CurrentPackage.IsLocalModelAvailable;
 
-                if (_state.CurrentPackage == null)
+                RaisePropertyChanged(nameof(IsReadyToTest));
+
+                if (_state.CurrentPackage == null || !IsReadyToTest)
                     VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "NoPackage" });
                 else
                     VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "HasPackage" });
