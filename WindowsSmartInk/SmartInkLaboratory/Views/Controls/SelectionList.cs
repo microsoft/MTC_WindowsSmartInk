@@ -49,6 +49,7 @@ namespace SmartInkLaboratory.Views.Controls
     public sealed class SelectionList : ContentControl
     {
         Flyout _flyout;
+        private bool _isInitialized;
         Grid _mainGrid;
         ListBox _commandList;
         TextBlock _displayValue;
