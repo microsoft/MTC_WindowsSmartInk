@@ -11,8 +11,6 @@ namespace SmartInkLaboratory.Views.Controls
 {
     public class SelectionListItem : Control
     {
-
-
         public object Content
         {
             get { return (string)GetValue(ContentProperty); }
@@ -22,8 +20,6 @@ namespace SmartInkLaboratory.Views.Controls
         // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ContentProperty =
             DependencyProperty.Register("Content", typeof(object), typeof(SelectionListItem), new PropertyMetadata(null));
-
-
 
         public ICommand Command
         {
@@ -35,23 +31,15 @@ namespace SmartInkLaboratory.Views.Controls
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.Register("Command", typeof(ICommand), typeof(SelectionListItem), new PropertyMetadata(null));
 
-
-
         public SelectionListItem()
         {
             this.DefaultStyleKey = typeof(SelectionListItem);
-            
         }
 
         public override string ToString()
         {
-            
             return this.Content.ToString();
-
         }
-
-        
-
     }
 
     [TemplatePart(Name = "PART_Menu", Type = typeof(Flyout))]
@@ -64,7 +52,6 @@ namespace SmartInkLaboratory.Views.Controls
         Grid _mainGrid;
         ListBox _commandList;
         TextBlock _displayValue;
-        static bool _isInitialized = false;
 
         public string Label
         {
@@ -75,9 +62,6 @@ namespace SmartInkLaboratory.Views.Controls
         // Using a DependencyProperty as the backing store for Label.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LabelProperty =
             DependencyProperty.Register("Label", typeof(string), typeof(SelectionList), new PropertyMetadata(null));
-
-
-
 
         public int SelectedIndex
         {
@@ -96,16 +80,6 @@ namespace SmartInkLaboratory.Views.Controls
                 me._commandList.SelectedIndex = (int)e.NewValue;
         }
 
-        //public string SelectedValue
-        //{
-        //    get { return (string)GetValue(SelectedValueProperty); }
-        //    set { SetValue(SelectedValueProperty, value); }
-        //}
-
-        //// Using a DependencyProperty as the backing store for SelectedValue.  This enables animation, styling, binding, etc...
-        //public static readonly DependencyProperty SelectedValueProperty =
-        //    DependencyProperty.Register("SelectedValue", typeof(string), typeof(SelectionList), new PropertyMetadata(null));
-
 
         public object SelectedItem
         {
@@ -116,7 +90,6 @@ namespace SmartInkLaboratory.Views.Controls
         // Using a DependencyProperty as the backing store for SelectedItem.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedItemProperty =
             DependencyProperty.Register("SelectedItem", typeof(object), typeof(SelectionList), new PropertyMetadata(null));
-
 
 
         public List<ListViewItem> Items
@@ -155,9 +128,6 @@ namespace SmartInkLaboratory.Views.Controls
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.Register("Command", typeof(ICommand), typeof(SelectionList), new PropertyMetadata(null));
 
-
-
-
         public object CommandParameter
         {
             get { return (object)GetValue(CommandParameterProperty); }
@@ -167,8 +137,6 @@ namespace SmartInkLaboratory.Views.Controls
         // Using a DependencyProperty as the backing store for CommandParameter.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CommandParameterProperty =
             DependencyProperty.Register("CommandParameter", typeof(object), typeof(SelectionList), new PropertyMetadata(null));
-
-
 
 
         public DataTemplate ItemTemplate
@@ -181,17 +149,11 @@ namespace SmartInkLaboratory.Views.Controls
         public static readonly DependencyProperty ItemTemplateProperty =
             DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(SelectionList), new PropertyMetadata(null));
 
-
-
-
         public SelectionList()
         {
             this.DefaultStyleKey = typeof(SelectionList);
             this.Items = new List<ListViewItem>();
         }
-
-
-
 
         protected override void OnApplyTemplate()
         {
@@ -200,20 +162,12 @@ namespace SmartInkLaboratory.Views.Controls
             _commandList.SelectionChanged += _commandList_SelectionChanged;
             _displayValue = this.GetTemplateChild("PART_DisplayValue") as TextBlock;
 
-            
-
             var panel = _commandList.ItemsPanel;
-            Debug.WriteLine("before Item Count: {0}", _commandList.Items.Count);
-
-            PopulateList();
 
             if (_commandList.Items.Count > 0)
                 _commandList.SelectedIndex = 0;
 
             _isInitialized = true;
-
-
-            Debug.WriteLine("after item Count: {0}", _commandList.Items.Count);
 
             _mainGrid = this.GetTemplateChild("PART_MainGrid") as Grid;
             _mainGrid.Tapped += (s, e) =>
@@ -221,41 +175,6 @@ namespace SmartInkLaboratory.Views.Controls
                 var sender = s as FrameworkElement;
                 FlyoutBase.ShowAttachedFlyout(sender);
             };
-
-
-        }
-
-        private void PopulateList()
-        {
-            //if (_commandList == null)
-            //    return;
-
-            //_commandList.Items.Clear();
-            //if (this.ItemsSource != null)
-            //{
-            //    foreach (var item in this.ItemsSource)
-            //    {
-            //        _commandList.Items.Add(item);
-            //    }
-
-       
-            //}
-
-            //if (this.ItemsSource == null || _commandList.Items.Count == 0)
-            //{
-            //    _commandList.Items.Add(new SelectionListItem { Content = "(empty)" });
-            //    return;
-            //}
-
-            //for (int i = 0; i < this.Items.Count; i++)
-            //{
-            //    //var listItem = new ListBoxItem { Content = this.Items[i].Text };
-            //    _commandList.Items.Add(this.Items[i]);
-            //    //if (!string.IsNullOrEmpty(this.SelectedValue) && this.Items[i].Content == this.SelectedItem)
-            //    //    _commandList.SelectedIndex = i;
-            //}
-
-
         }
 
         private void _commandList_SelectionChanged(object sender, SelectionChangedEventArgs e)
