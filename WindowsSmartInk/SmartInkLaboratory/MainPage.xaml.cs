@@ -69,10 +69,7 @@ namespace SmartInkLaboratory
 
             _timer.Tick += async (s, e) => {
                 _timer.Stop();
-                Debug.WriteLine($"finished");
                 var boundingBox = GetBoundingBox(_sessionStrokes);
-                //var bitmap = GetInkBitmap(boundingBox);
-                //var result = await _dataContextViewModel.ProcessInkImageAsync(bitmap);
                 var result = await _dataContextViewModel.ProcessInkAsync(_sessionStrokes);
 
                 if (result != null)
@@ -100,26 +97,18 @@ namespace SmartInkLaboratory
             inkCanvas.InkPresenter.StrokeInput.StrokeStarted += (s, e) =>
             {
                 _timer.Stop();
-                Debug.WriteLine($"StrokeStarted");
-                //ProcessPendingInk();
             };
 
             inkCanvas.InkPresenter.StrokesCollected += (s, e) => {
-                Debug.WriteLine($"StrokeCollected");
                 _timer.Stop();
          
                 _pendingDry = _inkSync.BeginDry();
                 foreach (var stroke in _pendingDry)
-                {
-                    Debug.WriteLine($"Adding strokes");
                     _sessionStrokes.Add(stroke);
-                }
 
                 win2dCanvas.Invalidate();
            
-                Debug.WriteLine($"Timer Start");
                 _timer.Start();
-
             };
 
             _inkSync = inkCanvas.InkPresenter.ActivateCustomDrying();
@@ -130,13 +119,10 @@ namespace SmartInkLaboratory
                 win2dCanvas.RemoveFromVisualTree();
                 win2dCanvas = null;
             };
-
-          
         }
 
         private async Task PlaceIconAsync(string tag, double probability, Rect boundingBox)
         {
-            Debug.WriteLine($"tag: {tag} rating: {probability}");
             if (tag == "other")
             {
                 foreach (var stroke in _sessionStrokes)
@@ -174,7 +160,6 @@ namespace SmartInkLaboratory
             ProcessPendingInk();
             DrawStrokesToInkSurface(args.DrawingSession, _sessionStrokes);
             DrawStrokesToInkSurface(args.DrawingSession, _allStrokes);
-            
         }
         private void ProcessPendingInk()
         {
@@ -187,13 +172,11 @@ namespace SmartInkLaboratory
 
         private void DrawStrokesToInkSurface(CanvasDrawingSession ds, IList<InkStroke> strokes)
         {
-            Debug.WriteLine($"Draw: {strokes.Count}");
             ds.DrawInk(strokes);
         }
 
         private void ClearInkSurface()
         {
-            Debug.WriteLine($"Clear");
             _allStrokes.Clear();
             win2dCanvas.Invalidate();
         }
@@ -206,7 +189,6 @@ namespace SmartInkLaboratory
             {
                 using (CanvasDrawingSession ds = offscreen.CreateDrawingSession())
                 {
-
                     ds.Units = CanvasUnits.Pixels;
                     ds.Clear(Colors.White);
                     ds.DrawInk(_sessionStrokes);
@@ -258,7 +240,6 @@ namespace SmartInkLaboratory
             return null;
         }
 
-
         private void HyperlinkButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             ClearInkSurface();
@@ -277,7 +258,6 @@ namespace SmartInkLaboratory
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-         
             switch (Pivot.SelectedIndex)
             {
                 case 0:

@@ -34,58 +34,42 @@ namespace SmartInkLaboratory.Views.Helpers
             {
                 flyout.Opening += (s, args) =>
                 {
-                    Debug.WriteLine($"Flyout openning");
                     flyout.SetValue(IsOpenProperty, true);
                 };
 
                 flyout.Closed += (s, args) =>
                 {
-                    Debug.WriteLine($"flyout closed");
                     flyout.SetValue(IsOpenProperty, false);
                 };
             }
         }
 
-
- 
-
-
         public static readonly DependencyProperty IsOpenProperty =
             DependencyProperty.RegisterAttached("IsOpen", typeof(bool),
             typeof(FlyoutHelpers), new PropertyMetadata(false, OnIsOpenChanged));
-
       
-
         public static void SetIsOpen(DependencyObject d, bool value)
         {
-            Debug.WriteLine($"Setting: {value}");
             d.SetValue(IsOpenProperty, value);
         }
 
         public static bool GetIsOpen(DependencyObject d)
         {
-            Debug.WriteLine($"Getting: ");
             return (bool)d.GetValue(IsOpenProperty);
         }
 
         private static void OnIsOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            Debug.WriteLine($"IsOpenChanged: {e.NewValue}");
             var flyout = d as Flyout;
             var parent = (Button)d.GetValue(ParentProperty);
 
             if (flyout != null && parent != null)
             {
-                Debug.WriteLine($"here");
                 var newValue = (bool)e.NewValue;
 
                 if (!newValue)
-                {
-                    Debug.WriteLine($"hide");
                     flyout.Hide();
-                }
             }
         }
-
     }
 }
