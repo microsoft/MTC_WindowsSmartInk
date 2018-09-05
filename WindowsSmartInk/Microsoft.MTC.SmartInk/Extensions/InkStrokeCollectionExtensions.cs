@@ -69,7 +69,7 @@ namespace Microsoft.MTC.SmartInk.Extensions
 
                     ds.Units = CanvasUnits.Pixels;
                     ds.Clear(backgroundColor.Value);
-                    ds.DrawInk(scaledStrokes,);
+                    ds.DrawInk(scaledStrokes);
                 }
 
                 writeableBitmap = new WriteableBitmap((int)offscreen.SizeInPixels.Width, (int)offscreen.SizeInPixels.Height);
