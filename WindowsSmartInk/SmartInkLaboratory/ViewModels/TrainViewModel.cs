@@ -155,7 +155,7 @@ namespace SmartInkLaboratory.ViewModels
                 ()=> { return TotalImageCount > 0; });
             this.Train = new RelayCommand(
                 async () => {
-                    await _train.TrainAsync();
+                    var iteration = await _train.TrainAsync();
                 },
                 ()=> { return _uploadComplete || TotalImageCount == 0; 
                 });
@@ -163,21 +163,24 @@ namespace SmartInkLaboratory.ViewModels
             _dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         }
 
+       
+        public async Task<IDictionary<string, float>> ProcessInkAsync(IList<InkStroke> strokes)
+        {
+            var inkBitmap = strokes.DrawInk();
+            await SetImageSourceAsync(inkBitmap);
+            var saveFile = await GetBitmapSaveFile();
+            SaveSoftwareBitmapToFile(inkBitmap, saveFile);
+            TotalImageCount++;
+            return null;
+        }
+
         private async Task SetImageSourceAsync(SoftwareBitmap bitmap)
         {
             var source = new SoftwareBitmapSource();
             await source.SetBitmapAsync(bitmap);
             InkDrawing = source;
-            var saveFile = await GetBitmapSaveFile();
-            SaveSoftwareBitmapToFile(bitmap, saveFile);
         }
 
-        public async Task<IDictionary<string, float>> ProcessInkAsync(IList<InkStroke> strokes)
-        {
-            var inkBitmap = strokes.DrawInk();
-            await SetImageSourceAsync(inkBitmap);
-            return null;
-        }
 
         private async void SaveSoftwareBitmapToFile(SoftwareBitmap softwareBitmap, StorageFile outputFile)
         {
@@ -197,25 +200,7 @@ namespace SmartInkLaboratory.ViewModels
                 }
             }
         }
-        private  async Task SaveBitmapAsync(WriteableBitmap cropped)
-        {
-            StorageFile savefile = await GetBitmapSaveFile();
-            if (cropped.PixelHeight < 256 || cropped.PixelWidth < 256)
-            {
-                var height = cropped.PixelHeight < 256 ? 256 : cropped.PixelHeight; ;
-                var width = cropped.PixelWidth < 256 ? 256 : cropped.PixelWidth;
-                cropped = cropped.Resize(width, height, WriteableBitmapExtensions.Interpolation.Bilinear);
-            }
-
-            using (IRandomAccessStream stream = await savefile.OpenAsync(FileAccessMode.ReadWrite))
-            {
-                await cropped.ToStreamAsJpeg(stream);
-                await stream.FlushAsync();
-
-            }
-
-            TotalImageCount++; _uploadComplete = false; Train.RaiseCanExecuteChanged();
-        }
+        
 
         private async Task<StorageFile> GetBitmapSaveFile()
         {
