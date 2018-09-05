@@ -20,6 +20,7 @@ using Microsoft.MTC.SmartInk;
 using Windows.Media;
 using Micosoft.MTC.SmartInk.Package;
 using Windows.UI.Input.Inking;
+using Microsoft.MTC.SmartInk.Extensions;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -216,13 +217,49 @@ namespace SmartInkLaboratory.ViewModels
 
         public async Task<IDictionary<string, float>> ProcessInkAsync(IList<InkStroke> strokes)
         {
-            var result = await _state.CurrentPackage.EvaluateAsync(strokes);
+            IDictionary<string, float> result = null;
+            if (IsLocalModelAvailable)
+                result = await _state.CurrentPackage.EvaluateAsync(strokes);
+            else
+            {
+                result = await GetPredictionFromServiceAsync(strokes);
+            }
             ProcessModelOutput(result);
             return result;
         }
 
+        private async Task<IDictionary<string, float>> GetPredictionFromServiceAsync(IList<InkStroke> strokes)
+        {
+            var bitmap = strokes.DrawInk();
+            
+            using (IRandomAccessStream stream = new InMemoryRandomAccessStream())
+            {
+                BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, stream);
+                encoder.SetSoftwareBitmap(bitmap);
+                encoder.BitmapTransform.InterpolationMode = BitmapInterpolationMode.Fant;
+
+                try
+                {
+                    await encoder.FlushAsync();
+                    var result = await _prediction.GetPrediction(stream.AsStreamForRead(), _state.CurrentProject.Id);
+                    return result;
+                }
+                catch (Exception err)
+                {
+                    return null;
+                }
+            }
+        }
+
         private void ProcessModelOutput(IDictionary<string,float> output)
         {
+            if (EvaluationResult == null)
+            {
+                TagResult = "null";
+                EvaluationResult = "Error";
+                return;
+            }
+
             TagResult = output.Keys.ToList()[0];
             var evalResult = string.Empty;
             foreach (var item in output)
