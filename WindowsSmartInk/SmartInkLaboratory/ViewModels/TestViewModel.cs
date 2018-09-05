@@ -241,7 +241,7 @@ namespace SmartInkLaboratory.ViewModels
                 try
                 {
                     await encoder.FlushAsync();
-                    var result = await _prediction.GetPrediction(stream.AsStreamForRead(), _state.CurrentProject.Id);
+                    var result = await _prediction.GetPredictionAsync(stream.AsStreamForRead(), _state.CurrentProject.Id);
                     return result;
                 }
                 catch (Exception err)
