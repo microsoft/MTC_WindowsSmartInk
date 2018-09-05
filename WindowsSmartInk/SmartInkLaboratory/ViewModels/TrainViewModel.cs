@@ -179,7 +179,7 @@ namespace SmartInkLaboratory.ViewModels
             return null;
         }
 
-            private async void SaveSoftwareBitmapToFile(SoftwareBitmap softwareBitmap, StorageFile outputFile)
+        private async void SaveSoftwareBitmapToFile(SoftwareBitmap softwareBitmap, StorageFile outputFile)
         {
             using (IRandomAccessStream stream = await outputFile.OpenAsync(FileAccessMode.ReadWrite))
             {
@@ -195,9 +195,6 @@ namespace SmartInkLaboratory.ViewModels
                 {
                     throw;
                 }
-
-            
-               
             }
         }
         private  async Task SaveBitmapAsync(WriteableBitmap cropped)
