@@ -13,6 +13,18 @@ This library contains the components for creating, managing, utlizing and packag
 ## SmartInkLaboratory
 Test harness for interacting with Custom Vision Service to train AI models to recognize ink patterns and to map ink patterns to icons/images.
 
+# Getting Started
+There are two ways to use Windows Smart Ink.  The first is to use the Smart Ink Laboratory to create your own Smart Ink packages.  The other is to use Smart Ink packages that have been published to Nuget for inclusion in your own application.
+
+## Creating Your Own Smart Ink Package
+To create your won Smart Ink Package using the Smart Ink Laboratory, you need to use the [Microsoft Custom Vision Service](http://customvision.ai).  After creating a Custom Vision account, follow these steps to get the environment ready for use by the Smart Ink Laboratory application.
+
+1. On the main Custom Vision page, click on **New Project**
+
+![Custom Vision Home Page](/ReadME_Images/ProjectPage-Settings.png?raw=true)
+
+2. Fill ou
+
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a

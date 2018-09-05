@@ -54,7 +54,7 @@
                         <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="HasPackage" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="PackageSelectBanner.Visibility" Value="Visible"/>
+                        <Setter Target="PackageSelectBanner.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="NoPackage">
@@ -62,7 +62,7 @@
                         <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="NoPackage" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="PackageSelectBanner.Visibility" Value="Collapsed"/>
+                        <Setter Target="PackageSelectBanner.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
