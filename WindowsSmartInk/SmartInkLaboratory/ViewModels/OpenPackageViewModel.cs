@@ -38,14 +38,19 @@ namespace SmartInkLaboratory.ViewModels
             };
 
             this.SelectPackage = new RelayCommand<SmartInkPackage>(async(package) => {
-                if (package != null && _state.CurrentPackage?.Name == package.Name)
+                if (package == null)
                     return;
+
+                if (_state.CurrentPackage?.Name == package.Name)
+                    return;
+
                 var tagList = await _tags.GetTagsAsync();
                 var updateTags = new Dictionary<Guid, string>();
                 foreach (var tag in tagList)
                     updateTags.Add(tag.Id, tag.Name);
-
+               
                 await package.UpdateTagsAsync(updateTags);
+
                 _state.CurrentPackage = package;
 
 
