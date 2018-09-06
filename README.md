@@ -21,7 +21,7 @@ To create your won Smart Ink Package using the Smart Ink Laboratory, you need to
 
 1. On the main Custom Vision page, click on **New Project**
 
-![Custom Vision Home Page](/ReadME_Images/ProjectPage-Settings.png?raw=true)
+![Custom Vision Home Page](/README_Images/ProjectPage-Settings.png?raw=true)
 
 2. Fill ou
 
