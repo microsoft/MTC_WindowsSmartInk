@@ -95,7 +95,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="azureicons.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -111,7 +110,6 @@
     <Compile Include="Services\CustomVisionTrainingService.cs" />
     <Compile Include="Services\IAppStateService.cs" />
     <Compile Include="Services\IClassifierService.cs" />
-    <Compile Include="Services\IIconMappingService.cs" />
     <Compile Include="Services\IImageService.cs" />
     <Compile Include="Services\IInkManifestManager.cs" />
     <Compile Include="Services\InkManifestManager.cs" />
@@ -121,7 +119,6 @@
     <Compile Include="Services\ITagService.cs" />
     <Compile Include="Services\ITrainingFileService.cs" />
     <Compile Include="Services\ITrainingService.cs" />
-    <Compile Include="Services\LocalIconMappingService.cs" />
     <Compile Include="Services\LocalProjectPackageMapper.cs" />
     <Compile Include="Services\Platform\ISecureKeyService.cs" />
     <Compile Include="Services\Platform\UWPSecureKeyService.cs" />
