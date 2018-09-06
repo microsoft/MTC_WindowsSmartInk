@@ -35,7 +35,7 @@ Be sure to click the **Create New** if you want to create a new Azure Resource G
 
 4.  Copy the *Training Key* and *Prediction Key* for use in the Smart Ink Laboratory.
 
-![Project Keys](https://github.com/Microsoft/MTC_WindowsSmartInk/blob/master/README_Images/SettingsKeys.png)
+![Project Keys](https://github.com/Microsoft/MTC_WindowsSmartInk/blob/master/README_Images/SettingsKeys.PNG)
 
 # Contributing
 
