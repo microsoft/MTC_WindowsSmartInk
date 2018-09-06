@@ -21,11 +21,11 @@ To create your won Smart Ink Package using the Smart Ink Laboratory, you need to
 
 1. On the main Custom Vision page, click on **New Project**
 
-![Custom Vision Home Page](https://github.com/Microsoft/MTC_WindowsSmartInk/blob/master/README_Images/ProjectPage.png)
+![Custom Vision Home Page](https://github.com/Microsoft/MTC_WindowsSmartInk/blob/master/README_Images/ProjectsPage.PNG)
 
 2. Fill out the form as shown:
 
-![New Project](https://github.com/Microsoft/MTC_WindowsSmartInk/blob/master/README_Images/CreateNewProject.png)
+![New Project](https://github.com/Microsoft/MTC_WindowsSmartInk/blob/master/README_Images/CreateNewProject.PNG)
 
 Be sure to click the **Create New** if you want to create a new Azure Resource Group (non-trial).
 
@@ -35,7 +35,7 @@ Be sure to click the **Create New** if you want to create a new Azure Resource G
 
 4.  Copy the *Training Key* and *Prediction Key* for use in the Smart Ink Laboratory.
 
-![Project Keys](https://github.com/Microsoft/MTC_WindowsSmartInk/blob/master/README_Images/SettingsKey.png)
+![Project Keys](https://github.com/Microsoft/MTC_WindowsSmartInk/blob/master/README_Images/SettingsKeys.png)
 
 # Contributing
 
