@@ -328,7 +328,7 @@ namespace Micosoft.MTC.SmartInk.Package
         /// </summary>
         /// <param name="bitmap">Image to be evaluated</param>
         /// <returns><see cref="IDictionary{TKey, TValue}"/> containing scoring for submitted image (tag/probability)</returns>
-        public async Task<IDictionary<string, float>> EvaluateAsync(SoftwareBitmap bitmap)
+        public async Task<IDictionary<string, float>> EvaluateAsync(SoftwareBitmap bitmap, float threshold = 0)
         {
             if (bitmap == null)
                 throw new ArgumentNullException($"{nameof(bitmap)} cannot be null");
@@ -336,15 +336,22 @@ namespace Micosoft.MTC.SmartInk.Package
             if (string.IsNullOrWhiteSpace(_manifest.Model))
                 throw new InvalidOperationException("Model file not available");
 
+            IDictionary<string, float> result;
+
             var modelfile = await _provider.GetModelAsync(_manifest.Model);
 
             if (modelfile == null)
                 throw new InvalidOperationException("Model file not found");
 
             _model = await Model.CreateModelAsync(modelfile, _manifest.TagList.Values.ToList());
-            var result = await _model.EvaluateAsync(bitmap);
+            var output = await _model.EvaluateAsync(bitmap);
+            if (threshold > 0)
+                result = output.loss.Where(p => p.Value >= threshold).ToDictionary(p => p.Key, p => p.Value);
+            else
+                result = output.loss;
+
             LastEvaluatedBitmap = bitmap;
-            return result.loss;
+            return result;
         }
 
         /// <summary>
@@ -352,7 +359,7 @@ namespace Micosoft.MTC.SmartInk.Package
         /// </summary>
         /// <param name="strokes">List of strokes to be evaluated against model as single image</param>
         /// <returns><see cref="IDictionary{TKey, TValue}"/> containing scoring for submitted image (tag/probability)</returns>
-        public async Task<IDictionary<string, float>> EvaluateAsync(IList<InkStroke> strokes)
+        public async Task<IDictionary<string, float>> EvaluateAsync(IList<InkStroke> strokes, float threshold = 0)
         {
             if (strokes == null)
                 throw new ArgumentNullException($"{nameof(strokes)} cannot be null");
@@ -362,7 +369,7 @@ namespace Micosoft.MTC.SmartInk.Package
 
             var bitmap = strokes.DrawInk(INK_IMAGE_SIZE, INK_IMAGE_SIZE);
 
-            return await EvaluateAsync(bitmap);
+            return await EvaluateAsync(bitmap, threshold);
         }
 
      
