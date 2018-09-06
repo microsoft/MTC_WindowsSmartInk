@@ -21,9 +21,9 @@ To create your won Smart Ink Package using the Smart Ink Laboratory, you need to
 
 1. On the main Custom Vision page, click on **New Project**
 
-![Custom Vision Home Page](/README_Images/ProjectPage-Settings.png?raw=true)
+![Custom Vision Home Page](https://github.com/Microsoft/MTC_WindowsSmartInk/blob/master/README_Images/ProjectPage-Settings.png)
 
-2. Fill ou
+2. Fill out the form as shown:
 
 # Contributing
 
