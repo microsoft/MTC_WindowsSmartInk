@@ -29,6 +29,7 @@ using Microsoft.Cognitive.CustomVision.Training.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using AMP.Collections;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -61,7 +62,7 @@ namespace SmartInkLaboratory.ViewModels
         }
 
 
-        public ObservableCollection<Tag> Tags { get; private set; } = new ObservableCollection<Tag>();
+        public SortableObservableCollection<Tag> Tags { get; private set; } = new SortableObservableCollection<Tag>();
 
     
         public Tag CurrentTag
@@ -81,6 +82,8 @@ namespace SmartInkLaboratory.ViewModels
         {
             _tagService = tagService;
             _state = state;
+            Tags.Sort(t => t.Name, SortDirection.Ascending);
+
             _state.ProjectChanged += async (s,e) => {
                 await LoadTagsAsync();
             };
