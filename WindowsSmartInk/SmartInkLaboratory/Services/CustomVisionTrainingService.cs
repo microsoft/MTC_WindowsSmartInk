@@ -25,6 +25,7 @@
 
 using Microsoft.Cognitive.CustomVision.Training.Models;
 using Microsoft.Rest;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,10 +65,15 @@ namespace SmartInkLaboratory.Services
                     } while (result.Body.Status.ToLower() == "training");
                     return result.Body;
                 }
+                catch (HttpOperationException ex)
+                {
+                    var response = JsonConvert.DeserializeObject<TrainingServiceResponse>(ex.Response.Content);
+                    throw new TrainingServiceException { Response = response };
+                }
                 catch (Exception ex)
                 {
 
-                    return null;
+                    throw;
                 }
             });
         }

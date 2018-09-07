@@ -36,7 +36,10 @@
                         <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="Training"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="TrainingProgress.Visibility" Value="Visible"/>
+                        <Setter Target="TrainingStatusPanel.Visibility" Value="Visible"/>
+                        <Setter Target="TrainingProgress.IsIndeterminate" Value="true"/>
+                        <Setter Target="TrainingProgress.Foreground" Value="Blue"/>
+                       
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="TrainingFinished">
@@ -44,7 +47,7 @@
                         <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="TrainingFinished"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="TrainingProgress.Visibility" Value="Collapsed"/>
+                        <Setter Target="TrainingStatusPanel.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="TrainingError">
@@ -52,7 +55,7 @@
                         <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="TrainingError"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="TrainingProgress.Visibility" Value="Visible"/>
+                        <Setter Target="TrainingStatusPanel.Visibility" Value="Visible"/>
                         <Setter Target="TrainingProgress.IsIndeterminate" Value="false"/>
                         <Setter Target="TrainingProgress.Foreground" Value="Red"/>
                         <Setter Target="TrainingProgress.Value" Value="100"/>
@@ -80,7 +83,7 @@
         </VisualStateManager.VisualStateGroups>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -93,16 +96,20 @@
             <Image x:Name="InkDrawing" Source="{Binding InkDrawing}" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" />
         </Border>
         <ProgressBar x:Name="UploadProgress" Foreground="Blue" Grid.Row="1" Grid.ColumnSpan="2" Maximum="{Binding TotalImageCount}" Value="{Binding ImageUploadCount}" Visibility="Collapsed"/>
-        <ProgressBar x:Name="TrainingProgress" Foreground="Blue"  Grid.Row="1" Grid.ColumnSpan="2" IsIndeterminate="True" Visibility="Collapsed"/>
+        <StackPanel x:Name="TrainingStatusPanel" Grid.Row="1" Grid.ColumnSpan="2" Visibility="Collapsed" >
+            <TextBlock Text="{Binding TrainingStatus}" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+            <ProgressBar x:Name="TrainingProgress" Foreground="Blue"  IsIndeterminate="True" />
+        </StackPanel>
+
         <Grid  Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"  >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition  Width="Auto"/> 
+                <ColumnDefinition  Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock VerticalAlignment="Bottom" Margin="0,0,0,23"  ><Run Text="Images To Upload: "/><Run Text="{Binding TotalImageCount, Mode=TwoWay}"/></TextBlock>
             <AppBarButton Command="{Binding Upload}" Grid.Column="1" Label="Upload" Icon="Upload" />
-            <AppBarButton x:Name="TrainButton" Grid.Column="2" HorizontalAlignment="Right" Command="{Binding Train}" Icon="Account" Label="Train Model"/>       
+            <AppBarButton x:Name="TrainButton" Grid.Column="2" HorizontalAlignment="Right" Command="{Binding Train}" Icon="Account" Label="Train Model"/>
         </Grid>
         <!--<Grid x:Name="PackageSelectBanner" Grid.ColumnSpan="3" Grid.RowSpan="3" Background="DarkGray">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Select Package" />

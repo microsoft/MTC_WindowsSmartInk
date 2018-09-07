@@ -125,6 +125,19 @@ namespace SmartInkLaboratory.ViewModels
             }
         }
 
+        private string _trainingStatus;
+        public string TrainingStatus
+        {
+            get { return _trainingStatus; }
+            set
+            {
+                if (_trainingStatus == value)
+                    return;
+                _trainingStatus = value;
+                RaisePropertyChanged(nameof(TrainingStatus));
+            }
+        }
+
 
         public RelayCommand Upload { get; set; }
         public RelayCommand Train { get; set; }
@@ -172,12 +185,20 @@ namespace SmartInkLaboratory.ViewModels
                 ()=> { return TotalImageCount > 0; });
             this.Train = new RelayCommand(
                 async () => {
+                    TrainingStatus = "Training...";
                     VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "Training" });
-                    var iteration = await _train.TrainCurrentIterationAsync();
-                    if (iteration != null)
-                        VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "TrainingFinished" });
-                    else
-                        VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "TrainingError" });
+                    try
+                    {
+                        var iteration = await _train.TrainCurrentIterationAsync();
+                        if (iteration != null)
+                            VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "TrainingFinished" });
+                       
+                    }
+                    catch (TrainingServiceException ex)
+                    {
+                        TrainingStatus = $"ERROR! {ex.Response.Message}";
+                         VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "TrainingError" });
+                    }
                 },
                 ()=> { return _uploadComplete || TotalImageCount == 0; 
                 });

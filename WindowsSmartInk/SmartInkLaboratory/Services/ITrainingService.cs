@@ -40,6 +40,17 @@ using System.Threading.Tasks;
 
 namespace SmartInkLaboratory.Services
 {
+    public class TrainingServiceResponse
+    {
+        public string Code { get; set; }
+        public string Message { get; set; }
+    }
+
+    public class TrainingServiceException : Exception
+    {
+        public TrainingServiceResponse Response { get; set; }
+    }
+
     public interface ITrainingService
     {
         Task<IList<Iteration>> GetTrainedIterationsAysnc();
