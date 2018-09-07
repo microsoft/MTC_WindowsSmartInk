@@ -46,7 +46,7 @@ namespace SmartInkLaboratory.Services
             
         }
 
-        public async Task<IDictionary<string,float >> GetPredictionAsync(Stream stream, Guid projectId, Guid? iterationId = null)
+        public async Task<IDictionary<string,float >> GetPredictionAsync(Stream stream, Guid projectId, Guid iterationId = null)
         {
             var predictions = new Dictionary<string, float>();
             try

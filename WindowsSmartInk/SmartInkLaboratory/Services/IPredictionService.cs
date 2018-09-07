@@ -31,7 +31,7 @@ namespace SmartInkLaboratory.Services
 {
     public interface IPredictionService
     {
-        Task<IDictionary<string , float >> GetPredictionAsync(Stream stream, Guid projectId, Guid? iterationId = null);
+        Task<IDictionary<string , float >> GetPredictionAsync(Stream stream, Guid projectId, Guid iterationId = null);
         void Initialize(string predictionKey);
     }
 }
