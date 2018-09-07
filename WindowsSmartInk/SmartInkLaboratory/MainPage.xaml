@@ -163,8 +163,8 @@
                         <!--<ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="Auto"/>-->
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="NewCategory" MinWidth="150"  FontSize="16"/>
-                    <AppBarButton x:Name="AddCategoryButton" Grid.Column="1" Icon="Add" Label="Add" Command="{Binding AddTag}" CommandParameter="{Binding ElementName=NewCategory, Path=Text}" VerticalAlignment="Center"  />
+                    <TextBox x:Name="NewCategory" MinWidth="150"  FontSize="16" Text="{Binding NewCategoryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <AppBarButton x:Name="AddCategoryButton" Grid.Column="1" Icon="Add" Label="Add" Command="{Binding AddTag}"  VerticalAlignment="Center"  />
                     <!--<HyperlinkButton  Content="Clear" HorizontalAlignment="Right" Grid.Column="3" Command="{Binding ClearCategories}"  />-->
                 </Grid>
                 <ListView x:Name="TagsListView" MinHeight="300" Grid.Row="4" ItemsSource="{Binding Tags}" SelectedValue="{Binding CurrentTag, Mode=TwoWay}" ItemTemplate="{StaticResource CategoryTemplate}">

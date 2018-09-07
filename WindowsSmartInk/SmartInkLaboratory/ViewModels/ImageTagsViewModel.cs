@@ -43,9 +43,23 @@ namespace SmartInkLaboratory.ViewModels
         private IAppStateService _state;
     
 
-        public RelayCommand<string> AddTag { get; private set; }
+        public RelayCommand AddTag { get; private set; }
         public RelayCommand<Tag> DeleteTag { get; private set; }
         public RelayCommand Refresh{get; private set;}
+
+        private string _newCategoryName;
+        public string NewCategoryName
+        {
+            get { return _newCategoryName; }
+            set
+            {
+                if (_newCategoryName == value)
+                    return;
+                _newCategoryName = value;
+                RaisePropertyChanged(nameof(NewCategoryName));
+            }
+        }
+
 
         public ObservableCollection<Tag> Tags { get; private set; } = new ObservableCollection<Tag>();
 
@@ -73,14 +87,16 @@ namespace SmartInkLaboratory.ViewModels
 
         
 
-            this.AddTag = new RelayCommand<string>(async (tag) => {
-                if (string.IsNullOrWhiteSpace(tag))
+            this.AddTag = new RelayCommand(async () => {
+                
+                if (string.IsNullOrWhiteSpace(NewCategoryName))
                     return;
                 try
                 {
-                    var newTag = await _tagService.CreateTagAsync(tag);
+                    var newTag = await _tagService.CreateTagAsync(NewCategoryName);
                     Tags.Add(newTag);
                     CurrentTag = newTag;
+                    NewCategoryName = string.Empty;
                 }
                 catch (ImageTagsServiceException ex)
                 {
