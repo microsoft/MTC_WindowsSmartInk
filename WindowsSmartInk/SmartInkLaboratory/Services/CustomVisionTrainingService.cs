@@ -56,9 +56,10 @@ namespace SmartInkLaboratory.Services
                 try
                 {
                     HttpOperationResponse<Iteration> result;
+                    var response = await _trainingApi.TrainProjectWithHttpMessagesAsync(_currentProject.Id);
                     do
                     {
-                        result = await _trainingApi.TrainProjectWithHttpMessagesAsync(_currentProject.Id);
+                        result = await _trainingApi.GetIterationWithHttpMessagesAsync(_currentProject.Id,response.Body.Id);
                         await Task.Delay(1000);
                     } while (result.Body.Status.ToLower() == "training");
                     return result.Body;
