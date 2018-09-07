@@ -63,7 +63,7 @@ namespace SmartInkLaboratory.Services
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException($"{nameof(name)} cannot be null or empty");
-            return _trainingApi.CreateProjectAsync(name, description);
+            return _trainingApi.CreateProjectAsync(name, description, domainId: Guid.Parse("0732100f-1a38-4e49-a514-c9b44c697ab5"));
         }
 
         public async Task<IList<Project>> GetProjectsAsync(bool refresh = false)
