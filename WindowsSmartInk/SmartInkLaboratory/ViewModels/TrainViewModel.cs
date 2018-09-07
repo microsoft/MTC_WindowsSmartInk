@@ -172,7 +172,12 @@ namespace SmartInkLaboratory.ViewModels
                 ()=> { return TotalImageCount > 0; });
             this.Train = new RelayCommand(
                 async () => {
+                    VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "Training" });
                     var iteration = await _train.TrainAsync();
+                    if (iteration != null)
+                        VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "TrainingFinished" });
+                    else
+                        VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "TrainingError" });
                 },
                 ()=> { return _uploadComplete || TotalImageCount == 0; 
                 });

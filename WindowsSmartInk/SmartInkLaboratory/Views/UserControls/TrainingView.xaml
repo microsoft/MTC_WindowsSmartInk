@@ -30,6 +30,35 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
+            <VisualStateGroup x:Name="TrainingStates">
+                <VisualState x:Name="Training">
+                    <VisualState.StateTriggers>
+                        <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="Training"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="TrainingProgress.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="TrainingFinished">
+                    <VisualState.StateTriggers>
+                        <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="TrainingFinished"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="TrainingProgress.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="TrainingError">
+                    <VisualState.StateTriggers>
+                        <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="TrainingError"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="TrainingProgress.Visibility" Value="Visible"/>
+                        <Setter Target="TrainingProgress.IsIndeterminate" Value="false"/>
+                        <Setter Target="TrainingProgress.Foreground" Value="Red"/>
+                        <Setter Target="TrainingProgress.Value" Value="100"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
             <!--<VisualStateGroup x:Name="PackageStates">
                 <VisualState x:Name="HasPackage">
                     <VisualState.StateTriggers>
@@ -63,7 +92,8 @@
         <Border Grid.Column="1" Margin="10" Width="128" Height="128" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5" Background="DarkGray" >
             <Image x:Name="InkDrawing" Source="{Binding InkDrawing}" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" />
         </Border>
-        <ProgressBar x:Name="UploadProgress" Grid.Row="1" Grid.ColumnSpan="2" Maximum="{Binding TotalImageCount}" Value="{Binding ImageUploadCount}" Visibility="Collapsed"/>
+        <ProgressBar x:Name="UploadProgress" Foreground="Blue" Grid.Row="1" Grid.ColumnSpan="2" Maximum="{Binding TotalImageCount}" Value="{Binding ImageUploadCount}" Visibility="Collapsed"/>
+        <ProgressBar x:Name="TrainingProgress" Foreground="Blue"  Grid.Row="1" Grid.ColumnSpan="2" IsIndeterminate="True" Visibility="Collapsed"/>
         <Grid  Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"  >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
