@@ -172,14 +172,14 @@ namespace SmartInkLaboratory.ViewModels
             _prediction = prediction;
             _state = state;
 
-            Iterations.Sort(i => i.Name, SortDirection.Descending);
+            Iterations.Sort(i => i.TrainedAt.Value, SortDirection.Descending);
             _state.KeysChanged += (s, e) =>
             {
                 prediction.Initialize(_state.CurrentKeys.PredicationKey);
             };
 
             _state.PackageChanged += async  (s, e) => {
-                var iterations = await _training.GetIterationsAysnc();
+                var iterations = await _training.GetTrainedIterationsAysnc();
                 foreach (var i in iterations)
                     Iterations.Add(i);
 

@@ -34,12 +34,12 @@ namespace SmartInkLaboratory.Services
 {
     public class CustomVisionTrainingService : CustomVisionClassifierBaseService, ITrainingService
     {
-        public async Task<IList<Iteration>> GetIterationsAysnc()
+        public async Task<IList<Iteration>> GetTrainedIterationsAysnc()
         {
             try
             {
                 var result = await _trainingApi.GetIterationsWithHttpMessagesAsync(_currentProject.Id);
-                return (from i in result.Body select i).OrderByDescending(i => i.TrainedAt).ToList();
+                return (from i in result.Body select i).Where(i => i.TrainedAt != null).OrderByDescending(i => i.TrainedAt).ToList();
             }
             catch (Exception)
             {
@@ -50,7 +50,7 @@ namespace SmartInkLaboratory.Services
             
         }
 
-        public  Task<Iteration> TrainAsync()
+        public  Task<Iteration> TrainCurrentIterationAsync()
         {
             return Task.Run(async () => {
                 try

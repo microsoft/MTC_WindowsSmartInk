@@ -173,7 +173,7 @@ namespace SmartInkLaboratory.ViewModels
             this.Train = new RelayCommand(
                 async () => {
                     VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "Training" });
-                    var iteration = await _train.TrainAsync();
+                    var iteration = await _train.TrainCurrentIterationAsync();
                     if (iteration != null)
                         VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "TrainingFinished" });
                     else

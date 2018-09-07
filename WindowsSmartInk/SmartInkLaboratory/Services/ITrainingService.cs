@@ -42,8 +42,8 @@ namespace SmartInkLaboratory.Services
 {
     public interface ITrainingService
     {
-        Task<IList<Iteration>> GetIterationsAysnc();
-        Task<Iteration> TrainAsync();
+        Task<IList<Iteration>> GetTrainedIterationsAysnc();
+        Task<Iteration> TrainCurrentIterationAsync();
         Task<Uri> GetModuleDownloadUriAsync(Guid iterationId);
     }
 }
