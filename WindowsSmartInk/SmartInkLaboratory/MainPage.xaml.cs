@@ -90,22 +90,10 @@ namespace SmartInkLaboratory
                 var boundingBox = GetBoundingBox(_sessionStrokes);
                 var result = await _dataContextViewModel.ProcessInkAsync(_sessionStrokes);
 
-                if (result != null)
+                if (result != null && result.Keys.Count > 0)
                 {
-                    var top = (from r in result where r.Value >= 0.6 select r).ToArray();
-                    if (top?.Count() != 0)
-                    {
-                        if (top[0].Key.ToLower() != "other")
-                            await PlaceIconAsync(top[0].Key, top[0].Value, boundingBox);
-                        else
-                        {
-                            if (top.Count() > 1)
-                                await PlaceIconAsync(top[1].Key, top[1].Value, boundingBox);
-                            else
-                                await PlaceIconAsync(top[0].Key, top[0].Value, boundingBox);
-                        }
-
-                    }
+                    var top = (from r in result select r).First();
+                   await PlaceIconAsync(top.Key,top.Value, boundingBox);
                 }
                
                 _sessionStrokes.Clear();
@@ -141,8 +129,7 @@ namespace SmartInkLaboratory
 
         private async Task PlaceIconAsync(string tag, double probability, Rect boundingBox)
         {
-            if (tag == "other")
-            {
+          if (probability < 0.4) { 
                 foreach (var stroke in _sessionStrokes)
                     _allStrokes.Add(stroke);
             }
