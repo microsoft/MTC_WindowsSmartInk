@@ -269,7 +269,7 @@ namespace SmartInkLaboratory.ViewModels
 
         private void ProcessModelOutput(IDictionary<string,float> output)
         {
-            if (EvaluationResult == null)
+            if (output == null)
             {
                 TagResult = "null";
                 EvaluationResult = "Error";

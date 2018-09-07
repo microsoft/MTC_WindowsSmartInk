@@ -34,6 +34,7 @@ using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using System.Linq;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -100,7 +101,12 @@ namespace SmartInkLaboratory.ViewModels
                     return;
 
                 if (_state.CurrentTag != null)
+                {
+                    if (!_state.CurrentPackage.Tags.Contains(_state.CurrentTag.Name.ToLower()))
+                        await _state.CurrentPackage.AddTagAsync(_state.CurrentTag.Id, _state.CurrentTag.Name);
+
                     await SetIconLocation(_state.CurrentTag.Id);
+                }
                 OpenFile.RaiseCanExecuteChanged();
             };
 

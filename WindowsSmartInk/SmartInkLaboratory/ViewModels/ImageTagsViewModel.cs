@@ -80,6 +80,7 @@ namespace SmartInkLaboratory.ViewModels
                 {
                     var newTag = await _tagService.CreateTagAsync(tag);
                     Tags.Add(newTag);
+                    CurrentTag = newTag;
                 }
                 catch (ImageTagsServiceException ex)
                 {
