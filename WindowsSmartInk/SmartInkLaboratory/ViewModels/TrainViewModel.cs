@@ -151,6 +151,9 @@ namespace SmartInkLaboratory.ViewModels
             _state = state;
             
             _state.TagChanged += async (s,e) => {
+                if (_state.CurrentTag == null)
+                    return;
+
                 var iconfile = await GetIconFileAsync(_state.CurrentTag.Id);
                 if (iconfile != null)
                     await LoadIconAsync(iconfile);
