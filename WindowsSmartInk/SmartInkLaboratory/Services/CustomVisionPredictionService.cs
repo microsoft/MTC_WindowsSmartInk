@@ -46,8 +46,14 @@ namespace SmartInkLaboratory.Services
             
         }
 
-        public async Task<IDictionary<string,float >> GetPredictionAsync(Stream stream, Guid projectId, Guid iterationId = null)
+        public async Task<IDictionary<string,float >> GetPredictionAsync(Stream stream, Guid projectId, Guid iterationId)
         {
+            if (stream == null)
+                throw new ArgumentNullException($"{nameof(stream)} cannot be null");
+
+            if (projectId == Guid.Empty || iterationId == Guid.Empty)
+                throw new ArgumentException($"{nameof(projectId)} and/or {nameof(iterationId)} cannot be empty");
+
             var predictions = new Dictionary<string, float>();
             try
             {
