@@ -182,7 +182,7 @@ namespace SmartInkLaboratory.ViewModels
 
                 
                 SelectedIteration = (Iterations.Count > 0) ?Iterations[0] : null;
-                IsLocalModelAvailable = _state.CurrentPackage.IsLocalModelAvailable;
+                IsLocalModelAvailable = (_state.CurrentPackage == null) ? false : _state.CurrentPackage.IsLocalModelAvailable;
 
                 RaisePropertyChanged(nameof(IsReadyToTest));
 
