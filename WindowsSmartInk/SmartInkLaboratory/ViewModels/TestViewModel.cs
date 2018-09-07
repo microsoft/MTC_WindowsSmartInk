@@ -37,6 +37,7 @@ using Windows.Storage.Streams;
 using Micosoft.MTC.SmartInk.Package;
 using Windows.UI.Input.Inking;
 using Microsoft.MTC.SmartInk.Extensions;
+using AMP.Collections;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -158,7 +159,7 @@ namespace SmartInkLaboratory.ViewModels
 
 
 
-        public ObservableCollection<Iteration> Iterations { get; set; } = new ObservableCollection<Iteration>();
+        public SortableObservableCollection<Iteration> Iterations { get; set; } = new SortableObservableCollection<Iteration>();
 
         public RelayCommand UploadCorrection { get; set; }
         public RelayCommand DownloadModel { get; private set; }
@@ -170,6 +171,8 @@ namespace SmartInkLaboratory.ViewModels
             _training = training;
             _prediction = prediction;
             _state = state;
+
+            Iterations.Sort(i => i.Name, SortDirection.Descending);
             _state.KeysChanged += (s, e) =>
             {
                 prediction.Initialize(_state.CurrentKeys.PredicationKey);
