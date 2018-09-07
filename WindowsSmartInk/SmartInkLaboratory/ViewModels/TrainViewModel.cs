@@ -230,6 +230,9 @@ namespace SmartInkLaboratory.ViewModels
 
         private async Task<IStorageFile> GetIconFileAsync(Guid currentTagId)
         {
+            if (_state.CurrentPackage == null)
+                return null;
+
             var icon = await _state.CurrentPackage.GetIconAsync(currentTagId);
             if (icon == null)
                 icon = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Images/no_icon.png"));
