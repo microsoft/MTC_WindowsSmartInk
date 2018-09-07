@@ -38,6 +38,11 @@ namespace Microsoft.MTC.SmartInk.Extensions
     public static class InkStrokeCollectionExtensions
     {
 
+        private static int DEFAULT_WIDTH = 256;
+        private static int DEFAULT_HEIGHT = 256;
+
+        
+
         public static Rect GetBoundingBox(this IList<InkStroke> strokes)
         {
             Rect _boundingBox = Rect.Empty;
@@ -67,10 +72,10 @@ namespace Microsoft.MTC.SmartInk.Extensions
             var boundingBox = strokes.GetBoundingBox();
 
             if (targetWidth == 0)
-                targetWidth = boundingBox.Width;
+                targetWidth = DEFAULT_WIDTH;
 
             if (targetHeight == 0)
-                targetHeight = boundingBox.Height;
+                targetHeight = DEFAULT_HEIGHT;
 
             if (backgroundColor == null)
                 backgroundColor = Colors.White;
