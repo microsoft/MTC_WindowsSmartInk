@@ -22,6 +22,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Input;
@@ -112,8 +113,14 @@ namespace SmartInkLaboratory.Views.Controls
 
         // Using a DependencyProperty as the backing store for SelectedItem.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof(object), typeof(SelectionList), new PropertyMetadata(null));
+            DependencyProperty.Register("SelectedItem", typeof(object), typeof(SelectionList), new PropertyMetadata(null, OnSelectedItemChanged));
 
+        private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = d as SelectionList;
+            if (me?._commandList != null)
+                me._commandList.SelectedItem = e.NewValue;
+        }
 
         public List<ListViewItem> Items
         {
@@ -202,11 +209,11 @@ namespace SmartInkLaboratory.Views.Controls
 
         private void _commandList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string output = e.AddedItems[0] is ListViewItem ? ((ListViewItem)e.AddedItems[0]).Content.ToString() : e.AddedItems[0].ToString();
-            var listItem = e.AddedItems[0]; 
-         
-            this.SelectedIndex = _commandList.Items.IndexOf(e.AddedItems[0]);
-            this.SelectedItem = e.AddedItems[0];
+            //string output = e.AddedItems[0] is ListViewItem ? ((ListViewItem)e.AddedItems[0]).Content.ToString() : e.AddedItems[0].ToString();
+            //var listItem = e.AddedItems[0]; 
+
+            this.SelectedIndex = _commandList.SelectedIndex;
+            this.SelectedItem = _commandList.SelectedItem;
 
             if (this.Command != null)
             {

@@ -81,9 +81,13 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Model Iteration:" Margin="0,0,10,0"/>
-            <ampControls:SelectionList Grid.Column="1" Grid.ColumnSpan="3" ItemTemplate="{StaticResource IterationTemplate}" x:Name="IterationList" ItemsSource="{Binding Iterations}"  SelectedItem="{Binding SelectedIteration, Mode=TwoWay}"/>
+            <ampControls:SelectionList Grid.Column="1" Grid.ColumnSpan="3" ItemTemplate="{StaticResource IterationTemplate}" x:Name="IterationList" ItemsSource="{Binding Iterations}"  SelectedItem="{Binding SelectedIteration, Mode=TwoWay}" Margin="0,0,10,0"/>
+            <HyperlinkButton Grid.Column="4" Command="{Binding RefreshIterations}">
+                <SymbolIcon Symbol="Refresh" />
+            </HyperlinkButton>
         </Grid>
         <Grid  Grid.Row="1"  >
             <Grid.ColumnDefinitions>
@@ -109,7 +113,7 @@
             <AppBarButton Command="{Binding UploadCorrection}" Label="Upload Correction" Icon="Accept" Grid.Column="2" VerticalAlignment="Top"/>
             <AppBarButton Command="{Binding DownloadModel}" Label="Download Model" Icon="Download" Grid.Column="2" VerticalAlignment="Bottom"/>
         </Grid>
-        <Grid x:Name="PackageSelectBanner" Grid.RowSpan="5" Background="DarkGray" >
+        <Grid x:Name="PackageSelectBanner" Grid.RowSpan="5" Background="DarkGray" Visibility="Collapsed">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Package Not Testable.  No remote iteration or local model avaialble." TextAlignment="Center" Margin="40,0,40,0" />
         </Grid>
         <ProgressBar x:Name="DownloadProgressBar" Grid.Row="4" Value="{Binding DownloadProgress}" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="#FF2EFF00"/>

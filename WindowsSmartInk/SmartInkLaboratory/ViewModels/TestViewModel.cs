@@ -163,6 +163,7 @@ namespace SmartInkLaboratory.ViewModels
 
         public RelayCommand UploadCorrection { get; set; }
         public RelayCommand DownloadModel { get; private set; }
+        public RelayCommand RefreshIterations { get; set; }
 
         public string CurrentVisualState => throw new NotImplementedException();
 
@@ -178,13 +179,9 @@ namespace SmartInkLaboratory.ViewModels
                 prediction.Initialize(_state.CurrentKeys.PredicationKey);
             };
 
-            _state.PackageChanged += async  (s, e) => {
-                var iterations = await _training.GetTrainedIterationsAysnc();
-                foreach (var i in iterations)
-                    Iterations.Add(i);
-
-                
-                SelectedIteration = (Iterations.Count > 0) ?Iterations[0] : null;
+            _state.PackageChanged += async  (s, e) =>
+            {
+                await GetIterationsAsync();
                 IsLocalModelAvailable = (_state.CurrentPackage == null) ? false : _state.CurrentPackage.IsLocalModelAvailable;
 
                 RaisePropertyChanged(nameof(IsReadyToTest));
@@ -195,6 +192,7 @@ namespace SmartInkLaboratory.ViewModels
                     VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "HasPackage" });
             };
 
+         
            
             this.UploadCorrection = new RelayCommand(() =>
             {
@@ -230,9 +228,23 @@ namespace SmartInkLaboratory.ViewModels
                 }
             });
 
+            this.RefreshIterations = new RelayCommand(async () => {
+                await GetIterationsAsync();
+            });
+
         }
 
-      
+        private async Task GetIterationsAsync()
+        {
+            Iterations.Clear();
+            var iterations = await _training.GetTrainedIterationsAysnc();
+            foreach (var i in iterations)
+                Iterations.Add(i);
+
+
+            SelectedIteration = (Iterations.Count > 0) ? Iterations[0] : null;
+        }
+
 
         public async Task<IDictionary<string, float>> ProcessInkAsync(IList<InkStroke> strokes)
         {

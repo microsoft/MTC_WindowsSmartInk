@@ -42,12 +42,13 @@ namespace SmartInkLaboratory.Services
         event EventHandler<TagDeletedEventArgs> TagDeleted;
         event EventHandler PackageChanged;
         event EventHandler IconChanged;
+        event EventHandler IterationChanged;
 
         ResourceKeys CurrentKeys{ get; set; }
         Project CurrentProject { get; set; }
         Tag CurrentTag { get; set; }
         SmartInkPackage CurrentPackage { get; set; }
-
+        Iteration CurrentIteration { get; set; }
         void IconUpdated();
         void DeleteTag(Tag tag);
     }

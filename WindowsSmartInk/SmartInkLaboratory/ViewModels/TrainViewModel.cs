@@ -194,7 +194,10 @@ namespace SmartInkLaboratory.ViewModels
                     {
                         var iteration = await _train.TrainCurrentIterationAsync();
                         if (iteration != null)
+                        {
                             VisualStateChanged?.Invoke(this, new VisualStateEventArgs { NewState = "TrainingFinished" });
+                            _state.CurrentIteration = iteration;
+                        }
                        
                     }
                     catch (TrainingServiceException ex)

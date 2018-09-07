@@ -44,6 +44,7 @@ namespace SmartInkLaboratory.Services
         public event EventHandler<TagDeletedEventArgs> TagDeleted;
         public event EventHandler PackageChanged;
         public event EventHandler IconChanged;
+        public event EventHandler IterationChanged;
 
         public ResourceKeys CurrentKeys {
             get => _currentKeys;
@@ -81,7 +82,19 @@ namespace SmartInkLaboratory.Services
             }
         }
 
-     
+        private Iteration _currentIteration;
+        public Iteration CurrentIteration
+        {
+            get { return _currentIteration; }
+            set
+            {
+                if (_currentIteration == value)
+                    return;
+                _currentIteration = value;
+                IterationChanged?.Invoke(this, null);
+            }
+        }
+
 
         public AppStateService(IClassifierService classifier)
         {
