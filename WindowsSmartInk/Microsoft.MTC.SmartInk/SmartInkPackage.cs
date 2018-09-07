@@ -59,6 +59,8 @@ namespace Micosoft.MTC.SmartInk.Package
         private IPackageStorageProvider _provider;
         private Model _model;
 
+        public IReadOnlyList<string> Tags { get { return GetTags(); } }
+
         // These properties map to the properties set on the Nuget Package
         public string Name
         {
@@ -141,13 +143,13 @@ namespace Micosoft.MTC.SmartInk.Package
         /// Get all tags in the package
         /// </summary>
         /// <returns>List of tag names</returns>
-        public IList<string> GetTags()
+        private IReadOnlyList<string> GetTags()
         {
             List<string> tags = new List<string>();
             foreach (var t in _manifest.TagList.Values)
                 tags.Add(t);
 
-            return tags;
+            return  tags.AsReadOnly();
         }
 
         /// <summary>
