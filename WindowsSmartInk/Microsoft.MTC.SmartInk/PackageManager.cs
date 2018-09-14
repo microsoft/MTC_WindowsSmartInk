@@ -81,8 +81,8 @@ namespace Micosoft.MTC.SmartInk.Package
         /// Opens existing package
         /// </summary>
         /// <param name="packageName">Name of package</param>
-        /// <returns>Exisiting smart ink package <see cref="SmartInkPackage"/>. Returns null if package does not exist.</returns>
-        public Task<SmartInkPackage> OpenPackageAsync(string packageName)
+        /// <returns>Exisiting smart ink package <see cref="SmartInkMediaPackage"/>. Returns null if package does not exist.</returns>
+        public Task<SmartInkMediaPackage> OpenPackageAsync(string packageName)
         {
             if (string.IsNullOrWhiteSpace(packageName))
                 throw new ArgumentNullException($"{nameof(packageName)} cannot be null or empty.");
@@ -95,14 +95,14 @@ namespace Micosoft.MTC.SmartInk.Package
         /// </summary>
         /// <param name="packageName">Name of new package</param>
         /// <param name="overwrite">Overwrites exisitng package.</param>
-        /// <returns>New smart ink package <see cref="SmartInkPackage"/>.</returns>
-        public async Task<SmartInkPackage> CreatePackageAsync(string packageName, bool overwrite = false)
+        /// <returns>New smart ink package <see cref="SmartInkMediaPackage"/>.</returns>
+        public async Task<SmartInkMediaPackage> CreatePackageAsync(string packageName, bool overwrite = false)
         {
             if (string.IsNullOrWhiteSpace(packageName))
                 throw new ArgumentNullException($"{nameof(packageName)} cannot be null or empty.");
             var packageProvider = await _provider.CreatePackageProviderAsync(packageName, overwrite);
             
-            var package = new SmartInkPackage(packageName, packageProvider);
+            var package = new SmartInkMediaPackage(packageName, packageProvider);
             await package.SaveAsync();
             return package;
             
@@ -124,9 +124,9 @@ namespace Micosoft.MTC.SmartInk.Package
         /// Gets a list of all installed packaged using the current <c>IPackageManagerStorageProvider</c>
         /// </summary>
         /// <returns><c>IList</c> of SmartInk Packages</returns>
-        public async Task<IList<SmartInkPackage>> GetInstalledPackagesAsync()
+        public async Task<IList<SmartInkMediaPackage>> GetInstalledPackagesAsync()
         {
-            var result = new List<SmartInkPackage>();
+            var result = new List<SmartInkMediaPackage>();
             var packages =await _provider.GetInstalledPackagesAsync();
             foreach (var package in packages)
             {
@@ -143,7 +143,7 @@ namespace Micosoft.MTC.SmartInk.Package
         /// </summary>
         /// <param name="package">Package to use for Nuget creation</param>
         /// <param name="destination">File handle for saving the Nuget package</param>
-        public async Task PublishPackageAsync(SmartInkPackage package, IStorageFile destination)
+        public async Task PublishPackageAsync(SmartInkMediaPackage package, IStorageFile destination)
         {
             if (package == null)
                 throw new ArgumentNullException($"{nameof(package)} cannot be null");

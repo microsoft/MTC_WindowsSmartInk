@@ -76,7 +76,7 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
             return await CreatePackageStorageProviderAsync(packagename);
         }
 
-        public async Task<SmartInkPackage> GetPackageAsync(string packagename)
+        public async Task<SmartInkMediaPackage> GetPackageAsync(string packagename)
         {
             if (string.IsNullOrWhiteSpace(packagename))
                 throw new ArgumentNullException($"{nameof(packagename)} cannot be null or empty.");
@@ -97,10 +97,10 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
 
             var json = await FileIO.ReadTextAsync(package);
             if (string.IsNullOrWhiteSpace(json))
-                return new SmartInkPackage(packagename, await GetPackageStorageProviderAsync(packagename));
+                return new SmartInkMediaPackage(packagename, await GetPackageStorageProviderAsync(packagename));
             var manifest = JsonConvert.DeserializeObject<SmartInkManifest>(json);
 
-            return new SmartInkPackage(manifest, await GetPackageStorageProviderAsync(packagename));
+            return new SmartInkMediaPackage(manifest, await GetPackageStorageProviderAsync(packagename));
 
         }
 

@@ -23,41 +23,30 @@
  */
 
 using Micosoft.MTC.SmartInk.Package.Storage;
-using Microsoft.Graphics.Canvas;
 using Microsoft.MTC.SmartInk;
 using Microsoft.MTC.SmartInk.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
 using Windows.Graphics.Imaging;
-using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
-using Windows.UI;
 using Windows.UI.Input.Inking;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace Micosoft.MTC.SmartInk.Package
 {
-   
+
     /// <summary>
     /// Manages metadata, model and icons of the Smart Ink Package.  
     /// New packages are created using <see cref="PackageManager.CreatePackageAsync(string, bool)"/>
     /// </summary>
-    public class SmartInkPackage
+    public class SmartInkPackage : ISmartInkPackage
     {
         private const int INK_IMAGE_SIZE = 256;
-  
-        private SmartInkManifest _manifest;
-        private IPackageStorageProvider _provider;
-        private Model _model;
+
+        protected SmartInkManifest _manifest;
+        protected IPackageStorageProvider _provider;
+        internal Model _model;
 
         public IReadOnlyList<string> Tags { get { return GetTags(); } }
 
@@ -121,22 +110,22 @@ namespace Micosoft.MTC.SmartInk.Package
         public SoftwareBitmap LastEvaluatedBitmap { get; set; }
         public bool IsLocalModelAvailable => !string.IsNullOrWhiteSpace(_manifest.Model);
 
-        internal SmartInkPackage(string name,  IPackageStorageProvider provider)
+        internal SmartInkPackage(string name, IPackageStorageProvider provider)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException($"{nameof(name)} cannot be null or empty.");
             _provider = provider ?? throw new ArgumentNullException($"{nameof(provider)} cannot be null");
 
-            _manifest =  new SmartInkManifest() { Name = name };
-           
+            _manifest = new SmartInkManifest() { Name = name };
+
         }
 
-        internal SmartInkPackage(SmartInkManifest manifest,IPackageStorageProvider provider)
+        internal SmartInkPackage(SmartInkManifest manifest, IPackageStorageProvider provider)
         {
             _provider = provider ?? throw new ArgumentNullException($"{nameof(provider)} cannot be null");
 
             _manifest = manifest ?? throw new ArgumentNullException($"{nameof(manifest)} cannot be null");
-           
+
         }
 
         /// <summary>
@@ -149,7 +138,7 @@ namespace Micosoft.MTC.SmartInk.Package
             foreach (var t in _manifest.TagList.Values)
                 tags.Add(t);
 
-            return  tags.AsReadOnly();
+            return tags.AsReadOnly();
         }
 
         /// <summary>
@@ -182,7 +171,7 @@ namespace Micosoft.MTC.SmartInk.Package
         /// </summary>
         /// <param name="tags"><see cref="Dictionary{TKey, TValue}"/> of tag Id (key) and tag name (value)</param>
         /// <returns></returns>
-        public async Task AddTagsAsync(Dictionary<Guid,string> tags)
+        public async Task AddTagsAsync(Dictionary<Guid, string> tags)
         {
             if (tags == null || tags.Count == 0)
                 return;
@@ -214,7 +203,7 @@ namespace Micosoft.MTC.SmartInk.Package
 
             if (!_manifest.IconMap.ContainsKey(tagId))
                 _manifest.TagList.Add(tagId, tagName);
-             else   
+            else
                 _manifest.TagList[tagId] = tagName;
 
             await SaveAsync();
@@ -244,87 +233,9 @@ namespace Micosoft.MTC.SmartInk.Package
             }
         }
 
-        /// <summary>
-        /// Associate icon with tag and store in package
-        /// </summary>
-        /// <param name="tagId"></param>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        public async Task SaveIconAsync(Guid tagId, IStorageFile file)
-        {
-            if (tagId == null || tagId == Guid.Empty)
-                throw new ArgumentNullException($"{nameof(tagId)} cannot be null or empty.");
-
-            if (file == null)
-                throw new ArgumentNullException($"{nameof(file)} canot be null.");
-
-            if (!_manifest.TagList.ContainsKey(tagId))
-                throw new InvalidOperationException($"Tag:{nameof(tagId)} does not exist");
-
-            if (_manifest.IconMap.ContainsKey(tagId))
-            {
-                await _provider.DeleteIconAsync(_manifest.IconMap[tagId]);
-                _manifest.IconMap[tagId] = file.Name;
-            }
-            else
-                _manifest.IconMap.Add(tagId, file.Name);
-
-            await _provider.SaveIconAsync( file);
-        }
+        
 
 
-        /// <summary>
-        /// /// Associate icon with tag and store in package. <seealso cref="SaveIconAsync(Guid, IStorageFile)"/>
-        /// </summary>
-        /// <param name="tagName"></param>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        public async Task SaveIconAsync(string tagName, IStorageFile file)
-        {
-            if (string.IsNullOrWhiteSpace(tagName))
-                throw new ArgumentNullException($"{nameof(tagName)} cannot be null or empty.");
-
-            var tag = (from v in _manifest.TagList where v.Value == tagName select v.Key).FirstOrDefault();
-            if (tag != null)
-                await SaveIconAsync(tag, file);
-            else
-                throw new InvalidOperationException($"Tag:{tagName} does not exist");
-        }
-
-        /// <summary>
-        /// Retrieves an icon for a given tag <seealso cref="GetIconAsync(Guid)"/>
-        /// </summary>
-        /// <param name="tag"></param>
-        /// <returns><see cref="IStorageFile" />handle to icon file</returns>
-        public Task<IStorageFile> GetIconAsync(string tag)
-        {
-            if (string.IsNullOrWhiteSpace(tag))
-                throw new ArgumentNullException($"{nameof(tag)} cannot be null or empty.");
-
-            Guid tagId;
-            if (Guid.TryParse(tag, out tagId))
-                return GetIconAsync(tagId);
-
-            throw new ArgumentException($"{nameof(tag)}:{tag} is not a valid guid");
-        }
-
-        /// <summary>
-        /// Retrieves an icon for a given tag
-        /// </summary>
-        /// <param name="tag"></param>
-        /// <returns><see cref="IStorageFile" />handle to icon file</returns>
-        public async Task<IStorageFile> GetIconAsync(Guid tagId)
-        {
-            if (tagId == null || Guid.Empty == tagId)
-                throw new ArgumentNullException($"{nameof(tagId)} cannot be null or empty");
-
-            if (!_manifest.IconMap.ContainsKey(tagId))
-                return null;
-
-            return await _provider.GetIconAsync(_manifest.IconMap[tagId]);
-        }
-
-      
         /// <summary>
         /// Evaluates image using package ONNX model
         /// </summary>
@@ -374,10 +285,10 @@ namespace Micosoft.MTC.SmartInk.Package
             return await EvaluateAsync(bitmap, threshold);
         }
 
-     
-        
 
-    
+
+
+
 
         /// <summary>
         /// Save the current package state
@@ -397,13 +308,13 @@ namespace Micosoft.MTC.SmartInk.Package
         {
             if (modelFile.FileType != ".onnx")
                 throw new InvalidOperationException($"{modelFile} must have a file type of .onnx");
-           
+
             await _provider.SaveModelAsync(modelFile);
             _manifest.Model = modelFile.Name;
             await SaveAsync();
         }
 
 
-      
+
     }
 }

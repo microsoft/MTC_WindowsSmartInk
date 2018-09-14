@@ -42,7 +42,7 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
     public interface IPackageManagerStorageProvider
     {
         string RootFolderPath { get; }
-        Task<SmartInkPackage> GetPackageAsync(string packagename);
+        Task<SmartInkMediaPackage> GetPackageAsync(string packagename);
         Task<IPackageStorageProvider> CreatePackageProviderAsync(string packagename, bool overwrite = false);
         Task  DeletePackageAsync(string packagename);
         Task<IList<string>> GetInstalledPackagesAsync();

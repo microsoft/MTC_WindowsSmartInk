@@ -41,10 +41,10 @@ namespace SmartInkLaboratory.ViewModels
         private ITagService _tags;
         private IAppStateService _state;
 
-        private List<SmartInkPackage> _installed = new List<SmartInkPackage>();
-        public ObservableCollection<SmartInkPackage> Packages { get; set; } = new ObservableCollection<SmartInkPackage>();
+        private List<SmartInkMediaPackage> _installed = new List<SmartInkMediaPackage>();
+        public ObservableCollection<SmartInkMediaPackage> Packages { get; set; } = new ObservableCollection<SmartInkMediaPackage>();
           
-        public RelayCommand<SmartInkPackage> SelectPackage { get; set; }
+        public RelayCommand<SmartInkMediaPackage> SelectPackage { get; set; }
 
         public OpenPackageViewModel(IProjectPackageMapper mapper, ITagService tags, IAppStateService state)
         {
@@ -57,7 +57,7 @@ namespace SmartInkLaboratory.ViewModels
                 await GetPackagesAsync();
             };
 
-            this.SelectPackage = new RelayCommand<SmartInkPackage>(async(package) => {
+            this.SelectPackage = new RelayCommand<SmartInkMediaPackage>(async(package) => {
                 if (package == null)
                     return;
 
@@ -89,7 +89,7 @@ namespace SmartInkLaboratory.ViewModels
             LoadPackages(matches);
         }
 
-        private void LoadPackages(IEnumerable<SmartInkPackage> packages)
+        private void LoadPackages(IEnumerable<SmartInkMediaPackage> packages)
         {
             Packages.Clear();
             foreach (var p in packages)

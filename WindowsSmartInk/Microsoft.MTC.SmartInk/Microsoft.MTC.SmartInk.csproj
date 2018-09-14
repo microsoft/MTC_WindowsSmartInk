@@ -110,10 +110,12 @@
     <Compile Include="Extensions\RectExtenstion.cs" />
     <Compile Include="InkModel.cs" />
     <Compile Include="IPackageStorageProvider.cs" />
+    <Compile Include="ISmartInkPackage.cs" />
     <Compile Include="LocalAppDataProvider.cs" />
     <Compile Include="PackageManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmartInkManifest.cs" />
+    <Compile Include="SmartInkMediaPackage.cs" />
     <Compile Include="SmartInkPackage.cs" />
     <EmbeddedResource Include="Properties\Microsoft.MTC.SmartInk.rd.xml" />
   </ItemGroup>
