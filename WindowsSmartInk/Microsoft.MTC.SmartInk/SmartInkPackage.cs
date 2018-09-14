@@ -353,7 +353,7 @@ namespace Micosoft.MTC.SmartInk.Package
                 result = output.loss;
 
             LastEvaluatedBitmap = bitmap;
-            return result;
+            return result.OrderByDescending(x => x.Value).ToDictionary(p => p.Key, p => p.Value);
         }
 
         /// <summary>

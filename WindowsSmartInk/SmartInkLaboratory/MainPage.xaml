@@ -1,4 +1,5 @@
 ﻿<ampViews:NavAwarePage 
+    
     xmlns:UserControls="using:SmartInkLaboratory.Views.UserControls" 
     x:Class="SmartInkLaboratory.MainPage"
     xmlns:ampViews="using:AMP.Views"

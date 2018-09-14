@@ -73,7 +73,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -113,9 +113,9 @@
             <AppBarButton Command="{Binding UploadCorrection}" Label="Upload Correction" Icon="Accept" Grid.Column="2" VerticalAlignment="Top"/>
             <AppBarButton Command="{Binding DownloadModel}" Label="Download Model" Icon="Download" Grid.Column="2" VerticalAlignment="Bottom"/>
         </Grid>
-        <Grid x:Name="PackageSelectBanner" Grid.RowSpan="5" Background="DarkGray" Visibility="Collapsed">
+        <!--<Grid x:Name="PackageSelectBanner" Grid.RowSpan="5" Background="DarkGray" Visibility="Collapsed">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Package Not Testable.  No remote iteration or local model avaialble." TextAlignment="Center" Margin="40,0,40,0" />
-        </Grid>
-        <ProgressBar x:Name="DownloadProgressBar" Grid.Row="4" Value="{Binding DownloadProgress}" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="#FF2EFF00"/>
+        </Grid>-->
+        <ProgressBar x:Name="DownloadProgressBar" Grid.Row="5" Value="{Binding DownloadProgress}" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="#FF2EFF00"/>
     </Grid>
 </UserControl>

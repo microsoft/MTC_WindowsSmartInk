@@ -249,7 +249,7 @@ namespace SmartInkLaboratory.ViewModels
         public async Task<IDictionary<string, float>> ProcessInkAsync(IList<InkStroke> strokes)
         {
             IDictionary<string, float> result = null;
-            if (IsLocalModelAvailable)
+            if (IsLocalModelAvailable && !UseRemoteService)
                 result = await _state.CurrentPackage.EvaluateAsync(strokes);
             else
             {

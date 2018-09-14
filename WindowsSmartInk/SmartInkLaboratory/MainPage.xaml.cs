@@ -88,16 +88,28 @@ namespace SmartInkLaboratory
             _timer.Tick += async (s, e) => {
                 _timer.Stop();
                 var boundingBox = GetBoundingBox(_sessionStrokes);
-                var result = await _dataContextViewModel.ProcessInkAsync(_sessionStrokes);
-
-                if (result != null && result.Keys.Count > 0)
+                try
                 {
-                    var top = (from r in result select r).First();
-                   await PlaceIconAsync(top.Key,top.Value, boundingBox);
+                    var result = await _dataContextViewModel.ProcessInkAsync(_sessionStrokes);
+
+                    if (result != null && result.Keys.Count > 0)
+                    {
+                        var top = (from r in result select r).First();
+                        await PlaceIconAsync(top.Key, top.Value, boundingBox);
+                    }
+
+                    
                 }
-               
-                _sessionStrokes.Clear();
-                win2dCanvas.Invalidate();
+                catch (Exception)
+                {
+
+
+                }
+                finally
+                {
+                    _sessionStrokes.Clear();
+                    win2dCanvas.Invalidate();
+                }
             };
 
             inkCanvas.InkPresenter.StrokeInput.StrokeStarted += (s, e) =>
@@ -136,6 +148,9 @@ namespace SmartInkLaboratory
             else
             {
                 var icon = await GetIconFileAsync(tag);
+                if (icon == null)
+                    return;
+
                 var bytes = await FileIO.ReadBufferAsync(icon);
 
                 var ms = new InMemoryRandomAccessStream();

@@ -96,6 +96,8 @@ namespace SmartInkLaboratory.ViewModels
             });
 
             this.PublishPackage = new RelayCommand(async() => {
+                
+
                 var savePicker = new Windows.Storage.Pickers.FileSavePicker();
                 savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
                 // Dropdown of file types the user can save the file as
