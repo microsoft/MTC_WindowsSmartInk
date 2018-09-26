@@ -135,6 +135,7 @@
     <Compile Include="ViewModels\PackageManagerViewModel.cs" />
     <Compile Include="ViewModels\ProjectsViewModel.cs" />
     <Compile Include="ViewModels\ResourceKeysViewModel.cs" />
+    <Compile Include="ViewModels\SmartInkPackageViewModel.cs" />
     <Compile Include="ViewModels\TestViewModel.cs" />
     <Compile Include="ViewModels\TrainViewModel.cs" />
     <Compile Include="Views\Controls\SelectionList.cs" />

@@ -71,7 +71,7 @@ namespace SmartInkLaboratory.ViewModels
                
                 await package.UpdateTagsAsync(updateTags);
 
-                _state.CurrentPackage = package;
+                _state.SetCurrentPackage( package);
 
 
             });

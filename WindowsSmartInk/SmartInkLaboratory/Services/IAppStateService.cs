@@ -26,6 +26,7 @@ using SmartInkLaboratory.Services.Platform;
 using Micosoft.MTC.SmartInk.Package;
 using Microsoft.Cognitive.CustomVision.Training.Models;
 using System;
+using SmartInkLaboratory.ViewModels;
 
 namespace SmartInkLaboratory.Services
 {
@@ -47,8 +48,9 @@ namespace SmartInkLaboratory.Services
         ResourceKeys CurrentKeys{ get; set; }
         Project CurrentProject { get; set; }
         Tag CurrentTag { get; set; }
-        ISmartInkPackage CurrentPackage { get; set; }
+        SmartInkPackageViewModel CurrentPackage { get;  }
         Iteration CurrentIteration { get; set; }
+        void SetCurrentPackage(ISmartInkPackage package);
         void IconUpdated();
         void DeleteTag(Tag tag);
     }

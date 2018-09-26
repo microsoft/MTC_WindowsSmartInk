@@ -266,7 +266,7 @@ namespace SmartInkLaboratory.ViewModels
             if (_state.CurrentPackage == null || !(_state.CurrentPackage is SmartInkMediaPackage))
                 return null;
 
-            var icon = await ((SmartInkMediaPackage)_state.CurrentPackage).GetMediaAsync(currentTagId);
+            var icon = await (_state.CurrentPackage).GetMediaAsync(currentTagId);
             if (icon == null)
                 icon = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Images/no_icon.png"));
            

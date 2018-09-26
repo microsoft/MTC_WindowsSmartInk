@@ -45,7 +45,7 @@ namespace SmartInkLaboratory.ViewModels
 
         public event EventHandler<VisualStateEventArgs> VisualStateChanged;
 
-        public ISmartInkPackage CurrentPackage
+        public SmartInkPackageViewModel CurrentPackage
         {
             get { return _state.CurrentPackage; }
             
@@ -107,7 +107,7 @@ namespace SmartInkLaboratory.ViewModels
                 savePicker.SuggestedFileName = nugetFileName;
                 var file = await savePicker.PickSaveFileAsync();
                 if (file != null)
-                    await _packageManager.PublishPackageAsync(_state.CurrentPackage, file);
+                    await _packageManager.PublishPackageAsync(_state.CurrentPackage.BasePackage, file);
             },
                 ()=> {
                     return _state.CurrentPackage != null; });

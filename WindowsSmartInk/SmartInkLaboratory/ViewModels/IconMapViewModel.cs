@@ -137,10 +137,10 @@ namespace SmartInkLaboratory.ViewModels
         public async Task<IStorageFile> GetIconFileAsync(Guid currentTagId)
         {
 
-            if (!(_state.CurrentPackage is SmartInkMediaPackage))
+            if (!(_state.CurrentPackage.IsMediaPackage))
                 return null;
 
-            var icon = await ((SmartInkMediaPackage) _state.CurrentPackage).GetMediaAsync(currentTagId);
+            var icon = await _state.CurrentPackage.GetMediaAsync(currentTagId);
             if (icon == null)
                 icon = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Images/no_icon.png"));
 
@@ -155,14 +155,14 @@ namespace SmartInkLaboratory.ViewModels
             if (CurrentTag == null)
                 return;
 
-            if (!(_state.CurrentPackage is SmartInkMediaPackage))
+            if (!(_state.CurrentPackage.IsMediaPackage))
                 return;
             
 
             await LoadIconAsync(file);
             _state.IconUpdated();
             //return await CopyFileToLocalPackageFolder(file);
-            await ((SmartInkMediaPackage)_state.CurrentPackage).SaveMediaAsync(CurrentTag.Id, file);
+            await _state.CurrentPackage.SaveMediaAsync(CurrentTag.Id, file);
         }
 
         private async Task LoadIconAsync(IStorageFile file)

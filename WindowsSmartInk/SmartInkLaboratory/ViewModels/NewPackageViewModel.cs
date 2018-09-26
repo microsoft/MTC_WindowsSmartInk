@@ -112,7 +112,7 @@ namespace SmartInkLaboratory.ViewModels
 
                 await _mapper.AddAsync(package.Name, _state.CurrentProject.Id.ToString());
 
-                _state.CurrentPackage = package;
+                _state.SetCurrentPackage(package);
 
                 Reset();
             },

@@ -26,6 +26,7 @@ using System;
 using SmartInkLaboratory.Services.Platform;
 using Micosoft.MTC.SmartInk.Package;
 using Microsoft.Cognitive.CustomVision.Training.Models;
+using SmartInkLaboratory.ViewModels;
 
 namespace SmartInkLaboratory.Services
 {
@@ -34,7 +35,7 @@ namespace SmartInkLaboratory.Services
     {
         static ResourceKeys _currentKeys;
         static Project _currentProject;
-        static ISmartInkPackage _currentPackage;
+        static SmartInkPackageViewModel _currentPackage;
         static Tag _currentTag;
         static IClassifierService _classifier;
 
@@ -73,9 +74,9 @@ namespace SmartInkLaboratory.Services
                 TagChanged?.Invoke(this, null);
             }
         }
-        public ISmartInkPackage CurrentPackage {
+        public SmartInkPackageViewModel CurrentPackage {
             get => _currentPackage;
-            set
+            private set
             {
                 _currentPackage = value;
                 PackageChanged?.Invoke(this,null);
@@ -106,6 +107,11 @@ namespace SmartInkLaboratory.Services
                 classifier.SetCurrentProject(CurrentProject);
                 _classifier = classifier;
             }
+        }
+
+        public void SetCurrentPackage(ISmartInkPackage package)
+        {
+            CurrentPackage = new SmartInkPackageViewModel(package);
         }
 
         public void IconUpdated()

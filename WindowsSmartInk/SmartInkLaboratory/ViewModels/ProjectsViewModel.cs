@@ -112,7 +112,7 @@ namespace SmartInkLaboratory.ViewModels
                     return;
 
                 _state.CurrentProject = project;
-                _state.CurrentPackage = null;
+                _state.SetCurrentPackage(null);
                 ApplicationData.Current.LocalSettings.Values["LastProject"] = _state.CurrentProject.Name;
             });
 
