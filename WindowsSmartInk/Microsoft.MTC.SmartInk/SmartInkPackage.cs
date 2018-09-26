@@ -42,7 +42,7 @@ namespace Micosoft.MTC.SmartInk.Package
     /// </summary>
     public class SmartInkPackage : ISmartInkPackage
     {
-        private const int INK_IMAGE_SIZE = 256;
+        private readonly int INK_IMAGE_SIZE = 256;
 
         protected SmartInkManifest _manifest;
         protected IPackageStorageProvider _provider;
@@ -110,7 +110,7 @@ namespace Micosoft.MTC.SmartInk.Package
         public SoftwareBitmap LastEvaluatedBitmap { get; set; }
         public bool IsLocalModelAvailable => !string.IsNullOrWhiteSpace(_manifest.Model);
 
-        internal SmartInkPackage(string name, IPackageStorageProvider provider)
+        internal SmartInkPackage(string name, IPackageStorageProvider provider, int imageSize = 0)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException($"{nameof(name)} cannot be null or empty.");
@@ -118,13 +118,19 @@ namespace Micosoft.MTC.SmartInk.Package
 
             _manifest = new SmartInkManifest() { Name = name };
 
+            if (imageSize != 0)
+                INK_IMAGE_SIZE = imageSize;
+
         }
 
-        internal SmartInkPackage(SmartInkManifest manifest, IPackageStorageProvider provider)
+        internal SmartInkPackage(SmartInkManifest manifest, IPackageStorageProvider provider, int imageSize = 0)
         {
             _provider = provider ?? throw new ArgumentNullException($"{nameof(provider)} cannot be null");
 
             _manifest = manifest ?? throw new ArgumentNullException($"{nameof(manifest)} cannot be null");
+
+            if (imageSize != 0)
+                INK_IMAGE_SIZE = imageSize;
 
         }
 
