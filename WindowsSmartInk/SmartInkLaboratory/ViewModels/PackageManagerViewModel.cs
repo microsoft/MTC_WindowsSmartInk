@@ -45,7 +45,7 @@ namespace SmartInkLaboratory.ViewModels
 
         public event EventHandler<VisualStateEventArgs> VisualStateChanged;
 
-        public SmartInkMediaPackage CurrentPackage
+        public ISmartInkPackage CurrentPackage
         {
             get { return _state.CurrentPackage; }
             

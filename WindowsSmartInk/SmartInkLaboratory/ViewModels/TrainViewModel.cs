@@ -38,6 +38,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.Graphics.Imaging;
 using Windows.UI.Input.Inking;
 using Microsoft.MTC.SmartInk.Extensions;
+using Micosoft.MTC.SmartInk.Package;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -262,10 +263,10 @@ namespace SmartInkLaboratory.ViewModels
 
         private async Task<IStorageFile> GetIconFileAsync(Guid currentTagId)
         {
-            if (_state.CurrentPackage == null)
+            if (_state.CurrentPackage == null || !(_state.CurrentPackage is SmartInkMediaPackage))
                 return null;
 
-            var icon = await _state.CurrentPackage.GetMediaAsync(currentTagId);
+            var icon = await ((SmartInkMediaPackage)_state.CurrentPackage).GetMediaAsync(currentTagId);
             if (icon == null)
                 icon = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Images/no_icon.png"));
            

@@ -47,7 +47,7 @@ namespace SmartInkLaboratory.Services
         ResourceKeys CurrentKeys{ get; set; }
         Project CurrentProject { get; set; }
         Tag CurrentTag { get; set; }
-        SmartInkMediaPackage CurrentPackage { get; set; }
+        ISmartInkPackage CurrentPackage { get; set; }
         Iteration CurrentIteration { get; set; }
         void IconUpdated();
         void DeleteTag(Tag tag);

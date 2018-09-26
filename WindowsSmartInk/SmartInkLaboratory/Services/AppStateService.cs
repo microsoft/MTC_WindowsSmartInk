@@ -34,7 +34,7 @@ namespace SmartInkLaboratory.Services
     {
         static ResourceKeys _currentKeys;
         static Project _currentProject;
-        static SmartInkMediaPackage _currentPackage;
+        static ISmartInkPackage _currentPackage;
         static Tag _currentTag;
         static IClassifierService _classifier;
 
@@ -73,7 +73,7 @@ namespace SmartInkLaboratory.Services
                 TagChanged?.Invoke(this, null);
             }
         }
-        public SmartInkMediaPackage CurrentPackage {
+        public ISmartInkPackage CurrentPackage {
             get => _currentPackage;
             set
             {

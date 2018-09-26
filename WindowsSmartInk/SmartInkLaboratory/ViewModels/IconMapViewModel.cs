@@ -35,6 +35,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Linq;
+using Micosoft.MTC.SmartInk.Package;
 
 namespace SmartInkLaboratory.ViewModels
 {
@@ -135,8 +136,11 @@ namespace SmartInkLaboratory.ViewModels
 
         public async Task<IStorageFile> GetIconFileAsync(Guid currentTagId)
         {
-        
-            var icon = await _state.CurrentPackage.GetMediaAsync(currentTagId);
+
+            if (!(_state.CurrentPackage is SmartInkMediaPackage))
+                return null;
+
+            var icon = await ((SmartInkMediaPackage) _state.CurrentPackage).GetMediaAsync(currentTagId);
             if (icon == null)
                 icon = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Images/no_icon.png"));
 
@@ -151,13 +155,14 @@ namespace SmartInkLaboratory.ViewModels
             if (CurrentTag == null)
                 return;
 
-
+            if (!(_state.CurrentPackage is SmartInkMediaPackage))
+                return;
             
 
             await LoadIconAsync(file);
             _state.IconUpdated();
             //return await CopyFileToLocalPackageFolder(file);
-            await _state.CurrentPackage.SaveMediaAsync(CurrentTag.Id, file);
+            await ((SmartInkMediaPackage)_state.CurrentPackage).SaveMediaAsync(CurrentTag.Id, file);
         }
 
         private async Task LoadIconAsync(IStorageFile file)
