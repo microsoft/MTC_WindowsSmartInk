@@ -42,13 +42,17 @@ namespace Micosoft.MTC.SmartInk.Package
     /// </summary>
     public class SmartInkMediaPackage : SmartInkPackage
     {
-        private const int INK_IMAGE_SIZE = 256;
+
+        public SmartInkMediaPackage() : base()
+        {
+
+        }
   
-        internal SmartInkMediaPackage(string name,  IPackageStorageProvider provider) : base(name, provider)
+        public SmartInkMediaPackage(string name,  IPackageStorageProvider provider, int imagesize = 0) : base(name, provider, imagesize)
         {  
         }
 
-        internal SmartInkMediaPackage(SmartInkManifest manifest,IPackageStorageProvider provider) :base(manifest, provider)
+        public SmartInkMediaPackage(SmartInkManifest manifest,IPackageStorageProvider provider, int imagesize = 0) :base(manifest, provider, imagesize)
         {  
         }
         

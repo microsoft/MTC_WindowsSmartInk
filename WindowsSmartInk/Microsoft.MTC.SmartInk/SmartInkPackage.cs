@@ -110,7 +110,12 @@ namespace Micosoft.MTC.SmartInk.Package
         public SoftwareBitmap LastEvaluatedBitmap { get; set; }
         public bool IsLocalModelAvailable => !string.IsNullOrWhiteSpace(_manifest.Model);
 
-        internal SmartInkPackage(string name, IPackageStorageProvider provider, int imageSize = 0)
+        public SmartInkPackage()
+        {
+
+        }
+
+        public SmartInkPackage(string name, IPackageStorageProvider provider, int imageSize = 0)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException($"{nameof(name)} cannot be null or empty.");
@@ -123,7 +128,7 @@ namespace Micosoft.MTC.SmartInk.Package
 
         }
 
-        internal SmartInkPackage(SmartInkManifest manifest, IPackageStorageProvider provider, int imageSize = 0)
+        public SmartInkPackage(SmartInkManifest manifest, IPackageStorageProvider provider, int imageSize = 0)
         {
             _provider = provider ?? throw new ArgumentNullException($"{nameof(provider)} cannot be null");
 

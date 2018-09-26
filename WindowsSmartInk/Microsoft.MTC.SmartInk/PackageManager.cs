@@ -27,7 +27,9 @@ using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking.BackgroundTransfer;
@@ -82,7 +84,7 @@ namespace Micosoft.MTC.SmartInk.Package
         /// </summary>
         /// <param name="packageName">Name of package</param>
         /// <returns>Exisiting smart ink package <see cref="SmartInkMediaPackage"/>. Returns null if package does not exist.</returns>
-        public Task<SmartInkMediaPackage> OpenPackageAsync(string packageName)
+        public Task<ISmartInkPackage> OpenPackageAsync(string packageName)
         {
             if (string.IsNullOrWhiteSpace(packageName))
                 throw new ArgumentNullException($"{nameof(packageName)} cannot be null or empty.");
@@ -96,18 +98,43 @@ namespace Micosoft.MTC.SmartInk.Package
         /// <param name="packageName">Name of new package</param>
         /// <param name="overwrite">Overwrites exisitng package.</param>
         /// <returns>New smart ink package <see cref="SmartInkMediaPackage"/>.</returns>
-        public async Task<SmartInkMediaPackage> CreatePackageAsync(string packageName, bool overwrite = false)
+        //public async Task<SmartInkMediaPackage> CreateSmartInkMediaPackage(string packageName, int imagesize = 0, bool overwrite = false)
+        //{
+        //    if (string.IsNullOrWhiteSpace(packageName))
+        //        throw new ArgumentNullException($"{nameof(packageName)} cannot be null or empty.");
+        //    var packageProvider = await _provider.CreatePackageProviderAsync(packageName, overwrite);
+            
+        //    var package = new SmartInkMediaPackage(packageName, packageProvider, imagesize);
+        //    await package.SaveAsync();
+        //    return package;
+        //}
+
+        //public async Task<SmartInkPackage> CreateSmartInkPackage(string packageName, int imagesize = 0, bool overwrite = false)
+        //{
+        //    if (string.IsNullOrWhiteSpace(packageName))
+        //        throw new ArgumentNullException($"{nameof(packageName)} cannot be null or empty.");
+        //    var packageProvider = await _provider.CreatePackageProviderAsync(packageName, overwrite);
+
+        //    var package = new SmartInkPackage(packageName, packageProvider, imagesize);
+        //    await package.SaveAsync();
+        //    return package;
+
+        //}
+
+        public async Task<T> CreatePackageAsync<T>(string packageName, int imagesize = 0, bool overwrite = false) where T : ISmartInkPackage
         {
             if (string.IsNullOrWhiteSpace(packageName))
                 throw new ArgumentNullException($"{nameof(packageName)} cannot be null or empty.");
+            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+            CultureInfo culture = null; // use InvariantCulture or other if you prefer
+
             var packageProvider = await _provider.CreatePackageProviderAsync(packageName, overwrite);
-            
-            var package = new SmartInkMediaPackage(packageName, packageProvider);
+
+            object[] args = { packageName, packageProvider, imagesize };
+            var package = (T) Activator.CreateInstance(typeof(T),args);
             await package.SaveAsync();
             return package;
-            
         }
-
         /// <summary>
         /// Deletes existing package
         /// </summary>

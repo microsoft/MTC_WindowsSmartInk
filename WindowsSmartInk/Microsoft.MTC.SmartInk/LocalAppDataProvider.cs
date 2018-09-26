@@ -76,7 +76,7 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
             return await CreatePackageStorageProviderAsync(packagename);
         }
 
-        public async Task<SmartInkMediaPackage> GetPackageAsync(string packagename)
+        public async Task<ISmartInkPackage> GetPackageAsync(string packagename)
         {
             if (string.IsNullOrWhiteSpace(packagename))
                 throw new ArgumentNullException($"{nameof(packagename)} cannot be null or empty.");

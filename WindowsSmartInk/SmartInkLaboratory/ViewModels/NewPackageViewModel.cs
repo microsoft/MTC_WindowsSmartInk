@@ -100,7 +100,7 @@ namespace SmartInkLaboratory.ViewModels
             this.Save = new RelayCommand(async () =>
             {
 
-                var package = await _packageManager.CreatePackageAsync(Name);
+                var package = await _packageManager.CreatePackageAsync<SmartInkPackage>(Name);
                 var taglist = await _tags.GetTagsAsync();
                 var newTags = new Dictionary<Guid, string>();
                 foreach (var tag in taglist)
