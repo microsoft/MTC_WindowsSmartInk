@@ -118,7 +118,7 @@ namespace Micosoft.MTC.SmartInk.Package
 
             _manifest = new SmartInkManifest() { Name = name };
 
-            if (imageSize != 0)
+            if (imageSize != 0 && imageSize >= INK_IMAGE_SIZE)
                 INK_IMAGE_SIZE = imageSize;
 
         }
@@ -129,7 +129,7 @@ namespace Micosoft.MTC.SmartInk.Package
 
             _manifest = manifest ?? throw new ArgumentNullException($"{nameof(manifest)} cannot be null");
 
-            if (imageSize != 0)
+            if (imageSize != 0 && imageSize >= INK_IMAGE_SIZE)
                 INK_IMAGE_SIZE = imageSize;
 
         }
