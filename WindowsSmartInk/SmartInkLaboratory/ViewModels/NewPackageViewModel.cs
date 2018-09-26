@@ -80,11 +80,23 @@ namespace SmartInkLaboratory.ViewModels
             }
         }
 
-      
 
-       
 
-     
+
+        private bool _isMediaPackage = true;
+        public bool IsMediaPackage
+        {
+            get { return _isMediaPackage; }
+            set
+            {
+                if (_isMediaPackage == value)
+                    return;
+                _isMediaPackage = value;
+                RaisePropertyChanged(nameof(IsMediaPackage));
+            }
+        }
+
+
 
         public RelayCommand Save { get; set; }
      
@@ -99,8 +111,12 @@ namespace SmartInkLaboratory.ViewModels
             
             this.Save = new RelayCommand(async () =>
             {
+                ISmartInkPackage package;
+                if (IsMediaPackage)
+                    package = await _packageManager.CreatePackageAsync<SmartInkMediaPackage>(Name);
+                else
+                    package = await _packageManager.CreatePackageAsync<SmartInkPackage>(Name);
 
-                var package = await _packageManager.CreatePackageAsync<SmartInkPackage>(Name);
                 var taglist = await _tags.GetTagsAsync();
                 var newTags = new Dictionary<Guid, string>();
                 foreach (var tag in taglist)

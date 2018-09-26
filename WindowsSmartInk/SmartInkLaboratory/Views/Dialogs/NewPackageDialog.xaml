@@ -25,6 +25,7 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -39,5 +40,10 @@
         <TextBox  Grid.Row="4" Grid.Column="2" MinWidth="150" PlaceholderText="(Required)" Text="{Binding Author, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <TextBlock Grid.Row="6" Grid.Column="0" Text="Version:"/>
         <TextBox  Grid.Row="6" Grid.Column="2" MinWidth="150" PlaceholderText="(Required)1.0.0.0" Text="{Binding Version, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.ColumnSpan="3">
+            <TextBlock Text="Package Contains Media?" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <ToggleSwitch OnContent="Yes" OffContent="No" IsOn="{Binding IsMediaPackage, Mode=TwoWay}"/>
+            
+        </StackPanel>
     </Grid>
 </ContentDialog>
