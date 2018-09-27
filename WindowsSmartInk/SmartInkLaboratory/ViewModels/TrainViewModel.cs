@@ -263,7 +263,7 @@ namespace SmartInkLaboratory.ViewModels
 
         private async Task<IStorageFile> GetIconFileAsync(Guid currentTagId)
         {
-            if (_state.CurrentPackage == null || !(_state.CurrentPackage is SmartInkMediaPackage))
+            if (_state.CurrentPackage == null || !(_state.CurrentPackage is IMediaPackage))
                 return null;
 
             var icon = await (_state.CurrentPackage).GetMediaAsync(currentTagId);

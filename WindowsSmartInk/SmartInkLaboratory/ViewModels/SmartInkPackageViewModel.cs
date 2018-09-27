@@ -39,7 +39,7 @@ namespace SmartInkLaboratory.ViewModels
         public ISmartInkPackage BasePackage { get; private set; }
 
 
-        public bool IsMediaPackage { get { return BasePackage is SmartInkMediaPackage; } }
+        public bool IsMediaPackage { get { return BasePackage is IMediaPackage; } }
         public string Name
         {
             get { return BasePackage.Name; }
@@ -92,14 +92,14 @@ namespace SmartInkLaboratory.ViewModels
         public async Task<IStorageFile> GetMediaAsync(Guid tagId)
         {
             if (IsMediaPackage)
-                return await ((SmartInkMediaPackage)BasePackage).GetMediaAsync(tagId);
+                return await ((IMediaPackage)BasePackage).GetMediaAsync(tagId);
             else
                 return null;
         }
         public async Task SaveMediaAsync(Guid tagId, IStorageFile file)
         {
             if (IsMediaPackage)
-                await ((SmartInkMediaPackage)BasePackage).SaveMediaAsync(tagId, file);
+                await ((IMediaPackage)BasePackage).SaveMediaAsync(tagId, file);
         }
 
         public Task<IDictionary<string, float>> EvaluateAsync(IList<InkStroke> strokes, float threshold = 0)

@@ -305,8 +305,9 @@ namespace Micosoft.MTC.SmartInk.Package
         /// Save the current package state
         /// </summary>
         /// <returns></returns>
-        public async Task SaveAsync()
+        public async virtual Task SaveAsync()
         {
+            _manifest.IsMediaPackage = (this is IMediaPackage);
             await _provider.SaveManifestAsync(_manifest);
         }
 

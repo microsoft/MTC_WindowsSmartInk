@@ -40,7 +40,7 @@ namespace Micosoft.MTC.SmartInk.Package
     /// Manages metadata, model and icons of the Smart Ink Package.  
     /// New packages are created using <see cref="PackageManager.CreatePackageAsync(string, bool)"/>
     /// </summary>
-    public class SmartInkMediaPackage : SmartInkPackage
+    public class SmartInkMediaPackage : SmartInkPackage, IMediaPackage
     {
 
         public SmartInkMediaPackage() : base()
@@ -135,6 +135,12 @@ namespace Micosoft.MTC.SmartInk.Package
 
             return await _provider.GetIconAsync(_manifest.IconMap[tagId]);
         }
-      
+
+        public override Task SaveAsync()
+        {
+            _manifest.IsMediaPackage = true;
+            return base.SaveAsync();
+        }
+
     }
 }

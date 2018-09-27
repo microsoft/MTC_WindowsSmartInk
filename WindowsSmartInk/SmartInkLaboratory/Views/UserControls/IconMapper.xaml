@@ -31,30 +31,31 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
-            <!--<VisualStateGroup x:Name="PackageStates">
-                <VisualState x:Name="HasPackage">
+            <VisualStateGroup x:Name="PackageStates">
+                <VisualState x:Name="NotMedia">
                     <VisualState.StateTriggers>
-                        <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="HasPackage" />
+                        <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="NotMedia" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="PackageSelectBanner.Visibility" Value="Collapsed"/>
+                        <Setter Target="NotMediaBanner.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
-                <VisualState x:Name="NoPackage">
+                <VisualState x:Name="IsMedia">
                     <VisualState.StateTriggers>
-                        <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="NoPackage" />
+                        <amp:VisualStateTrigger ViewModel="{Binding}" TargetState="IsMedia" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="PackageSelectBanner.Visibility" Value="Visible"/>
+                        <Setter Target="NotMediaBanner.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
-            </VisualStateGroup>-->
+            </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="20"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+        
         <Border BorderBrush="DarkGray" BorderThickness="1" Padding="4" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Grid>
                 <Image x:Name="PlaceholderIcon" Height="150" Width="150" Source="ms-appx:///Assets/Images/no_icon.png"  />
@@ -85,8 +86,8 @@
             </Button>
            
         </Grid>
-        <!--<Grid x:Name="PackageSelectBanner" Grid.ColumnSpan="3" Background="DarkGray" Visibility="Visible">
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Select Package" />
-        </Grid>-->
+        <Grid x:Name="NotMediaBanner" Grid.ColumnSpan="3" Background="DarkGray" Visibility="Visible">
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Not a Media Package" />
+        </Grid>
     </Grid>
 </UserControl>

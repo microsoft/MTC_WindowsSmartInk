@@ -37,6 +37,7 @@ namespace Micosoft.MTC.SmartInk.Package
         public Dictionary<Guid,string> IconMap { get; private set; } = new Dictionary<Guid, string>();
         public Dictionary<Guid, string> TagList { get; private set; } = new Dictionary<Guid, string>();
         public string Model { get; set; }
+        public bool IsMediaPackage { get; set; } = true;
 
         internal SmartInkManifest()
         {

@@ -77,6 +77,20 @@ namespace SmartInkLaboratory.ViewModels
             }
         }
 
+        private bool _isMediaPackage;
+        public bool IsMediaPackage
+        {
+            get { return _isMediaPackage; }
+            set
+            {
+                if (_isMediaPackage == value)
+                    return;
+                _isMediaPackage = value;
+                RaisePropertyChanged(nameof(IsMediaPackage));
+            }
+        }
+
+
 
         public RelayCommand OpenFile{ get; private set; }
 
@@ -94,7 +108,10 @@ namespace SmartInkLaboratory.ViewModels
                     return;
                 }
                 //_storageFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(_state.CurrentPackage.Name, CreationCollisionOption.OpenIfExists);
+                IsMediaPackage = _state.CurrentPackage.IsMediaPackage;
                 VisualStateChanged.Invoke(this, new VisualStateEventArgs { NewState = "HasPackage" });
+                var mediaState = (IsMediaPackage) ? "IsMedia" : "NotMedia";
+                VisualStateChanged.Invoke(this, new VisualStateEventArgs { NewState = mediaState });
             };
 
             _state.TagChanged += async (s,e)=>{

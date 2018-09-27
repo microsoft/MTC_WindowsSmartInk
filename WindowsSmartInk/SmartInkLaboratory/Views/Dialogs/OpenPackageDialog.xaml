@@ -19,7 +19,7 @@
       
   
         <!--<HyperlinkButton Content="Show All" Command="{Binding ShowAll}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>-->
-        <ListView x:Name="PackageList"  ItemsSource="{Binding Packages}" >
+        <ListView x:Name="PackageList"  ItemsSource="{Binding Packages}" Height="300">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
