@@ -86,7 +86,7 @@
             </Button>
            
         </Grid>
-        <Grid x:Name="NotMediaBanner" Grid.ColumnSpan="3" Background="DarkGray" Visibility="Visible">
+        <Grid x:Name="NotMediaBanner" Grid.ColumnSpan="3" Background="DarkGray" Visibility="Collapsed">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Not a Media Package" />
         </Grid>
     </Grid>

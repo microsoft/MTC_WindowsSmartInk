@@ -104,12 +104,12 @@ namespace SmartInkLaboratory.ViewModels
                 if (_state.CurrentPackage == null)
                 {
                     //_storageFolder = null;
-                    VisualStateChanged.Invoke(this, new VisualStateEventArgs { NewState = "NoPackage" });
+                    VisualStateChanged.Invoke(this, new VisualStateEventArgs { NewState = "NotMedia" });
                     return;
                 }
                 //_storageFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(_state.CurrentPackage.Name, CreationCollisionOption.OpenIfExists);
                 IsMediaPackage = _state.CurrentPackage.IsMediaPackage;
-                VisualStateChanged.Invoke(this, new VisualStateEventArgs { NewState = "HasPackage" });
+                //VisualStateChanged.Invoke(this, new VisualStateEventArgs { NewState = "HasPackage" });
                 var mediaState = (IsMediaPackage) ? "IsMedia" : "NotMedia";
                 VisualStateChanged.Invoke(this, new VisualStateEventArgs { NewState = mediaState });
             };
@@ -122,8 +122,8 @@ namespace SmartInkLaboratory.ViewModels
                 {
                     if (!_state.CurrentPackage.Tags.Contains(_state.CurrentTag.Name.ToLower()))
                         await _state.CurrentPackage.AddTagAsync(_state.CurrentTag.Id, _state.CurrentTag.Name);
-
-                    await SetIconLocation(_state.CurrentTag.Id);
+                    if (IsMediaPackage)
+                        await SetIconLocation(_state.CurrentTag.Id);
                 }
                 OpenFile.RaiseCanExecuteChanged();
             };
