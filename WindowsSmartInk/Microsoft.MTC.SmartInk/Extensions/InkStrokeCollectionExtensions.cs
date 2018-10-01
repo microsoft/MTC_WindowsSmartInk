@@ -37,11 +37,8 @@ namespace Microsoft.MTC.SmartInk.Extensions
 {
     public static class InkStrokeCollectionExtensions
     {
-
         private static int DEFAULT_WIDTH = 256;
         private static int DEFAULT_HEIGHT = 256;
-
-        
 
         public static Rect GetBoundingBox(this IList<InkStroke> strokes)
         {
@@ -56,10 +53,6 @@ namespace Microsoft.MTC.SmartInk.Extensions
 
             var drawAttributes = strokes[0].DrawingAttributes;
             var strokeSize = drawAttributes.Size;
-
-            //add border buffer for stroke width
-            //_boundingBox.Height += strokeSize.Height * 2;
-            //_boundingBox.Width += strokeSize.Width * 2;
 
             return _boundingBox;
         }
@@ -83,7 +76,6 @@ namespace Microsoft.MTC.SmartInk.Extensions
             var scale = CalculateScale(boundingBox, targetWidth, targetHeight);
 
             var scaledStrokes = ScaleAndTransformStrokes(strokes, scale);
-
 
             WriteableBitmap writeableBitmap = null;
             CanvasDevice device = CanvasDevice.GetSharedDevice();
@@ -155,7 +147,5 @@ namespace Microsoft.MTC.SmartInk.Extensions
 
             return newStrokeList;
         }
-
-
     }
 }
