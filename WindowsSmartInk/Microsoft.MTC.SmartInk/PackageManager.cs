@@ -92,8 +92,16 @@ namespace Micosoft.MTC.SmartInk.Package
             return _provider.GetPackageAsync(packageFolder);
         }
 
-      
-        public async Task<T> CreatePackageAsync<T>(string packageName, int imagesize = 0, bool overwrite = false) where T : ISmartInkPackage
+
+      /// <summary>
+      /// Creates a local package in application Local State folder
+      /// </summary>
+      /// <typeparam name="T"></typeparam>
+      /// <param name="packageName">Name of the package</param>
+      /// <param name="imagesize">Set size of ink image samples. Default is 258 h/w</param>
+      /// <param name="overwrite">Overwrite existing package.  Default is false.</param>
+      /// <returns></returns>
+        public async Task<T> CreateLocalPackageAsync<T>(string packageName, int imagesize = 0, bool overwrite = false) where T : ISmartInkPackage
         {
             if (string.IsNullOrWhiteSpace(packageName))
                 throw new ArgumentNullException($"{nameof(packageName)} cannot be null or empty.");
@@ -107,11 +115,12 @@ namespace Micosoft.MTC.SmartInk.Package
             await package.SaveAsync();
             return package;
         }
+
         /// <summary>
-        /// Deletes existing package
+        /// Deletes existing local package
         /// </summary>
         /// <param name="packageName">Name of package</param>
-        public Task DeletePackageAsync(string packageName)
+        public Task DeleteLocalPackageAsync(string packageName)
         {
             if (string.IsNullOrWhiteSpace(packageName))
                 throw new ArgumentNullException($"{nameof(packageName)} cannot be null or empty.");
@@ -120,7 +129,7 @@ namespace Micosoft.MTC.SmartInk.Package
         }
 
         /// <summary>
-        /// Gets a list of all installed packaged using the current <c>IPackageManagerStorageProvider</c>
+        /// Gets a list of all local packages using the current <c>IPackageManagerStorageProvider</c>
         /// </summary>
         /// <returns><c>IList</c> of SmartInk Packages</returns>
         public async Task<IList<ISmartInkPackage>> GetLocalPackagesAsync()
@@ -136,6 +145,11 @@ namespace Micosoft.MTC.SmartInk.Package
 
             return result;
         }
+
+        /// <summary>
+        /// Get a list of all packages installed as part of the application
+        /// </summary>
+        /// <returns></returns>
         public async Task<IList<ISmartInkPackage>> GetInstalledPackagesAsync()
         {
             var result = new List<ISmartInkPackage>();
