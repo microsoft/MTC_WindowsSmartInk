@@ -112,25 +112,32 @@ namespace SmartInkLaboratory.ViewModels
             this.Save = new RelayCommand(async () =>
             {
                 ISmartInkPackage package;
-                if (IsMediaPackage)
-                    package = await _packageManager.CreatePackageAsync<SmartInkMediaPackage>(Name);
-                else
-                    package = await _packageManager.CreatePackageAsync<SmartInkPackage>(Name);
-
-                var taglist = await _tags.GetTagsAsync();
-                var newTags = new Dictionary<Guid, string>();
-                foreach (var tag in taglist)
+                try
                 {
-                    newTags.Add(tag.Id, tag.Name);
+                    if (IsMediaPackage)
+                        package = await _packageManager.CreateLocalPackageAsync<SmartInkMediaPackage>(Name);
+                    else
+                        package = await _packageManager.CreateLocalPackageAsync<SmartInkPackage>(Name);
+
+                    var taglist = await _tags.GetTagsAsync();
+                    var newTags = new Dictionary<Guid, string>();
+                    foreach (var tag in taglist)
+                    {
+                        newTags.Add(tag.Id, tag.Name);
+                    }
+
+                    await package.AddTagsAsync(newTags);
+
+                    await _mapper.AddAsync(package.Name, _state.CurrentProject.Id.ToString());
+
+                    _state.SetCurrentPackage(package);
+
+                    Reset();
                 }
-
-                await package.AddTagsAsync(newTags);
-
-                await _mapper.AddAsync(package.Name, _state.CurrentProject.Id.ToString());
-
-                _state.SetCurrentPackage(package);
-
-                Reset();
+                catch (Exception)
+                {
+                   
+                }
             },
             ()=> {
                 return !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Version);
