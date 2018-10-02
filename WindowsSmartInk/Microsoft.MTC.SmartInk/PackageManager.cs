@@ -123,7 +123,7 @@ namespace Micosoft.MTC.SmartInk.Package
         /// Gets a list of all installed packaged using the current <c>IPackageManagerStorageProvider</c>
         /// </summary>
         /// <returns><c>IList</c> of SmartInk Packages</returns>
-        public async Task<IList<ISmartInkPackage>> GetInstalledPackagesAsync()
+        public async Task<IList<ISmartInkPackage>> GetLocalPackagesAsync()
         {
             var result = new List<ISmartInkPackage>();
             var packages =await _provider.GetLocalPackagesAsync();
@@ -136,6 +136,20 @@ namespace Micosoft.MTC.SmartInk.Package
 
             return result;
         }
+        public async Task<IList<ISmartInkPackage>> GetInstalledPackagesAsync()
+        {
+            var result = new List<ISmartInkPackage>();
+            var packages = await _provider.GetInstalledPackagesAsync();
+            foreach (var package in packages)
+            {
+                var p = await _provider.GetPackageAsync(package);
+                if (p != null)
+                    result.Add(p);
+            }
+
+            return result;
+        }
+
 
         /// <summary>
         /// Creates a Nuget package from a SmartInk Package

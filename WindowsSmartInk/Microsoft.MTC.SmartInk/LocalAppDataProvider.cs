@@ -125,13 +125,20 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
 
         public async Task<IList<IStorageFolder>> GetInstalledPackagesAsync()
         {
-            var installedFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-            var packages = new List<IStorageFolder>();
-            var folders = await installedFolder.GetFoldersAsync();
-            foreach (var f in folders)
-                packages.Add(f);
+            try
+            {
+                var installedFolder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("SmartInkPackages"); ;
+                var packages = new List<IStorageFolder>();
+                var folders = await installedFolder.GetFoldersAsync();
+                foreach (var f in folders)
+                    packages.Add(f);
 
-            return packages;
+                return packages;
+            }
+            catch (Exception)
+            {
+                return new List<IStorageFolder>();
+            }
         }
 
         private async Task<IPackageStorageProvider> CreatePackageStorageProviderAsync(string packagename)
