@@ -45,7 +45,7 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
                 Directory.CreateDirectory(ROOT_PATH);
         }
 
-        public async Task DeletePackageAsync(string packagename)
+        public async Task DeleteLocalPackageAsync(string packagename)
         {
             if (string.IsNullOrWhiteSpace(packagename))
                 return;
@@ -76,17 +76,17 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
             return await CreatePackageStorageProviderAsync(packagename);
         }
 
-        public async Task<ISmartInkPackage> GetPackageAsync(string packagename)
+        public async Task<ISmartInkPackage> GetPackageAsync(IStorageFolder packageFolder)
         {
-            if (string.IsNullOrWhiteSpace(packagename))
-                throw new ArgumentNullException($"{nameof(packagename)} cannot be null or empty.");
-
-            if (_root == null)
-                _root = await GetRootFolderAsync();
-
-            var packageFolder = await _root.GetFolderAsync(packagename);
             if (packageFolder == null)
-                return null;
+                throw new ArgumentNullException($"{nameof(packageFolder)} cannot be null.");
+
+            //if (_root == null)
+            //    _root = await GetRootFolderAsync();
+
+            //var packageFolder = await _root.GetFolderAsync(packagename);
+            //if (packageFolder == null)
+            //    return null;
 
             if (!File.Exists($"{packageFolder.Path}\\manifest.json"))
                 return null;
@@ -97,27 +97,39 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
 
             var json = await FileIO.ReadTextAsync(package);
             if (string.IsNullOrWhiteSpace(json))
-                return new SmartInkMediaPackage(packagename, await GetPackageStorageProviderAsync(packagename));
+                return new SmartInkMediaPackage(packageFolder.Name, GetPackageStorageProviderAsync(packageFolder));
+
             var manifest = JsonConvert.DeserializeObject<SmartInkManifest>(json);
 
             if (manifest.IsMediaPackage)
-                return new SmartInkMediaPackage(manifest, await GetPackageStorageProviderAsync(packagename));
+                return new SmartInkMediaPackage(manifest, GetPackageStorageProviderAsync(packageFolder));
             else
-                return new SmartInkPackage(manifest, await GetPackageStorageProviderAsync(packagename));
+                return new SmartInkPackage(manifest, GetPackageStorageProviderAsync(packageFolder));
 
         }
 
-        public async Task<IList<string>> GetInstalledPackagesAsync()
+      
+
+        public async Task<IList<IStorageFolder>> GetLocalPackagesAsync()
         {
             if (_root == null)
                 _root = await GetRootFolderAsync();
 
-            var packages = new List<string>();
+            var packages = new List<IStorageFolder>();
             var folders = await _root.GetFoldersAsync();
             foreach (var f in folders)
-            {
-                packages.Add(f.Name);
-            }
+                packages.Add(f);
+
+            return packages;
+        }
+
+        public async Task<IList<IStorageFolder>> GetInstalledPackagesAsync()
+        {
+            var installedFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
+            var packages = new List<IStorageFolder>();
+            var folders = await installedFolder.GetFoldersAsync();
+            foreach (var f in folders)
+                packages.Add(f);
 
             return packages;
         }
@@ -134,17 +146,17 @@ namespace Micosoft.MTC.SmartInk.Package.Storage
             return new LocalAppDataPackageStorageProvider(folder);
         }
 
-        private async Task<IPackageStorageProvider> GetPackageStorageProviderAsync(string packagename)
+        private IPackageStorageProvider GetPackageStorageProviderAsync(IStorageFolder packageFolder)
         {
-            if (string.IsNullOrWhiteSpace(packagename))
-                throw new ArgumentNullException($"{nameof(packagename)} cannot be null or empty.");
+            if (packageFolder == null)
+                throw new ArgumentNullException($"{nameof(packageFolder)} cannot be null.");
 
-            if (_root == null)
-                _root = await GetRootFolderAsync();
+            //if (_root == null)
+            //    _root = await GetRootFolderAsync();
            
-            var folder = await _root.GetFolderAsync(packagename);
+            //var folder = await _root.GetFolderAsync(packagename);
        
-            return new LocalAppDataPackageStorageProvider(folder);
+            return new LocalAppDataPackageStorageProvider(packageFolder);
         }
 
         private async Task<IStorageFolder> GetRootFolderAsync()
