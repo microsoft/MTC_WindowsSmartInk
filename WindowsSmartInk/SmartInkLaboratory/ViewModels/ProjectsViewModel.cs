@@ -108,7 +108,7 @@ namespace SmartInkLaboratory.ViewModels
             this.ShowCreate = new RelayCommand(() => { IsCreating = true; });
 
             this.SelectProject = new RelayCommand<Project>((project) => {
-                if (project == null || _state.CurrentProject.Id == project.Id)
+                if (project == null )
                     return;
 
                 _state.CurrentProject = project;
