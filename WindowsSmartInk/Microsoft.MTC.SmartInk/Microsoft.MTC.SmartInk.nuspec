@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.MTC.SmartInk</id>
+    <version>1.0.0</version>
+    <authors>jbrand</authors>
+    <owners>jbrand</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/Microsoft/MTC_WindowsSmartInk</projectUrl>
+    <description>Library for managing, creating and using Smart Ink packages based ONNX models generated using Azure Custom Vision.</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>uwp;smartink</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="NETStandard.Library" version="2.0.0" />
+        <dependency id="Newtonsoft.Json" version="11.0.2"  />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
