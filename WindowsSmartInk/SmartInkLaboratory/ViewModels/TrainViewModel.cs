@@ -307,6 +307,11 @@ namespace SmartInkLaboratory.ViewModels
 
         private async Task<List<StorageFile>> CreateFileListAsync()
         {
+
+            List<StorageFile> files = new List<StorageFile>();
+            if (string.IsNullOrWhiteSpace(_state.CurrentPackage.Name))
+                return files;
+
             StorageFolder pictureFolder = await KnownFolders.PicturesLibrary.CreateFolderAsync("SmartInk", CreationCollisionOption.OpenIfExists);
             var projectFolder = await pictureFolder.CreateFolderAsync(_state.CurrentPackage.Name, CreationCollisionOption.OpenIfExists);
             //await SetupWatcher(projectFolder);
@@ -319,7 +324,6 @@ namespace SmartInkLaboratory.ViewModels
             
             var folders = await projectFolder.GetFoldersAsync();
 
-            List<StorageFile> files = new List<StorageFile>();
             TotalImageCount = 0;
             foreach (var folder in folders)
             {

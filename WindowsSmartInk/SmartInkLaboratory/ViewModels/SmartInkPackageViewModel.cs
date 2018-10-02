@@ -42,7 +42,7 @@ namespace SmartInkLaboratory.ViewModels
         public bool IsMediaPackage { get { return BasePackage is IMediaPackage; } }
         public string Name
         {
-            get { return BasePackage.Name; }
+            get { return BasePackage?.Name; }
             set
             {
                 if (BasePackage.Name == value)
@@ -56,7 +56,7 @@ namespace SmartInkLaboratory.ViewModels
             get { return BasePackage.Version; }
             set
             {
-                if (BasePackage.Version == value)
+                if (BasePackage?.Version == value)
                     return;
                 BasePackage.Version = value;
                 RaisePropertyChanged(nameof(Version));
@@ -65,11 +65,11 @@ namespace SmartInkLaboratory.ViewModels
 
 
 
-        public IReadOnlyList<string> Tags  { get { return BasePackage.Tags; } }
+        public IReadOnlyList<string> Tags  { get { return BasePackage?.Tags; } }
 
         public bool IsLocalModelAvailable
         {
-            get { return BasePackage.IsLocalModelAvailable; }
+            get { return (BasePackage != null) ? BasePackage.IsLocalModelAvailable : false; }
             
         }
 
@@ -81,16 +81,25 @@ namespace SmartInkLaboratory.ViewModels
 
         public Task AddTagAsync(Guid tagId, string tagName)
         {
+            if (BasePackage == null)
+                throw new InvalidOperationException($"{nameof(BasePackage)} is null");
+
             return BasePackage.AddTagAsync(tagId, tagName);
         }
 
         public Task SaveAsync()
         {
+            if (BasePackage == null)
+                throw new InvalidOperationException($"{nameof(BasePackage)} is null");
+
             return BasePackage.SaveAsync();
         }
 
         public async Task<IStorageFile> GetMediaAsync(Guid tagId)
         {
+            if (BasePackage == null)
+                throw new InvalidOperationException($"{nameof(BasePackage)} is null");
+
             if (IsMediaPackage)
                 return await ((IMediaPackage)BasePackage).GetMediaAsync(tagId);
             else
@@ -98,22 +107,31 @@ namespace SmartInkLaboratory.ViewModels
         }
         public async Task SaveMediaAsync(Guid tagId, IStorageFile file)
         {
+            if (BasePackage == null)
+                throw new InvalidOperationException($"{nameof(BasePackage)} is null");
+
             if (IsMediaPackage)
                 await ((IMediaPackage)BasePackage).SaveMediaAsync(tagId, file);
         }
 
         public Task<IDictionary<string, float>> EvaluateAsync(IList<InkStroke> strokes, float threshold = 0)
         {
+            if (BasePackage == null)
+                throw new InvalidOperationException($"{nameof(BasePackage)} is null");
             return BasePackage.EvaluateAsync(strokes, threshold);
         }
 
         public Task RemoveTagAsync(Guid tagId)
         {
+            if (BasePackage == null)
+                throw new InvalidOperationException($"{nameof(BasePackage)} is null");
             return BasePackage.RemoveTagAsync(tagId);
         }
 
         public Task SaveModelAsync(IStorageFile modelFile)
         {
+            if (BasePackage == null)
+                throw new InvalidOperationException($"{nameof(BasePackage)} is null");
             return BasePackage.SaveModelAsync(modelFile);
         }
 

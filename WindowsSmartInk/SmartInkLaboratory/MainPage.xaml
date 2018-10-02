@@ -53,7 +53,7 @@
                     <TextBlock Text="Current Project:"/>
                     <controls:SelectionList x:Name="ProjectSelectionList" 
                                         ItemsSource="{Binding ProjectsList}" 
-                                        SelectedItem="{Binding CurrentProject, Mode=TwoWay}" 
+                                        SelectedItem="{Binding CurrentProject}" 
                                         VerticalAlignment="Center" 
                                         MinWidth="150"
                                         Command="{Binding SelectProject}"

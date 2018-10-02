@@ -81,7 +81,7 @@ namespace SmartInkLaboratory.ViewModels
         {
             var packages = await _mapper.GetPackagesByProjectAsync(_state.CurrentProject.Id.ToString());
             _installed.Clear();
-            _installed = (await _manager.GetInstalledPackagesAsync()).ToList();
+            _installed = (await _manager.GetLocalPackagesAsync()).ToList();
             var matches = from p in packages
                           join i in _installed on p.ToLower() equals i.Name.ToLower()
                           select i;
