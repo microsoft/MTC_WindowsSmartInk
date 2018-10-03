@@ -216,6 +216,7 @@ namespace SmartInkLaboratory.ViewModels
        
         public async Task<IDictionary<string, float>> ProcessInkAsync(IList<InkStroke> strokes)
         {
+
             var inkBitmap = strokes.DrawInk();
             await SetImageSourceAsync(inkBitmap);
             var saveFile = await GetBitmapSaveFile();

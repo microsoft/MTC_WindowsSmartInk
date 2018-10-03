@@ -57,7 +57,7 @@ namespace Microsoft.MTC.SmartInk.Extensions
             return _boundingBox;
         }
 
-        public static SoftwareBitmap DrawInk(this IList<InkStroke> strokes, double targetWidth = 0, double targetHeight = 0, Color? backgroundColor = null  )
+        public static SoftwareBitmap DrawInk(this IList<InkStroke> strokes, double targetWidth = 0, double targetHeight = 0, float rotation = 0, Color? backgroundColor = null  )
         {
             if (strokes == null)
                 throw new ArgumentNullException($"{nameof(strokes)} cannot be null");
@@ -75,7 +75,7 @@ namespace Microsoft.MTC.SmartInk.Extensions
 
             var scale = CalculateScale(boundingBox, targetWidth, targetHeight);
 
-            var scaledStrokes = ScaleAndTransformStrokes(strokes, scale);
+            var scaledStrokes = ScaleAndTransformStrokes(strokes, scale,rotation);
 
             WriteableBitmap writeableBitmap = null;
             CanvasDevice device = CanvasDevice.GetSharedDevice();
@@ -132,20 +132,43 @@ namespace Microsoft.MTC.SmartInk.Extensions
             point.Y = (float)(-boundingBox.Top + inkSize);
             return point;
         }
-        private static IList<InkStroke> ScaleAndTransformStrokes(IList<InkStroke> strokeList, float scale)
+        private static IList<InkStroke> ScaleAndTransformStrokes(IList<InkStroke> strokeList, float scale, float rotation = 0)
         {
             var builder = new InkStrokeBuilder();
-            var newStrokeList = new List<InkStroke>();
-            var boundingBox = strokeList.GetBoundingBox();
-            var translateMatrix = Matrix3x2.CreateTranslation((float)-boundingBox.X, (float)-boundingBox.Y);
+            IList<InkStroke> rotatedStrokes;
+            IList<InkStroke> translatedStrokes = new List<InkStroke>();
+            var rotationMatrix = Matrix3x2.CreateRotation(ConvertDegreesToRadians(rotation));
             var scaleMatrix = Matrix3x2.CreateScale(scale);
-            foreach (var singleStroke in strokeList)
+
+            if (rotation != 0)
             {
-                var newStroke = builder.CreateStrokeFromInkPoints(singleStroke.GetInkPoints(), translateMatrix * scaleMatrix);
-                newStrokeList.Add(newStroke);
+                rotatedStrokes = new List<InkStroke>();
+                foreach (var stroke in strokeList)
+                {
+                    var newStroke = builder.CreateStrokeFromInkPoints(stroke.GetInkPoints(), rotationMatrix);
+                    rotatedStrokes.Add(newStroke);
+                }
+            }
+            else
+                rotatedStrokes = strokeList;
+
+            var boundingBox = (rotation != 0) ? rotatedStrokes.GetBoundingBox() : strokeList.GetBoundingBox(); ;
+            var translateMatrix = Matrix3x2.CreateTranslation((float)-boundingBox.X, (float)-boundingBox.Y);
+           
+            foreach (var stroke in rotatedStrokes)
+            {
+                
+                var newStroke = builder.CreateStrokeFromInkPoints(stroke.GetInkPoints(), rotationMatrix * translateMatrix * scaleMatrix);
+                translatedStrokes.Add(newStroke);
             }
 
-            return newStrokeList;
+            return translatedStrokes;
+        }
+
+        public static float ConvertDegreesToRadians(float degrees)
+        {
+            var radians = (Math.PI / 180) * degrees;
+            return (float)radians;
         }
     }
 }
