@@ -200,36 +200,6 @@ namespace SmartInkLaboratory
             _allStrokes.Clear();
             win2dCanvas.Invalidate();
         }
-
-        private  SoftwareBitmap GetInkBitmap(Rect boundingBox)
-        {
-            WriteableBitmap bitmap = null;
-            CanvasDevice device = CanvasDevice.GetSharedDevice();
-            using (CanvasRenderTarget offscreen = new CanvasRenderTarget(device, (float)inkCanvas.ActualWidth, (float)inkCanvas.ActualHeight, 96))
-            {
-                using (CanvasDrawingSession ds = offscreen.CreateDrawingSession())
-                {
-                    ds.Units = CanvasUnits.Pixels;
-                    ds.Clear(Colors.White);
-                    ds.DrawInk(_sessionStrokes);
-                }
-
-                var writeableBitmap = new WriteableBitmap((int)offscreen.SizeInPixels.Width, (int)offscreen.SizeInPixels.Height);
-                offscreen.GetPixelBytes().CopyTo(writeableBitmap.PixelBuffer);
-                bitmap = writeableBitmap.Crop(boundingBox);
-            }
-
-            SoftwareBitmap outputBitmap = SoftwareBitmap.CreateCopyFromBuffer(
-                 bitmap.PixelBuffer,
-                 BitmapPixelFormat.Bgra8,
-                 bitmap.PixelWidth,
-                 bitmap.PixelHeight,
-                 BitmapAlphaMode.Premultiplied
-              
-             );
-            return outputBitmap;
-        }
-
        
         private Rect GetBoundingBox(IList<InkStroke> strokes)
         {
