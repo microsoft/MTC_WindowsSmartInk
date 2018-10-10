@@ -267,7 +267,9 @@ namespace Micosoft.MTC.SmartInk.Package
             if (modelfile == null)
                 throw new InvalidOperationException("Model file not found");
 
-            _model = await Model.CreateModelAsync(modelfile, _manifest.TagList.Values.ToList());
+            if (_model == null)
+                _model = await Model.CreateModelAsync(modelfile, _manifest.TagList.Values.ToList());
+
             var output = await _model.EvaluateAsync(bitmap);
             if (threshold > 0)
                 result = output.loss.Where(p => p.Value >= threshold).ToDictionary(p => p.Key, p => p.Value);
