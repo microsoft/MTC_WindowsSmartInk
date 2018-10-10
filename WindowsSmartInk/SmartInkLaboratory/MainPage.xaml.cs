@@ -100,7 +100,7 @@ namespace SmartInkLaboratory
 
                     
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
 
 
