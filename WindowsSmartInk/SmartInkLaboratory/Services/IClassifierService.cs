@@ -22,8 +22,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training.Models;
 using SmartInkLaboratory.Services.Platform;
-using Microsoft.Cognitive.CustomVision.Training.Models;
 
 namespace SmartInkLaboratory.Services
 {

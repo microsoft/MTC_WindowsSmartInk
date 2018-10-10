@@ -21,9 +21,8 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
- 
- using Microsoft.Cognitive.CustomVision.Training;
-using Microsoft.Cognitive.CustomVision.Training.Models;
+
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,11 +58,12 @@ namespace SmartInkLaboratory.Services
             base.SetCurrentProject( project);
         }
 
-        public Task<Project> CreateProjectAsync(string name, string description = null)
+        public async Task<Project> CreateProjectAsync(string name, string description = null)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException($"{nameof(name)} cannot be null or empty");
-            return _trainingApi.CreateProjectAsync(name, description, domainId: Guid.Parse("0732100f-1a38-4e49-a514-c9b44c697ab5"));
+            var response = await _trainingApi.CreateProjectWithHttpMessagesAsync(name, description, domainId: Guid.Parse("0732100f-1a38-4e49-a514-c9b44c697ab5"));
+            return response.Body;
         }
 
         public async Task<IList<Project>> GetProjectsAsync(bool refresh = false)
@@ -71,14 +71,17 @@ namespace SmartInkLaboratory.Services
             if (string.IsNullOrWhiteSpace(_trainingApi.ApiKey))
                 throw new InvalidOperationException("Service has not been initialized with training api key");
             if (_projects == null || refresh)
-             _projects = await _trainingApi.GetProjectsAsync();
+            {
+                var response = await _trainingApi.GetProjectsWithHttpMessagesAsync();
+                return response.Body;
+            }
 
             return _projects;
         }
 
        public  Task DeleteProjectAsync(Guid projectId)
         {
-            return _trainingApi.DeleteProjectAsync(projectId);
+            return _trainingApi.DeleteProjectWithHttpMessagesAsync(projectId);
         }
     }
 }

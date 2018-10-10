@@ -23,7 +23,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-using Microsoft.Cognitive.CustomVision.Training.Models;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training.Models;
 using Microsoft.Rest;
 using Newtonsoft.Json;
 using System;
@@ -84,8 +84,19 @@ namespace SmartInkLaboratory.Services
             try
             {
                 var exports = (await _trainingApi.GetExportsWithHttpMessagesAsync(_currentProject.Id, iterationId)).Body;
+
                 if (exports.Count == 0)
-                    export = (await _trainingApi.ExportIterationWithHttpMessagesAsync(_currentProject.Id, iterationId, "onnx")).Body;
+                {
+                    HttpOperationResponse<IList<Export>> result;
+                    var response = await _trainingApi.ExportIterationWithHttpMessagesAsync(_currentProject.Id, iterationId, "onnx", "onnx12");
+                    do
+                    {
+                        result = await _trainingApi.GetExportsWithHttpMessagesAsync(_currentProject.Id, iterationId);
+                        await Task.Delay(1000);
+                    } while (result.Body.Count == 0);
+                    export = result.Body[0];
+                }
+                    //export = (await _trainingApi.ExportIterationWithHttpMessagesAsync(_currentProject.Id, iterationId, "onnx","onnx12")).Body;
                 else
                     export = exports[0];
 

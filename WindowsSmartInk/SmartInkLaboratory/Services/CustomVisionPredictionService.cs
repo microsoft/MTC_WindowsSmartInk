@@ -21,8 +21,8 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
- 
-using Microsoft.Cognitive.CustomVision.Prediction;
+
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -60,11 +60,11 @@ namespace SmartInkLaboratory.Services
 
                 
                 var result = await _endpoint.PredictImageAsync(projectId, stream, iterationId);
-                var tags = (from p in result.Predictions select new { p.Tag, p.Probability }).OrderByDescending(p => p.Probability);
+                var tags = (from p in result.Predictions select new { p.TagName, p.Probability }).OrderByDescending(p => p.Probability);
                 
                 foreach (var t in tags)
                 {
-                    predictions.Add(t.Tag, (float) t.Probability);
+                    predictions.Add(t.TagName, (float) t.Probability);
                         
                 }
                 return predictions;

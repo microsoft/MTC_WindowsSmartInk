@@ -22,9 +22,10 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training.Models;
 using SmartInkLaboratory.Services.Platform;
-using Microsoft.Cognitive.CustomVision.Training;
-using Microsoft.Cognitive.CustomVision.Training.Models;
+
 using System;
 
 namespace SmartInkLaboratory.Services
@@ -56,6 +57,7 @@ namespace SmartInkLaboratory.Services
                 throw new ArgumentNullException($"{nameof(keys.TrainingKey)} cannot be null or empty");
             _currentKeys = keys;
             _trainingApi = new TrainingApi() { ApiKey = _currentKeys.TrainingKey };
+            _trainingApi.BaseUri = new System.Uri("https://southcentralus.api.cognitive.microsoft.com/customvision/v2.2/Training");
             _currentProject = null;
             ResourceKeysChanged?.Invoke(this, null);
         }

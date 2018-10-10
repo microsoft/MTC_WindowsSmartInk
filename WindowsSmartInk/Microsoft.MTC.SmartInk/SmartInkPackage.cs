@@ -46,7 +46,7 @@ namespace Micosoft.MTC.SmartInk.Package
 
         protected SmartInkManifest _manifest;
         protected IPackageStorageProvider _provider;
-        internal Model _model;
+        internal SmartInkModel _model;
 
         public IReadOnlyList<string> Tags { get { return GetTags(); } }
 
@@ -260,7 +260,7 @@ namespace Micosoft.MTC.SmartInk.Package
             if (string.IsNullOrWhiteSpace(_manifest.Model))
                 throw new InvalidOperationException("Model file not available");
 
-            IDictionary<string, float> result;
+            IDictionary<string, float> result = new Dictionary<string, float>();
 
             var modelfile = await _provider.GetModelAsync(_manifest.Model);
 
@@ -268,13 +268,14 @@ namespace Micosoft.MTC.SmartInk.Package
                 throw new InvalidOperationException("Model file not found");
 
             if (_model == null)
-                _model = await Model.CreateModelAsync(modelfile, _manifest.TagList.Values.ToList());
+                _model = await SmartInkModel.CreateModelAsync(modelfile, _manifest.TagList.Values.ToList());
 
             var output = await _model.EvaluateAsync(bitmap);
-            if (threshold > 0)
-                result = output.loss.Where(p => p.Value >= threshold).ToDictionary(p => p.Key, p => p.Value);
-            else
-                result = output.loss;
+            var loss = output.loss;
+            //if (threshold > 0)
+            //    result = output.loss.Where(p => p.Values >= threshold).ToDictionary(p => p.Key, p => p.Value);
+            //else
+            //    result = output.loss;
 
             LastEvaluatedBitmap = bitmap;
             return result.OrderByDescending(x => x.Value).ToDictionary(p => p.Key, p => p.Value);

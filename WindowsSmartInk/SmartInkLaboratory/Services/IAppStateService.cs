@@ -24,9 +24,9 @@
  
 using SmartInkLaboratory.Services.Platform;
 using Micosoft.MTC.SmartInk.Package;
-using Microsoft.Cognitive.CustomVision.Training.Models;
 using System;
 using SmartInkLaboratory.ViewModels;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training.Models;
 
 namespace SmartInkLaboratory.Services
 {

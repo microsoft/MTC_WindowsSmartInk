@@ -27,9 +27,9 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
 using Micosoft.MTC.SmartInk.Package;
-using Microsoft.Cognitive.CustomVision.Training.Models;
 using System;
 using System.Collections.Generic;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training.Models;
 
 namespace SmartInkLaboratory.ViewModels
 {

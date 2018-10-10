@@ -29,42 +29,48 @@ using Windows.Media;
 using Windows.Storage;
 using Windows.Graphics.Imaging;
 using Windows.AI.MachineLearning;
+using System.Linq;
 
 namespace Microsoft.MTC.SmartInk
 {
-    internal sealed class ModelInput
+    internal sealed class SmartInkModelInput
     {
-        public VideoFrame data { get; set; }
+        public ImageFeatureValue data { get; set; }
     }
 
-    internal sealed class ModelOutput
+    internal sealed class SmartInkModelOutput
     {
-        public IList<string> classLabel { get; set; }
-        public IDictionary<string, float> loss { get; set; }
-        public ModelOutput()
-        {
-            this.classLabel = new List<string>();
-        }
+        public TensorString classLabel; // shape(-1,1)
+        public IList<Dictionary<string, float>> loss;
     }
 
-    internal sealed class Model
+    internal sealed class SmartInkModel
     {
-        private Dictionary<string, float> _tags = new Dictionary<string, float>();
-        private LearningModel _learningModel;
-        public static async Task<Model> CreateModelAsync(IStorageFile file, IList<string> tags)
+        //private Dictionary<string, float> _tags = new Dictionary<string, float>();
+        private LearningModel _model;
+        private LearningModelSession _session;
+        private LearningModelBinding _binding;
+        public static async Task<SmartInkModel> CreateModelAsync(IStorageFile file, IList<string> tags)
         {
             //var tempDir = ApplicationData.Current.LocalCacheFolder;
             //var modelfile = await file.CopyAsync(tempDir,file.Name,NameCollisionOption.ReplaceExisting);
             try
             {
-                LearningModel learningModel = await LearningModel.LoadFromStorageFileAsync(file);
-                Model model = new Model();
+                //LearningModel learningModel = await LearningModel.LoadFromStorageFileAsync(file);
+                //SmartInkModel model = new SmartInkModel();
 
-                foreach (var t in tags)
-                    model._tags.Add(t, float.NaN);
+                ////foreach (var t in tags)
+                ////    model._tags.Add(t, float.NaN);
 
-                model._learningModel = learningModel;
-                return model;
+                //model._learningModel = learningModel;
+                //model._learningSession = new LearningModelSession(model._learningModel);
+                //model._learningBinding = new LearningModelBinding(model._learningSession);
+                //return model;
+                SmartInkModel learningModel = new SmartInkModel();
+                learningModel._model =  await LearningModel.LoadFromStorageFileAsync(file);
+                learningModel._session = new LearningModelSession(learningModel._model);
+                learningModel._binding = new LearningModelBinding(learningModel._session);
+                return learningModel;
             }
             catch (Exception ex)
             {
@@ -72,19 +78,20 @@ namespace Microsoft.MTC.SmartInk
                 throw;
             }
         }
-        public async Task<ModelOutput> EvaluateAsync(SoftwareBitmap bitmap)
+        public async Task<SmartInkModelOutput> EvaluateAsync(SoftwareBitmap bitmap)
         {
             var videoFrame = VideoFrame.CreateWithSoftwareBitmap(bitmap);
-            var input = new ModelInput() { data = videoFrame };
-            ModelOutput output = new ModelOutput();
-            output.loss = _tags;
+            var imageFeatureValue = ImageFeatureValue.CreateFromVideoFrame(videoFrame);
+            var input = new SmartInkModelInput() { data = imageFeatureValue };
 
-            var session = new LearningModelSession(_learningModel);
-            LearningModelBinding binding = new LearningModelBinding(session);
-            binding.Bind("data", input.data);
-            binding.Bind("classLabel", output.classLabel);
-            binding.Bind("loss", output.loss);
-            LearningModelEvaluationResult evalResult = await session.EvaluateAsync(binding, string.Empty);
+            _binding.Bind("data", input.data);
+            LearningModelEvaluationResult result = await _session.EvaluateAsync(_binding,"0");
+            var keys = result.Outputs.Keys.ToList();
+            var values = result.Outputs.Values.ToList();
+            var output = new SmartInkModelOutput();
+            output.classLabel = result.Outputs["classLabel"] as TensorString;
+            
+            output.loss = result.Outputs["loss"] as IList<Dictionary<string, float>>;
             return output;
         }
     }

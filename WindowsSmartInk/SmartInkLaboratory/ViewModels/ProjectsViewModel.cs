@@ -28,13 +28,13 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Cognitive.CustomVision.Training.Models;
 using GalaSoft.MvvmLight.Command;
 using Windows.Storage;
 using SmartInkLaboratory.Services.UX;
 using GalaSoft.MvvmLight;
 using System.Diagnostics;
 using SmartInkLaboratory.Views.Dialogs;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training.Models;
 
 namespace SmartInkLaboratory.ViewModels
 {

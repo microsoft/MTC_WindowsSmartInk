@@ -22,10 +22,11 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Cognitive.CustomVision.Training.Models;
+
 
 namespace SmartInkLaboratory.Services
 {

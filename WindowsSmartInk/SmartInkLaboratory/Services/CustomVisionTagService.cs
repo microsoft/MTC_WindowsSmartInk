@@ -23,8 +23,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-using Microsoft.Cognitive.CustomVision.Training;
-using Microsoft.Cognitive.CustomVision.Training.Models;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,8 +60,8 @@ namespace SmartInkLaboratory.Services
 
         private async Task LoadTagsAsync()
         {
-            var tags = await _trainingApi.GetTagsAsync(_currentProject.Id);
-            _tags = (from t in tags.Tags select t).OrderBy(t => t.Name).ToList();
+            var reponse = await _trainingApi.GetTagsWithHttpMessagesAsync(_currentProject.Id);
+            _tags = (from t in reponse.Body select t).OrderBy(t => t.Name).ToList();
         }
 
         public Task<Tag> GetTagAsync(string id, bool refresh = false)
@@ -104,9 +103,9 @@ namespace SmartInkLaboratory.Services
             if ( string.IsNullOrWhiteSpace(tag))
                 throw new ArgumentException($"{nameof(tag)} canot be null or empty");
             try { 
-                var newTag = await _trainingApi.CreateTagAsync(_currentProject.Id, tag.ToLower());
-                _tags.Add(newTag);
-                return newTag;
+                var newTag = await _trainingApi.CreateTagWithHttpMessagesAsync(_currentProject.Id, tag.ToLower());
+                _tags.Add(newTag.Body);
+                return newTag.Body;
             }
             catch (Exception ex)
             {
@@ -136,7 +135,7 @@ namespace SmartInkLaboratory.Services
             {
                 var tag = (from t in _tags where t.Id == tagId select t).FirstOrDefault();
                 if (tag != null) {
-                    await _trainingApi.DeleteTagAsync(_currentProject.Id, tag.Id);
+                    await _trainingApi.DeleteTagWithHttpMessagesAsync(_currentProject.Id, tag.Id);
                     _tags.Remove(tag);
                  }
             }

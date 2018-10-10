@@ -26,7 +26,6 @@ using SmartInkLaboratory.Services;
 using AMP.ViewModels;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Microsoft.Cognitive.CustomVision.Training.Models;
 using System;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -36,6 +35,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Linq;
 using Micosoft.MTC.SmartInk.Package;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training.Models;
 
 namespace SmartInkLaboratory.ViewModels
 {

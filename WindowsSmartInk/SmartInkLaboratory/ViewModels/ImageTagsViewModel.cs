@@ -25,11 +25,12 @@
 using SmartInkLaboratory.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Microsoft.Cognitive.CustomVision.Training.Models;
+
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using AMP.Collections;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training.Models;
 
 namespace SmartInkLaboratory.ViewModels
 {
