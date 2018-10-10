@@ -27,8 +27,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Media;
 using Windows.Storage;
-using Windows.AI.MachineLearning.Preview;
 using Windows.Graphics.Imaging;
+using Windows.AI.MachineLearning;
 
 namespace Microsoft.MTC.SmartInk
 {
@@ -50,19 +50,27 @@ namespace Microsoft.MTC.SmartInk
     internal sealed class Model
     {
         private Dictionary<string, float> _tags = new Dictionary<string, float>();
-        private LearningModelPreview _learningModel;
+        private LearningModel _learningModel;
         public static async Task<Model> CreateModelAsync(IStorageFile file, IList<string> tags)
         {
+            //var tempDir = ApplicationData.Current.LocalCacheFolder;
+            //var modelfile = await file.CopyAsync(tempDir,file.Name,NameCollisionOption.ReplaceExisting);
+            try
+            {
+                LearningModel learningModel = await LearningModel.LoadFromStorageFileAsync(file);
+                Model model = new Model();
 
+                foreach (var t in tags)
+                    model._tags.Add(t, float.NaN);
 
-            LearningModelPreview learningModel = await LearningModelPreview.LoadModelFromStorageFileAsync(file);
-            Model model = new Model();
+                model._learningModel = learningModel;
+                return model;
+            }
+            catch (Exception ex)
+            {
 
-            foreach (var t in tags)
-                model._tags.Add(t, float.NaN);
-
-            model._learningModel = learningModel;
-            return model;
+                throw;
+            }
         }
         public async Task<ModelOutput> EvaluateAsync(SoftwareBitmap bitmap)
         {
@@ -71,11 +79,12 @@ namespace Microsoft.MTC.SmartInk
             ModelOutput output = new ModelOutput();
             output.loss = _tags;
 
-            LearningModelBindingPreview binding = new LearningModelBindingPreview(_learningModel);
+            var session = new LearningModelSession(_learningModel);
+            LearningModelBinding binding = new LearningModelBinding(session);
             binding.Bind("data", input.data);
             binding.Bind("classLabel", output.classLabel);
             binding.Bind("loss", output.loss);
-            LearningModelEvaluationResultPreview evalResult = await _learningModel.EvaluateAsync(binding, string.Empty);
+            LearningModelEvaluationResult evalResult = await session.EvaluateAsync(binding, string.Empty);
             return output;
         }
     }
