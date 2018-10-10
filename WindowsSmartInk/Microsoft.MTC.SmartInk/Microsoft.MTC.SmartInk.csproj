@@ -111,7 +111,7 @@
     <Compile Include="Extensions\InkStrokeCollectionExtensions.cs" />
     <Compile Include="Extensions\RectExtenstion.cs" />
     <Compile Include="IMediaPackage.cs" />
-    <Compile Include="InkModel.cs" />
+    <Compile Include="SmartInkModel.cs" />
     <Compile Include="IPackageStorageProvider.cs" />
     <Compile Include="ISmartInkPackage.cs" />
     <Compile Include="LocalAppDataProvider.cs" />

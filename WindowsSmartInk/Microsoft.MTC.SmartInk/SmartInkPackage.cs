@@ -271,11 +271,10 @@ namespace Micosoft.MTC.SmartInk.Package
                 _model = await SmartInkModel.CreateModelAsync(modelfile, _manifest.TagList.Values.ToList());
 
             var output = await _model.EvaluateAsync(bitmap);
-            var loss = output.loss;
-            //if (threshold > 0)
-            //    result = output.loss.Where(p => p.Values >= threshold).ToDictionary(p => p.Key, p => p.Value);
-            //else
-            //    result = output.loss;
+            if (threshold > 0)
+                result = output.Where(p => p.Value >= threshold).ToDictionary(p => p.Key, p => p.Value);
+            else
+                result = output;
 
             LastEvaluatedBitmap = bitmap;
             return result.OrderByDescending(x => x.Value).ToDictionary(p => p.Key, p => p.Value);

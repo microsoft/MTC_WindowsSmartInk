@@ -96,7 +96,6 @@ namespace SmartInkLaboratory.Services
                     } while (result.Body.Count == 0);
                     export = result.Body[0];
                 }
-                    //export = (await _trainingApi.ExportIterationWithHttpMessagesAsync(_currentProject.Id, iterationId, "onnx","onnx12")).Body;
                 else
                     export = exports[0];
 
@@ -105,10 +104,8 @@ namespace SmartInkLaboratory.Services
             }
             catch (Exception ex)
             {
-
                 return null;
             }
-        
         }
           
             

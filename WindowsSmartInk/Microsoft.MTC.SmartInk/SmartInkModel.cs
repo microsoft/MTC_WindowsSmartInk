@@ -40,32 +40,20 @@ namespace Microsoft.MTC.SmartInk
 
     internal sealed class SmartInkModelOutput
     {
-        public TensorString classLabel; // shape(-1,1)
-        public IList<Dictionary<string, float>> loss;
+        public TensorString ClassLabel = TensorString.Create(new long[] { 1, 1 });
+
+        public IList<IDictionary<string, float>> Loss = new List<IDictionary<string, float>>();
     }
 
     internal sealed class SmartInkModel
     {
-        //private Dictionary<string, float> _tags = new Dictionary<string, float>();
         private LearningModel _model;
         private LearningModelSession _session;
         private LearningModelBinding _binding;
         public static async Task<SmartInkModel> CreateModelAsync(IStorageFile file, IList<string> tags)
         {
-            //var tempDir = ApplicationData.Current.LocalCacheFolder;
-            //var modelfile = await file.CopyAsync(tempDir,file.Name,NameCollisionOption.ReplaceExisting);
             try
             {
-                //LearningModel learningModel = await LearningModel.LoadFromStorageFileAsync(file);
-                //SmartInkModel model = new SmartInkModel();
-
-                ////foreach (var t in tags)
-                ////    model._tags.Add(t, float.NaN);
-
-                //model._learningModel = learningModel;
-                //model._learningSession = new LearningModelSession(model._learningModel);
-                //model._learningBinding = new LearningModelBinding(model._learningSession);
-                //return model;
                 SmartInkModel learningModel = new SmartInkModel();
                 learningModel._model =  await LearningModel.LoadFromStorageFileAsync(file);
                 learningModel._session = new LearningModelSession(learningModel._model);
@@ -78,21 +66,29 @@ namespace Microsoft.MTC.SmartInk
                 throw;
             }
         }
-        public async Task<SmartInkModelOutput> EvaluateAsync(SoftwareBitmap bitmap)
+        public async Task<IDictionary<string,float>> EvaluateAsync(SoftwareBitmap bitmap)
         {
             var videoFrame = VideoFrame.CreateWithSoftwareBitmap(bitmap);
             var imageFeatureValue = ImageFeatureValue.CreateFromVideoFrame(videoFrame);
             var input = new SmartInkModelInput() { data = imageFeatureValue };
-
-            _binding.Bind("data", input.data);
-            LearningModelEvaluationResult result = await _session.EvaluateAsync(_binding,"0");
-            var keys = result.Outputs.Keys.ToList();
-            var values = result.Outputs.Values.ToList();
             var output = new SmartInkModelOutput();
-            output.classLabel = result.Outputs["classLabel"] as TensorString;
+            _binding.Bind("data", input.data);
+
+            _binding.Bind("classLabel", output.ClassLabel);
+
+            _binding.Bind("loss", output.Loss);
+            LearningModelEvaluationResult result = await _session.EvaluateAsync(_binding,"0");
             
-            output.loss = result.Outputs["loss"] as IList<Dictionary<string, float>>;
-            return output;
+            output.ClassLabel = result.Outputs["classLabel"] as TensorString;//).GetAsVectorView()[0];
+            
+            output.Loss = result.Outputs["loss"] as IList<IDictionary<string, float>>;
+            var dict = new Dictionary<string, float>();
+            foreach (var key in output.Loss[0].Keys)
+            {
+                dict.Add(key, output.Loss[0][key]);
+            }
+
+            return dict;
         }
     }
 }
