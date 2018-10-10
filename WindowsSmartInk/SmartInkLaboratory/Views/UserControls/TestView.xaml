@@ -98,7 +98,7 @@
             <TextBlock VerticalAlignment="Center"><Run Text="Target Tag: "/><Run Text="{Binding CurrentTag.Name}"/></TextBlock>
             <StackPanel Grid.Column="2">
                 <CheckBox x:Name="DisplayIcon" Content="Replace with icon" IsChecked="True" />
-                <CheckBox x:Name="RemoteIcon" Content="Use Remote Service" IsChecked="{Binding UseRemoteService}" IsEnabled="{Binding IsLocalModelAvailable, Mode=TwoWay}" />
+                <CheckBox x:Name="RemoteIcon" Content="Use Remote Service" IsChecked="{Binding UseRemoteService, Mode=TwoWay}" IsEnabled="{Binding IsLocalModelAvailable, Mode=TwoWay}" />
             </StackPanel>
         </Grid>
         <TextBlock Grid.Row="2"  ><Run Text="Tag Result: "/><Run x:Name="TagResult" Text="{Binding TagResult}"/></TextBlock>
