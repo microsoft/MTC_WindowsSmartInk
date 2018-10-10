@@ -206,6 +206,8 @@ namespace SmartInkLaboratory.ViewModels
             });
 
             this.DownloadModel = new RelayCommand(async() => {
+
+
                 var downloadUri = await _training.GetModuleDownloadUriAsync(SelectedIteration.Id);
                 if (downloadUri != null)
                 {
@@ -226,7 +228,7 @@ namespace SmartInkLaboratory.ViewModels
                     await _state.CurrentPackage.SaveModelAsync(model);
                     IsLocalModelAvailable = _state.CurrentPackage.IsLocalModelAvailable;
                 }
-            });
+            },()=> { return SelectedIteration != null; });
 
             this.RefreshIterations = new RelayCommand(async () => {
                 await GetIterationsAsync();
@@ -243,6 +245,7 @@ namespace SmartInkLaboratory.ViewModels
 
 
             SelectedIteration = (Iterations.Count > 0) ? Iterations[0] : null;
+            DownloadModel.RaiseCanExecuteChanged();
         }
 
 
