@@ -110,11 +110,20 @@
     <None Include="EBC_InkDemo_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\AzureArchitect\aad.jpg" />
+    <Content Include="Assets\AzureArchitect\api_app.jpg" />
     <Content Include="Assets\AzureArchitect\blob.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\AzureArchitect\cosmos_db.jpg" />
+    <Content Include="Assets\AzureArchitect\event_hub.jpg" />
+    <Content Include="Assets\AzureArchitect\function.jpg" />
     <Content Include="Assets\AzureArchitect\iothub.jpg" />
+    <Content Include="Assets\AzureArchitect\key_vault.jpg" />
+    <Content Include="Assets\AzureArchitect\logic_app.jpg" />
+    <Content Include="Assets\AzureArchitect\service_fabric.jpg" />
     <Content Include="Assets\AzureArchitect\sql.jpg" />
+    <Content Include="Assets\AzureArchitect\web_app.jpg" />
     <Content Include="Assets\EESample\ammeter.jpg" />
     <Content Include="Assets\EESample\capacitor.jpg" />
     <Content Include="Assets\EESample\diode.jpg" />
