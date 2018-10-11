@@ -41,7 +41,8 @@ namespace EBC_InkDemo.Views
         PackageManager _packageManager = new PackageManager();
         private MainViewModel _dataContextViewModel;
 
-        DispatcherTimer _timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(750) };
+        DispatcherTimer _inactiveTimer = new DispatcherTimer() { Interval = TimeSpan.FromMinutes(3) };
+        DispatcherTimer _inkTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(750) };
         List<InkStroke> _sessionStrokes = new List<InkStroke>();
         List<InkStroke> _allStrokes = new List<InkStroke>();
 
@@ -54,8 +55,9 @@ namespace EBC_InkDemo.Views
         {
             this.InitializeComponent();
             _dataContextViewModel = this.DataContext as MainViewModel;
-            _timer.Tick += async (s, e) => {
-                _timer.Stop();
+            _inactiveTimer.Tick += (s, e) => { ShowWelcome(); };
+            _inkTimer.Tick += async (s, e) => {
+                _inkTimer.Stop();
                 var boundingBox = GetBoundingBox(_sessionStrokes);
                 try
                 {
@@ -82,11 +84,13 @@ namespace EBC_InkDemo.Views
 
             inkCanvas.InkPresenter.StrokeInput.StrokeStarted += (s, e) =>
             {
-                _timer.Stop();
+                _inkTimer.Stop();
+                _inactiveTimer.Stop();
             };
 
             inkCanvas.InkPresenter.StrokesCollected += (s, e) => {
-                _timer.Stop();
+                _inkTimer.Stop();
+                _inactiveTimer.Stop();
 
                 _pendingDry = _inkSync.BeginDry();
                 foreach (var stroke in _pendingDry)
@@ -94,7 +98,8 @@ namespace EBC_InkDemo.Views
 
                 win2dCanvas.Invalidate();
 
-                _timer.Start();
+                _inkTimer.Start();
+                _inactiveTimer.Start();
             };
 
             _inkSync = inkCanvas.InkPresenter.ActivateCustomDrying();
@@ -173,12 +178,18 @@ namespace EBC_InkDemo.Views
 
         private void WelcomeGrid_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            ShowWelcome();
+            HideWelcome();
+        }
+
+        private void HideWelcome()
+        {
+            VisualStateManager.GoToState(this, "Active", true);
+            _inactiveTimer.Start();
         }
 
         private void ShowWelcome()
         {
-            VisualStateManager.GoToState(this, "Active", true);
+            VisualStateManager.GoToState(this, "NotActive", true);
         }
 
         private void win2dCanvas_Draw(Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasDrawEventArgs args)
