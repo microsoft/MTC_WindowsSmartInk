@@ -71,7 +71,6 @@ namespace SmartInkLaboratory
     /// </summary>
     public sealed partial class MainPage : NavAwarePage
     {
-        DispatcherTimer _inactiveTimer = new DispatcherTimer() { Interval = TimeSpan.FromMinutes(3) };
         DispatcherTimer _inkTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(750) };
         List<InkStroke> _sessionStrokes = new List<InkStroke>();
         List<InkStroke> _allStrokes = new List<InkStroke>();
