@@ -1,0 +1,11 @@
+﻿<Application
+    x:Class="EBC_InkDemo.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EBC_InkDemo"
+    xmlns:vm="using:EBC_InkDemo.ViewModels">
+    <Application.Resources>
+        <vm:ViewModelLocator x:Name="Locator" />
+        
+    </Application.Resources>
+</Application>

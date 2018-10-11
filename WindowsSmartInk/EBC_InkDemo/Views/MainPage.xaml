@@ -1,0 +1,94 @@
+﻿<amp:NavAwarePage
+    x:Class="EBC_InkDemo.Views.MainPage"
+    xmlns:amp="using:AMP.Views"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EBC_InkDemo"
+       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
+    DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+    >
+    <amp:NavAwarePage.Resources>
+        <DataTemplate x:Key="IconGalleryItemTemplate">
+            <Grid Margin="0,0,0,10">
+                <Border BorderThickness="0" BorderBrush="Gray">
+                    <Image Source="{Binding}" Height="128" Width="128"/>
+                </Border>
+            </Grid>
+        </DataTemplate>
+    </amp:NavAwarePage.Resources>
+
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="SessionState">
+                <VisualState x:Name="Active">
+                    <VisualState.Setters>
+                        <Setter Target="WelcomeGrid.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="NotActive">
+                    <VisualState.Setters>
+                        <Setter Target="WelcomeGrid.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Border BorderThickness="0,0,2,0" BorderBrush="Gray">
+            <Grid x:Name="LeftSideBar" Background="DodgerBlue" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel Margin="10,0,10,0">
+                    <TextBlock Text="Ink Icon Gallery" Foreground="White" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="10" HorizontalAlignment="Center"/>
+                    <TextBlock Foreground="White" Text="Current SmartInk Package:" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                    <ComboBox x:Name="listviewInstalledPackages" HorizontalAlignment="Stretch" ItemsSource="{Binding InstalledPackages}" DisplayMemberPath="Name" SelectedIndex="0" SelectionChanged="listviewInstalledPackages_SelectionChanged"/>
+                </StackPanel>
+                <ScrollViewer Grid.Row="2" >
+                    <ItemsControl ItemTemplate="{StaticResource IconGalleryItemTemplate}" ItemsSource="{Binding Samples}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" />
+                </ScrollViewer>
+            </Grid>
+        </Border>
+        <StackPanel x:Name="Background" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,0" Orientation="Vertical" VerticalAlignment="Center" >
+            <TextBlock Text="Draw Icons from Left" 
+                       Style="{ThemeResource SubheaderTextBlockStyle}"
+                       VerticalAlignment="Center" HorizontalAlignment="Center" 
+                       Opacity="0.5"
+                       Margin="0,0,0,0"/>
+            <Image Source="/Assets/Pen-Icon.jpg" Opacity="0.4" Stretch="none"/>
+        </StackPanel>
+        <Canvas x:Name="iconCanvas"  Grid.Column="1" />
+        <win2d:CanvasControl x:Name="win2dCanvas" Grid.Column="1" ClearColor="Transparent" Draw="win2dCanvas_Draw"/>
+
+        <InkCanvas x:Name="inkCanvas"  Grid.Column="1"  />
+        <AppBarButton x:Name="buttonDelete" 
+                      Icon="Delete" 
+                      Grid.Column="1" 
+                      HorizontalAlignment="Right" VerticalAlignment="Top" 
+                      Background="#7F808080" Foreground="White"
+                      Click="buttonDelete_Click"/>
+        <Grid x:Name="WelcomeGrid" 
+              Grid.ColumnSpan="2" 
+              Background="White" 
+              Visibility="Visible" 
+              Tapped="WelcomeGrid_Tapped" d:IsHidden="True">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" >
+                <Image Source="/Assets/welcome.png" Stretch="None"/>
+            </StackPanel>
+            <TextBlock Style="{ThemeResource HeaderTextBlockStyle}"
+                       HorizontalAlignment="Center"
+                       Text="Grab a Pen and Play Now" Margin="0,40,0,0" Foreground="#FF0079D6"/>
+            <TextBlock Style="{ThemeResource HeaderTextBlockStyle}" 
+                       HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                       Text="Tap Screen To Start" Margin="0,0,0,40" Foreground="#FF0079D6"/>
+        </Grid>
+    </Grid>
+</amp:NavAwarePage>
