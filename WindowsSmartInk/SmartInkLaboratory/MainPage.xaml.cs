@@ -71,7 +71,8 @@ namespace SmartInkLaboratory
     /// </summary>
     public sealed partial class MainPage : NavAwarePage
     {
-        DispatcherTimer _timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(750) };
+        DispatcherTimer _inactiveTimer = new DispatcherTimer() { Interval = TimeSpan.FromMinutes(3) };
+        DispatcherTimer _inkTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(750) };
         List<InkStroke> _sessionStrokes = new List<InkStroke>();
         List<InkStroke> _allStrokes = new List<InkStroke>();
 
@@ -85,8 +86,8 @@ namespace SmartInkLaboratory
         {
             this.InitializeComponent();
 
-            _timer.Tick += async (s, e) => {
-                _timer.Stop();
+            _inkTimer.Tick += async (s, e) => {
+                _inkTimer.Stop();
                 var boundingBox = GetBoundingBox(_sessionStrokes);
                 try
                 {
@@ -114,11 +115,11 @@ namespace SmartInkLaboratory
 
             inkCanvas.InkPresenter.StrokeInput.StrokeStarted += (s, e) =>
             {
-                _timer.Stop();
+                _inkTimer.Stop();
             };
 
             inkCanvas.InkPresenter.StrokesCollected += (s, e) => {
-                _timer.Stop();
+                _inkTimer.Stop();
          
                 _pendingDry = _inkSync.BeginDry();
                 foreach (var stroke in _pendingDry)
@@ -126,7 +127,7 @@ namespace SmartInkLaboratory
 
                 win2dCanvas.Invalidate();
            
-                _timer.Start();
+                _inkTimer.Start();
             };
 
             _inkSync = inkCanvas.InkPresenter.ActivateCustomDrying();
