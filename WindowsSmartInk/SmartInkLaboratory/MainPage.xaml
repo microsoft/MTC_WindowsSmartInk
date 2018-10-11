@@ -67,8 +67,8 @@
                     </controls:SelectionList>
                 </StackPanel>
                 <AppBarButton Label="New Project" Icon="Add" Margin="20,0,0,0" AllowFocusOnInteraction="True" >
-                    <AppBarButton.Flyout>
-                        <Flyout helpers:FlyoutHelpers.Parent="{Binding ElementName=CreateProjectButton}" helpers:FlyoutHelpers.IsOpen="{Binding IsCreating, Mode=TwoWay}">
+                    <AppBarButton.Flyout >
+                        <Flyout  helpers:FlyoutHelpers.Parent="{Binding ElementName=CreateProjectButton}" helpers:FlyoutHelpers.IsOpen="{Binding IsCreating, Mode=TwoWay}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Project Name:" Margin="0,0,10,0"/>
                                 <TextBox x:Name="NewProjectName" MinWidth="150" Margin="0,0,20,0" />
