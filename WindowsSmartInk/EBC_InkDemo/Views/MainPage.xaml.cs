@@ -173,6 +173,11 @@ namespace EBC_InkDemo.Views
 
         private void WelcomeGrid_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
+            ShowWelcome();
+        }
+
+        private void ShowWelcome()
+        {
             VisualStateManager.GoToState(this, "Active", true);
         }
 
