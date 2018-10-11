@@ -8,6 +8,7 @@ namespace Micosoft.MTC.SmartInk.Package
     {
         Task<IStorageFile> GetMediaAsync(Guid tagId);
         Task<IStorageFile> GetMediaAsync(string tag);
+        Task<IStorageFile> GetMediaByNameAsync(string tagname);
         Task SaveMediaAsync(Guid tagId, IStorageFile file);
         Task SaveMediaAsync(string tagName, IStorageFile file);
     }

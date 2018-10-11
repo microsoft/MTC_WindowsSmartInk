@@ -104,6 +104,19 @@ namespace Micosoft.MTC.SmartInk.Package
         }
 
         /// <summary>
+        /// Retrieves an icon for a given tag name
+        /// </summary>
+        /// <param name="tagname">tag name</param>
+        /// <returns><see cref="IStorageFile" />handle to icon file</returns>
+        public Task<IStorageFile> GetMediaByNameAsync(string tagname)
+        {
+            var match = (from t in _manifest.TagList where t.Value == tagname.ToLower() select t.Key).FirstOrDefault();
+            if (match == null)
+                return null;
+            return GetMediaAsync(match);
+        }
+
+        /// <summary>
         /// Retrieves an icon for a given tag <seealso cref="GetMediaAsync(Guid)"/>
         /// </summary>
         /// <param name="tag"></param>
