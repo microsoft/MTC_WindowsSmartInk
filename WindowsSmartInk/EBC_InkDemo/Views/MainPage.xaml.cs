@@ -61,6 +61,7 @@ namespace EBC_InkDemo.Views
             _dataContextViewModel.InkProcessingDelayChanged += (s, e) => {
                 Debug.WriteLine($"InkDelayChanged");
                 _inkTimer.Stop();
+                _inkTimer.Interval = TimeSpan.FromMilliseconds(_dataContextViewModel.InkProcessingDelay);
                 ClearCanvas();
             };
             _inactiveTimer.Tick += (s, e) => { ShowWelcome(); };
@@ -259,6 +260,7 @@ namespace EBC_InkDemo.Views
         private void ClearCanvas()
         {
             _allStrokes.Clear();
+            _sessionStrokes.Clear();
             win2dCanvas.Invalidate();
             iconCanvas.Children.Clear();
         }
