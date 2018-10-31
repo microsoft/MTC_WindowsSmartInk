@@ -5,7 +5,9 @@ using Micosoft.MTC.SmartInk.Package;
 using Microsoft.Graphics.Canvas;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
@@ -42,7 +44,7 @@ namespace EBC_InkDemo.Views
         private MainViewModel _dataContextViewModel;
 
         DispatcherTimer _inactiveTimer = new DispatcherTimer() { Interval = TimeSpan.FromMinutes(3) };
-        DispatcherTimer _inkTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(750) };
+        DispatcherTimer _inkTimer;
         List<InkStroke> _sessionStrokes = new List<InkStroke>();
         List<InkStroke> _allStrokes = new List<InkStroke>();
 
@@ -55,6 +57,12 @@ namespace EBC_InkDemo.Views
         {
             this.InitializeComponent();
             _dataContextViewModel = this.DataContext as MainViewModel;
+            _inkTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(_dataContextViewModel.InkProcessingDelay) };
+            _dataContextViewModel.InkProcessingDelayChanged += (s, e) => {
+                Debug.WriteLine($"InkDelayChanged");
+                _inkTimer.Stop();
+                ClearCanvas();
+            };
             _inactiveTimer.Tick += (s, e) => { ShowWelcome(); };
             _inkTimer.Tick += async (s, e) => {
                 _inkTimer.Stop();
@@ -66,6 +74,7 @@ namespace EBC_InkDemo.Views
                     if (result != null && result.Keys.Count > 0)
                     {
                         var top = (from r in result select r).First();
+                        UpdateAIStats(result);
                         await PlaceIconAsync(top.Key, top.Value, boundingBox);
                     }
 
@@ -77,6 +86,7 @@ namespace EBC_InkDemo.Views
                 }
                 finally
                 {
+                    UpdateInkStats(_sessionStrokes);
                     _sessionStrokes.Clear();
                     win2dCanvas.Invalidate();
                 }
@@ -108,7 +118,11 @@ namespace EBC_InkDemo.Views
                 win2dCanvas.RemoveFromVisualTree();
                 win2dCanvas = null;
             };
+
+            
         }
+
+      
 
         private async Task PlaceIconAsync(string tag, double probability, Rect boundingBox)
         {
@@ -169,13 +183,7 @@ namespace EBC_InkDemo.Views
                 vm.PackageSelected.Execute(listviewInstalledPackages.SelectedItem);
         }
 
-        private void buttonDelete_Click(object sender, RoutedEventArgs e)
-        {
-            _allStrokes.Clear();
-            win2dCanvas.Invalidate();
-            iconCanvas.Children.Clear();
-        }
-
+    
         private void WelcomeGrid_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             HideWelcome();
@@ -212,5 +220,47 @@ namespace EBC_InkDemo.Views
             ds.DrawInk(strokes);
         }
 
+        private void buttonDelete_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            ClearCanvas();
+        }
+
+        public void UpdateInkStats(IList<InkStroke> strokes)
+        {
+            var strokeCount = strokes.Count;
+            var segmentCount = (from s in strokes select s.GetRenderingSegments().Count).Sum();
+            var pointCount = (from s in strokes select s.GetInkPoints().Count).Sum();
+            var totalTime = (from s in strokes where s.StrokeDuration.HasValue select  s.StrokeDuration.Value.TotalSeconds).Sum();
+
+
+            textInkStats.Text = string.Empty;
+            var builder = new StringBuilder();
+            builder.AppendLine($"Total Strokes: {strokeCount}");
+            builder.AppendLine($"Total Segments: {segmentCount}");
+            builder.AppendLine($"Total Ink Points: {pointCount}");
+            builder.AppendLine($"Total Time: {totalTime}s");
+
+            textInkStats.Text = builder.ToString();
+        }
+
+        private void UpdateAIStats(IDictionary<string, float> result)
+        {
+            textAIStats.Text = string.Empty;
+            var builder = new StringBuilder();
+
+            var kvps = (from r in result.AsEnumerable() select r).Take(5);
+            foreach (var kvp in kvps)
+                builder.AppendLine($"{kvp.Key} - {kvp.Value}");
+
+            textAIStats.Text = builder.ToString();
+
+        }
+
+        private void ClearCanvas()
+        {
+            _allStrokes.Clear();
+            win2dCanvas.Invalidate();
+            iconCanvas.Children.Clear();
+        }
     }
 }

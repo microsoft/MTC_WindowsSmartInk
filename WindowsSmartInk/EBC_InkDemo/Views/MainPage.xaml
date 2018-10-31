@@ -8,10 +8,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    xmlns:converters="using:EBC_InkDemo.Converters"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
     DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
     >
     <amp:NavAwarePage.Resources>
+        <converters:InkDelayConverter x:Name="InkDelayConverter"/>
         <DataTemplate x:Key="IconGalleryItemTemplate">
             <Grid Margin="0,0,0,10">
                 <Border BorderThickness="0" BorderBrush="Gray">
@@ -39,6 +41,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
             <ColumnDefinition/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Border BorderThickness="0,0,2,0" BorderBrush="Gray">
             <Grid x:Name="LeftSideBar" Background="DodgerBlue" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch">
@@ -69,14 +73,37 @@
         <win2d:CanvasControl x:Name="win2dCanvas" Grid.Column="1" ClearColor="Transparent" Draw="win2dCanvas_Draw"/>
 
         <InkCanvas x:Name="inkCanvas"  Grid.Column="1"  />
-        <AppBarButton x:Name="buttonDelete" 
-                      Icon="Delete" 
-                      Grid.Column="1" 
-                      HorizontalAlignment="Right" VerticalAlignment="Top" 
-                      Background="#7F808080" Foreground="White"
-                      Click="buttonDelete_Click"/>
+        <!--<AppBarButton x:Name="buttonDelete" 
+                Icon="Delete" 
+                HorizontalAlignment="Right" VerticalAlignment="Top" 
+                      Grid.Column="1"
+                Background="#7F808080" Foreground="White"
+                Click="buttonDelete_Click" Margin="0,0,0,0"/>-->
+        <HyperlinkButton x:Name="buttonDelete" Content="Clear" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="1" FontSize="24" Tapped="buttonDelete_Tapped"/>
+        <Grid  Grid.Column="3" Background="LightGray">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <StackPanel Margin="20">
+                <TextBlock ><Run Text="Ink Processing Delay:  "/><Run Text="{Binding InkProcessingDelay, Converter={StaticResource InkDelayConverter}}"/><Run Text=" sec"/></TextBlock>
+                <Slider Minimum="500" Maximum="2000" Value="{Binding InkProcessingDelay, Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Margin="20,0,0,0" VerticalAlignment="Stretch">
+                <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Ink Stats"/>
+                <TextBlock x:Name="textInkStats" />
+            </StackPanel>
+            <StackPanel Grid.Row="4" Margin="20,0,0,0" VerticalAlignment="Stretch">
+                <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="AI Stats"/>
+                <TextBlock x:Name="textAIStats" />
+            </StackPanel>
+        </Grid>
         <Grid x:Name="WelcomeGrid" 
-              Grid.ColumnSpan="2" 
+              Grid.ColumnSpan="4" 
               Background="White" 
               Visibility="Visible" 
               Tapped="WelcomeGrid_Tapped" d:IsHidden="True">

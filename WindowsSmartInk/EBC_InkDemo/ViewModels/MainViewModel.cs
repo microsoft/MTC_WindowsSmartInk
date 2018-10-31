@@ -17,6 +17,23 @@ namespace EBC_InkDemo.ViewModels
     {
         private PackageManager _packageManager = new PackageManager();
 
+        public event EventHandler InkProcessingDelayChanged;
+
+        private int _inkProcessingDelay = 750;
+        public int InkProcessingDelay
+        {
+            get { return _inkProcessingDelay; }
+            set
+            {
+                if (_inkProcessingDelay == value)
+                    return;
+                _inkProcessingDelay = value;
+                RaisePropertyChanged(nameof(InkProcessingDelay));
+                InkProcessingDelayChanged?.Invoke(this, null);
+            }
+        }
+
+
         private ObservableCollection<string> _samples = new ObservableCollection<string>();
         public ReadOnlyObservableCollection<string> Samples { get; private set; }
 
