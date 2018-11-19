@@ -97,9 +97,30 @@
                 <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Ink Stats"/>
                 <TextBlock x:Name="textInkStats" />
             </StackPanel>
-            <StackPanel Grid.Row="4" Margin="20,0,0,0" VerticalAlignment="Stretch">
-                <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="AI Stats"/>
-                <TextBlock x:Name="textAIStats" />
+            <StackPanel Grid.Row="4" Margin="20" VerticalAlignment="Stretch" >
+                <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Confidence" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="textPrimaryConfidence"  Style="{ThemeResource SubheaderTextBlockStyle}" VerticalAlignment="Center" TextAlignment="Center" FontSize="45" FontWeight="Bold"/>
+                <TextBlock x:Name="textPrimaryTag"  VerticalAlignment="Center"  TextAlignment="Center" FontSize="32" TextTrimming="CharacterEllipsis"/>
+                <ListView x:Name="listviewOtherResults" Margin="0,10,0,0">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="5"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Key}"/>
+                                <TextBlock Grid.Column="2" Text="{Binding Value}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </StackPanel>
         </Grid>
         <Grid x:Name="WelcomeGrid" 

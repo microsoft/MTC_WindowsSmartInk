@@ -246,14 +246,23 @@ namespace EBC_InkDemo.Views
 
         private void UpdateAIStats(IDictionary<string, float> result)
         {
-            textAIStats.Text = string.Empty;
-            var builder = new StringBuilder();
+            listviewOtherResults.Items.Clear();
+            //textAIStats.Text = string.Empty;
+            //var builder = new StringBuilder();
 
-            var kvps = (from r in result.AsEnumerable() select r).Take(5);
-            foreach (var kvp in kvps)
-                builder.AppendLine($"{kvp.Key} - {kvp.Value}");
+            var kvps = (from r in result.AsEnumerable() select r).Take(5).ToArray();
+            //foreach (var kvp in kvps)
+            //    builder.AppendLine($"{kvp.Key} - {kvp.Value}");
 
-            textAIStats.Text = builder.ToString();
+            //textAIStats.Text = builder.ToString();
+            //var results = result.ToArray();
+            textPrimaryConfidence.Text = ((int)(kvps[0].Value * 100)).ToString() + "%";
+            textPrimaryTag.Text = kvps[0].Key;
+
+            for (int i = 1; i < kvps.Length; i++)
+            {
+                listviewOtherResults.Items.Add(kvps[i]);
+            }
 
         }
 
@@ -263,6 +272,8 @@ namespace EBC_InkDemo.Views
             _sessionStrokes.Clear();
             win2dCanvas.Invalidate();
             iconCanvas.Children.Clear();
+            textPrimaryConfidence.Text = textPrimaryTag.Text = string.Empty;
+            listviewOtherResults.Items.Clear();
         }
     }
 }
