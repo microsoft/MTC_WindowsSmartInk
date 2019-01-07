@@ -35,7 +35,7 @@ namespace SmartInkLaboratory.Services
         protected event EventHandler ResourceKeysChanged;
         protected event EventHandler ProjectChanged;
 
-        protected static TrainingApi _trainingApi;
+        protected static CustomVisionTrainingClient _trainingApi;
         protected static Project _currentProject;
         protected static ResourceKeys _currentKeys;
 
@@ -56,8 +56,8 @@ namespace SmartInkLaboratory.Services
             if (string.IsNullOrWhiteSpace(keys.TrainingKey))
                 throw new ArgumentNullException($"{nameof(keys.TrainingKey)} cannot be null or empty");
             _currentKeys = keys;
-            _trainingApi = new TrainingApi() { ApiKey = _currentKeys.TrainingKey };
-            _trainingApi.BaseUri = new System.Uri("https://southcentralus.api.cognitive.microsoft.com/customvision/v2.2/Training");
+            _trainingApi = new  CustomVisionTrainingClient() { ApiKey = _currentKeys.TrainingKey, Endpoint= "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.2/Training" };
+            //_trainingApi.BaseUri = new System.Uri("https://southcentralus.api.cognitive.microsoft.com/customvision/v2.2/Training");
             _currentProject = null;
             ResourceKeysChanged?.Invoke(this, null);
         }

@@ -33,7 +33,7 @@ namespace SmartInkLaboratory.Services
 {
     public class CustomVisionPredictionService : IPredictionService
     {
-        static PredictionEndpoint _endpoint;
+        static CustomVisionPredictionClient _endpoint;
         private Guid _currentProject;
 
       
@@ -42,7 +42,7 @@ namespace SmartInkLaboratory.Services
         {
             if (string.IsNullOrWhiteSpace(predictionKey))
                 throw new ArgumentNullException($"{nameof(predictionKey)} cannot be null or empty");
-            _endpoint = new PredictionEndpoint() { ApiKey = predictionKey };
+            _endpoint = new CustomVisionPredictionClient() { ApiKey = predictionKey};
             
         }
 
