@@ -23,7 +23,7 @@
         </DataTemplate>
     </amp:NavAwarePage.Resources>
 
-    <Grid>
+    <Grid Background="White">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="SessionState">
                 <VisualState x:Name="Active">
@@ -70,7 +70,7 @@
             <Image Source="/Assets/Pen-Icon.jpg" Opacity="0.4" Stretch="none"/>
         </StackPanel>
         <Canvas x:Name="iconCanvas"  Grid.Column="1" />
-        <win2d:CanvasControl x:Name="win2dCanvas" Grid.Column="1" ClearColor="Transparent" Draw="win2dCanvas_Draw"/>
+        <win2d:CanvasControl x:Name="win2dCanvas" Grid.Column="1"  Background="white" Draw="win2dCanvas_Draw"/>
 
         <InkCanvas x:Name="inkCanvas"  Grid.Column="1"  />
         <!--<AppBarButton x:Name="buttonDelete" 

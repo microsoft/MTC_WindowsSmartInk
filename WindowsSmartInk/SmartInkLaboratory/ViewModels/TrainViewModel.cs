@@ -54,6 +54,8 @@ namespace SmartInkLaboratory.ViewModels
         private IImageService _images;
         private ITrainingService _train;
         private IAppStateService _state;
+        private ITagService _tags;
+
         //private Guid _currentProject;
 
         private int _totalImageCount;
@@ -145,11 +147,12 @@ namespace SmartInkLaboratory.ViewModels
 
         
 
-        public TrainViewModel(IImageService images, ITrainingService train,  IAppStateService state)
+        public TrainViewModel(IImageService images, ITrainingService train, ITagService tagService, IAppStateService state)
         {
             _images = images;
             _train = train;
             _state = state;
+            _tags = tagService;
             
             _state.TagChanged += async (s,e) => {
                 if (_state.CurrentTag == null)
@@ -293,9 +296,10 @@ namespace SmartInkLaboratory.ViewModels
             var files = await CreateFileListAsync();
             foreach (var file in files)
             {
-                var tagId = (await file.GetParentAsync()).Name;
-                var tags = new List<string> { tagId };
-                if (await _images.UploadImageAsync(file, tags))
+                var tagName = (await file.GetParentAsync()).Name;
+                var tag = await _tags.GetTagByNameAsync(tagName);
+                
+                if (await _images.UploadImageAsync(file, new Guid[] { tag.Id }))
                 {
                     await file.DeleteAsync();
                     ImageUploadCount++;

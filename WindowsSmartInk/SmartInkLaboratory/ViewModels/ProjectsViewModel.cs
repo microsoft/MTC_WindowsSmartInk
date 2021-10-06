@@ -146,16 +146,19 @@ namespace SmartInkLaboratory.ViewModels
         {
             ProjectsList.Clear();
             var projects = await _projects.GetProjectsAsync(true);
-            foreach (var p in projects)
+            if (projects != null)
             {
-                ProjectsList.Add(p);
+                foreach (var p in projects)
+                {
+                    ProjectsList.Add(p);
+                }
+                var last = ApplicationData.Current.LocalSettings.Values["LastProject"] as string;
+                var found = (last != null) ? (from p in projects where p.Name == last select p).FirstOrDefault() : null;
+                if (found == null)
+                    CurrentProject = (from p in projects select p).FirstOrDefault();
+                else
+                    CurrentProject = found;
             }
-            var last = ApplicationData.Current.LocalSettings.Values["LastProject"] as string;
-            var found = (last != null) ? (from p in projects where p.Name == last select p).FirstOrDefault() : null;
-            if (found == null)
-                CurrentProject = (from p in projects select p).FirstOrDefault();
-            else
-                CurrentProject = found;
         }
 
        

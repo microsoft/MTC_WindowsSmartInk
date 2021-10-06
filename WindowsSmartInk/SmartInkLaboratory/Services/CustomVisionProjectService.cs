@@ -68,15 +68,22 @@ namespace SmartInkLaboratory.Services
 
         public async Task<IList<Project>> GetProjectsAsync(bool refresh = false)
         {
-            if (string.IsNullOrWhiteSpace(_trainingApi.ApiKey))
-                throw new InvalidOperationException("Service has not been initialized with training api key");
-            if (_projects == null || refresh)
+            try
             {
-                var response = await _trainingApi.GetProjectsWithHttpMessagesAsync();
-                return response.Body;
-            }
+                if (_trainingApi.Credentials == null)
+                    throw new InvalidOperationException("Service has not been initialized with training api key");
+                if (_projects == null || refresh)
+                {
+                    var response = await _trainingApi.GetProjectsWithHttpMessagesAsync();
+                    return response.Body;
+                }
 
-            return _projects;
+                return _projects;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
        public  Task DeleteProjectAsync(Guid projectId)

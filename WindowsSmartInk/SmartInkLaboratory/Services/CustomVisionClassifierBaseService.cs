@@ -56,8 +56,8 @@ namespace SmartInkLaboratory.Services
             if (string.IsNullOrWhiteSpace(keys.TrainingKey))
                 throw new ArgumentNullException($"{nameof(keys.TrainingKey)} cannot be null or empty");
             _currentKeys = keys;
-            _trainingApi = new  CustomVisionTrainingClient() { ApiKey = _currentKeys.TrainingKey, Endpoint= "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.2/Training" };
-            //_trainingApi.BaseUri = new System.Uri("https://southcentralus.api.cognitive.microsoft.com/customvision/v2.2/Training");
+            _trainingApi = new CustomVisionTrainingClient( new Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training.ApiKeyServiceClientCredentials(_currentKeys.TrainingKey));
+            //_trainingApi.= new System.Uri("https://southcentralus.api.cognitive.microsoft.com/customvision/v3.0/Training/");
             _currentProject = null;
             ResourceKeysChanged?.Invoke(this, null);
         }

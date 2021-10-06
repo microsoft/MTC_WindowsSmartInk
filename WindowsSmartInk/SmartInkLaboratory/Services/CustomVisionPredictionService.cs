@@ -42,7 +42,7 @@ namespace SmartInkLaboratory.Services
         {
             if (string.IsNullOrWhiteSpace(predictionKey))
                 throw new ArgumentNullException($"{nameof(predictionKey)} cannot be null or empty");
-            _endpoint = new CustomVisionPredictionClient() { ApiKey = predictionKey};
+            _endpoint = new CustomVisionPredictionClient(new Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction.ApiKeyServiceClientCredentials(predictionKey));
             
         }
 
@@ -58,8 +58,8 @@ namespace SmartInkLaboratory.Services
             try
             {
 
-                
-                var result = await _endpoint.PredictImageAsync(projectId, stream, iterationId);
+
+                var result = await _endpoint.ClassifyImageAsync(projectId, iterationId.ToString(), stream);
                 var tags = (from p in result.Predictions select new { p.TagName, p.Probability }).OrderByDescending(p => p.Probability);
                 
                 foreach (var t in tags)

@@ -37,7 +37,7 @@ namespace SmartInkLaboratory.Services
 
         }
 
-        public async Task<bool> UploadImageAsync(IStorageFile imageFile, IList<string> tags = null)
+        public async Task<bool> UploadImageAsync(IStorageFile imageFile, IList<Guid> tags = null)
         {
             var stream = await imageFile.OpenReadAsync();
             //var tagIds = (from t in tags select t.Id.ToString()).ToList();

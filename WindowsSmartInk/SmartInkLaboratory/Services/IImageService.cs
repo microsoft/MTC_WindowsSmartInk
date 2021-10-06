@@ -9,6 +9,6 @@ namespace SmartInkLaboratory.Services
 {
     public interface IImageService 
     {
-        Task<bool> UploadImageAsync(IStorageFile imageFile, IList<string> tags = null);
+        Task<bool> UploadImageAsync(IStorageFile imageFile, IList<Guid> tags = null);
     }
 }
